@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ibc-proxylib", "ibc-proxylib\ibc-proxylib.vcxproj", "{4553C038-DC5E-4D14-8A27-E8BACCCE76A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "miracl-lib", "miracl-lib\miracl-lib.vcxproj", "{023785B0-126F-4EED-8FE0-10F676FEAF9B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ibc-proxylib-test", "ibc-proxylib-test\ibc-proxylib-test.vcxproj", "{EDF9A161-5759-4324-A20E-6CA8D274BCFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +17,14 @@ Global
 		{4553C038-DC5E-4D14-8A27-E8BACCCE76A8}.Debug|Win32.Build.0 = Debug|Win32
 		{4553C038-DC5E-4D14-8A27-E8BACCCE76A8}.Release|Win32.ActiveCfg = Release|Win32
 		{4553C038-DC5E-4D14-8A27-E8BACCCE76A8}.Release|Win32.Build.0 = Release|Win32
+		{023785B0-126F-4EED-8FE0-10F676FEAF9B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{023785B0-126F-4EED-8FE0-10F676FEAF9B}.Debug|Win32.Build.0 = Debug|Win32
+		{023785B0-126F-4EED-8FE0-10F676FEAF9B}.Release|Win32.ActiveCfg = Release|Win32
+		{023785B0-126F-4EED-8FE0-10F676FEAF9B}.Release|Win32.Build.0 = Release|Win32
+		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Debug|Win32.Build.0 = Debug|Win32
+		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Release|Win32.ActiveCfg = Release|Win32
+		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
