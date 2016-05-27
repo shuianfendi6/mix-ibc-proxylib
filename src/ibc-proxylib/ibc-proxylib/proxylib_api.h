@@ -95,7 +95,9 @@
 #ifndef __PROXYLIB_API_H__
 #define __PROXYLIB_API_H__
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
   typedef enum {
     CIPH_FIRST_LEVEL = 0,
@@ -153,6 +155,8 @@ extern "C" {
 		   char *newciphertext, int *newCiphLen, SCHEME_TYPE schemeID);
 
 
-} // extern "C"
+#ifdef __cplusplus
+}
+#endif
 
 #endif // __PROXYLIB_API_H__

@@ -535,6 +535,8 @@ int proxylib_generateDelegationKey(void *params, void *sk1, void *pk2,
 		ProxySK_PRE1 *secKey = (ProxySK_PRE1 *) sk1;
 		DelegationKey_PRE1 *delegationKey = new DelegationKey_PRE1;
 
+		memset(delegationKey,0,sizeof(DelegationKey_PRE1));
+
 		if (PRE1_delegate(*cp, *pubKey, *secKey, *delegationKey) == FALSE) {
 			error = ERROR_NONE;
 		}
@@ -545,6 +547,8 @@ int proxylib_generateDelegationKey(void *params, void *sk1, void *pk2,
 		ProxyPK_PRE2 *pubKey = (ProxyPK_PRE2 *) pk2;
 		ProxySK_PRE2 *secKey = (ProxySK_PRE2 *) sk1;
 		DelegationKey_PRE2 *delegationKey = new DelegationKey_PRE2;
+
+		memset(delegationKey,0,sizeof(DelegationKey_PRE2));
 
 		if (PRE2_delegate(*cp, *pubKey, *secKey, *delegationKey) == FALSE) {
 			error = ERROR_NONE;
