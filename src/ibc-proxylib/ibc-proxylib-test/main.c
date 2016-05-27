@@ -113,12 +113,12 @@ int main()
 	int err;
 	char plaintext1[20] = "0123456789ABCDEF";
 	char plaintext2[20] = "0000000000000000";
-	char ciphertext1[20] = "";
-	char ciphertext2[20] = "";
+	char ciphertext1[1024] = "";
+	char ciphertext2[1024] = "";
 	int ptextLen1 = 16;
 	int ptextLen2 = 16;
-	int ctextLen1 = 0;
-	int ctextLen2 = 0;
+	int ctextLen1 = 20;
+	int ctextLen2 = 20;
 	char buffer[1000];
 	void *newParams = NULL;
 	void *sk1 = NULL;
@@ -169,7 +169,7 @@ int main()
 	*/
 	printf("%d. Generating keypair 1 ", ++testNum);
 
-	err = proxylib_generateKeys(gParams, &pk1, &sk2, SCHEME_PRE1);
+	err = proxylib_generateKeys(gParams, &pk1, &sk1, SCHEME_PRE1);
 	if (err != ERROR_NONE) {
 		printf(" ... FAILED (error %d)\n", err);
 	} else {
@@ -178,7 +178,7 @@ int main()
 	}
 
 	printf("%d. Generating keypair 2 ", ++testNum);
-	err = proxylib_generateKeys(gParams, &pk1, &sk2, SCHEME_PRE1);
+	err = proxylib_generateKeys(gParams, &pk2, &sk2, SCHEME_PRE1);
 	if (err != ERROR_NONE) {
 		printf(" ... FAILED (error %d)\n", err);
 	} else {
@@ -206,7 +206,7 @@ int main()
 	*/
 	printf("%d. First-level encryption/decryption test ", ++testNum);
 	err = proxylib_encrypt(gParams, pk1, (char*)plaintext1, ptextLen1, 
-		ciphertext1, ctextLen1, CIPH_FIRST_LEVEL,
+		ciphertext1, &ctextLen1, CIPH_FIRST_LEVEL,
 		SCHEME_PRE1);
 	if (err != ERROR_NONE) {
 		printf(" ... FAILED (error %d)\n", err);
@@ -234,7 +234,7 @@ int main()
 	ptextLen1 = ptextLen2 = 16;
 	printf("%d. Second-level encryption/decryption test ", ++testNum);
 	err = proxylib_encrypt(gParams, pk1, (char*)plaintext1, ptextLen1, 
-		ciphertext1, ctextLen1, CIPH_SECOND_LEVEL,
+		ciphertext1, &ctextLen1, CIPH_SECOND_LEVEL,
 		SCHEME_PRE1);
 	if (err != ERROR_NONE) {
 		printf(" ... FAILED (error %d)\n", err);
@@ -261,7 +261,7 @@ int main()
 	/* Re-encrypt ciphertext from user1->user2 using delKey 
 	* We make use of the ciphertext generated in the previous test. */
 	err = proxylib_reencrypt(gParams, delKey, ciphertext1, ctextLen1, ciphertext2, 
-		ctextLen2, SCHEME_PRE1);
+		&ctextLen2, SCHEME_PRE1);
 	if (err != ERROR_NONE) {
 		printf(" ... FAILED (error %d)\n", err);
 	} else {
@@ -312,7 +312,7 @@ int main()
 			printf(" ... FAILED (error %d)\n", err);
 		}
 	}
-	/*serTestResult = serTestResult && (newParams == gParams);*/
+	serTestResult = serTestResult && (newParams == gParams);
 
 	if (serTestResult == 1) {
 		printf(" ... FAILED\n", err);
