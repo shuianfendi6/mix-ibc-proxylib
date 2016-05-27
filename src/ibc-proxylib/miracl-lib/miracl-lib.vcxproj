@@ -115,7 +115,10 @@
     <ClCompile Include="mrrand.c" />
     <ClCompile Include="mrround.c" />
     <ClCompile Include="mrscrt.c" />
+    <ClCompile Include="mrsha3.c" />
+    <ClCompile Include="mrshs.c" />
     <ClCompile Include="mrshs256.c" />
+    <ClCompile Include="mrshs512.c" />
     <ClCompile Include="mrsmall.c" />
     <ClCompile Include="mrsroot.c" />
     <ClCompile Include="mrstrong.c" />

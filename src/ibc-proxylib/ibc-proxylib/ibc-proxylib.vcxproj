@@ -84,6 +84,10 @@
     <ClCompile Include="ecn2.cpp" />
     <ClCompile Include="FILE_LOG.c" />
     <ClCompile Include="flash.cpp" />
+    <ClCompile Include="proxylib_api.cpp" />
+    <ClCompile Include="proxylib_benchmark.cpp" />
+    <ClCompile Include="proxylib_pre1.cpp" />
+    <ClCompile Include="proxylib_pre2.cpp" />
     <ClCompile Include="sm3.c" />
     <ClCompile Include="zzn.cpp" />
     <ClCompile Include="zzn12a.cpp" />
@@ -93,10 +97,16 @@
   <ItemGroup>
     <ClInclude Include="big.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="ebrick.h" />
     <ClInclude Include="ecn.h" />
     <ClInclude Include="ecn2.h" />
     <ClInclude Include="FILE_LOG.h" />
     <ClInclude Include="flash.h" />
+    <ClInclude Include="proxylib.h" />
+    <ClInclude Include="proxylib_api.h" />
+    <ClInclude Include="proxylib_benchmark.h" />
+    <ClInclude Include="proxylib_pre1.h" />
+    <ClInclude Include="proxylib_pre2.h" />
     <ClInclude Include="sm3.h" />
     <ClInclude Include="zzn.h" />
     <ClInclude Include="zzn12a.h" />
