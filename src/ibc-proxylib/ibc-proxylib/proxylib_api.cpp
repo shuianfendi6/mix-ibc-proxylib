@@ -396,7 +396,7 @@ int proxylib_encrypt(void *params, void *pk, char *message, int messageLen,
 	CurveParams *cp = (CurveParams *) params;
 	Big msg;
 
-	if (encodePlaintextAsBig(*cp, message, messageLen-1, msg) == FALSE) {
+	if (encodePlaintextAsBig(*cp, message, messageLen, msg) == FALSE) {
 		error = ERROR_PLAINTEXT_TOO_LONG;
 		return error;
 	}
