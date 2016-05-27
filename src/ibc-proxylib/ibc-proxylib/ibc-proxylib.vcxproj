@@ -88,6 +88,7 @@
     <ClCompile Include="proxylib_benchmark.cpp" />
     <ClCompile Include="proxylib_pre1.cpp" />
     <ClCompile Include="proxylib_pre2.cpp" />
+    <ClCompile Include="proxylib_utilities.cpp" />
     <ClCompile Include="sm3.c" />
     <ClCompile Include="zzn.cpp" />
     <ClCompile Include="zzn12a.cpp" />
