@@ -2,8 +2,13 @@
 #define __SM9__PROXYLIB_H__
 
 #include "ecn.h"
-#include "ebrick.h"
 #include "zzn2.h"
+
+#include <ctime>
+#include "ecn2.h"
+#include "zzn12a.h"
+#include "sm3.h"
+#include "pairing_3.h"
 
 //
 // Macros
@@ -19,13 +24,23 @@
 // Public parameters (shared among all users in a system)
 class SM9CurveParams {
 public:
-	int bits_local;
-	Big p, q, qsquared;
-	ECn P;  
-	ZZn2 Z;
-	ZZn2 Zprecomp;
-	ZZn2 cube;
 
+	int bits_local;
+
+	Big cid;  // 曲线的识别符
+	Big q;  
+	Big a,b;
+	Big beta; // 不使用当cid=12
+	Big cf,N;
+	Big k;    // 嵌入次数k
+	ECn P1;
+	ECn2 P2;
+	Big eid;
+
+	Big master;
+	ECn2 Ppub_s;
+	ZZn2 X;
+	
 	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
 	virtual int serialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -33,20 +48,20 @@ public:
 		char *buffer, int maxBuffer);
 	virtual int maxPlaintextSize() {
 		Big temp;
-		Z.get(temp);
+		X.get(temp);
 		return bits(temp);
 	}
 
 	BOOL operator==(SM9CurveParams &second) {
 		return ((this->bits_local == second.bits_local) && 
-			(this->p == second.p) &&
 			(this->q == second.q) &&
-			(this->qsquared == second.qsquared) &&
-			(this->P == second.P) &&
-			(this->Z == second.Z) &&
-			(this->cube == second.cube));
+			(this->N == second.N) &&
+			(this->P1 == second.P1) &&
+			(this->P2 == second.P2) &&
+			(this->Ppub_s == second.Ppub_s) &&
+			(this->k == second.k)
+			);
 	}
-
 };
 
 // ProxyPK: Public Key class
@@ -117,11 +132,8 @@ BOOL sm9_initLibrary(BOOL selfseed = TRUE, char *seedbuf = NULL,
 
 // Utility Routines
 
-BOOL sm9_ReadParamsFile(char *filename, SM9CurveParams &params);
-BOOL sm9_ImportPublicKey(char *buffer, int bufferSize, SM9ProxyPK &pubkey);
-BOOL sm9_ImportSecretKey(char *buffer, int bufferSize, SM9ProxySK &secret);
-BOOL fast_tate_pairing(ECn& P,ZZn2& Qx,ZZn& Qy,Big& q,ZZn2& res);
-BOOL ecap(ECn& P,ECn& Q,Big& order,ZZn2& cube,ZZn2& res);
+BOOL fast_pairing(ECn2& P,ZZn& Qx,ZZn& Qy,Big &x,ZZn2 &X,ZZn12& res)
+BOOL ecap(ECn2& P,ECn& Q,Big& x,ZZn2 &X,ZZn12& r)
 ECn map_to_point(char *ID);
 void strip(char *name);
 
@@ -161,6 +173,10 @@ void strip(char *name);
 // Debug output routine
 void printDebugString(string debugString);
 
+ECn2 hash_and_map2(char *ID);
+void cofactor(ECn2& S,ZZn2 &F,Big& x);
+void set_frobenius_constant(ZZn2 &X);
+
 //
 // Set parameter sizes. For example change PBITS to 1024
 //
@@ -170,7 +186,6 @@ void printDebugString(string debugString);
 
 #define HASH_LEN 20
 
-#define SIMPLE
 #define PROJECTIVE
 
 // use static temp variables in crypto routines-- faster, but not

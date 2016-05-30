@@ -100,6 +100,91 @@ extern "C"
 #endif
 
 
+Big H1(char *string)
+{ // Hash a zero-terminated string to a number < modulus
+	Big h,p;
+	char s[HASH_LEN];
+	int i,j; 
+	sha256 sh;
+
+	shs256_init(&sh);
+
+	for (i=0;;i++)
+	{
+		if (string[i]==0) break;
+		shs256_process(&sh,string[i]);
+	}
+	shs256_hash(&sh,s);
+	p=get_modulus();
+	h=1; j=0; i=1;
+	forever
+	{
+		h*=256; 
+		if (j==HASH_LEN)  {h+=i++; j=0;}
+		else         h+=s[j++];
+		if (h>=p) break;
+	}
+	h%=p;
+	return h;
+}
+
+Big H2(ZZn12 x)
+{ // Compress and hash an Fp12 to a big number
+	sha256 sh;
+	ZZn4 u;
+	ZZn2 h,l;
+	Big a,hash,p,xx[4];
+	char s[HASH_LEN];
+	int i,j,m;
+
+	shs256_init(&sh);
+	x.get(u);  // compress to single ZZn4
+	u.get(l,h);
+	xx[0]=real(l); xx[1]=imaginary(l); xx[2]=real(h); xx[3]=imaginary(h);
+
+	for (i=0;i<4;i++)
+	{
+		a=xx[i];
+		while (a>0)
+		{
+			m=a%256;
+			shs256_process(&sh,m);
+			a/=256;
+		}
+	}
+	shs256_hash(&sh,s);
+	hash=from_binary(HASH_LEN,s);
+	return hash;
+}
+
+ECn2 hash_and_map2(char *ID)
+{
+	int i;
+	ECn2 S;
+	ZZn2 X;
+	Big x0=H1(ID);
+
+	forever
+	{
+		x0+=1;
+		X.set((ZZn)1,(ZZn)x0);
+		if (!S.set(X)) continue;
+		break;
+	}
+	return S;
+}     
+
+ECn hash_and_map(char *ID)
+{
+	ECn Q;
+	Big x0=H1(ID);
+
+	while (!Q.set(x0,x0)) x0+=1;
+
+	return Q;
+}
+
+
 int SM9_HV(unsigned int n,unsigned char * src, unsigned char * digest)
 {
 	return tcm_sch_hash(n,src,digest);
@@ -910,30 +995,30 @@ SM9CurveParams::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
     totSize += size;
     buffer += size;
     
-    size = BigTochar(this->p, buffer, maxBuffer - totSize);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
-    
     size = BigTochar(this->q, buffer, maxBuffer - totSize);
     if (size <= 0) return 0;
     totSize += size;
     buffer += size;
     
-    size = ECnTochar(this->P, buffer, maxBuffer - totSize);
+    size = BigTochar(this->N, buffer, maxBuffer - totSize);
     if (size <= 0) return 0;
     totSize += size;
     buffer += size;
     
-    size = ZZn2Tochar(this->Z, buffer, maxBuffer - totSize);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
-    
-    size = ZZn2Tochar(this->cube, buffer, maxBuffer - totSize);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
+	/*  size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+	if (size <= 0) return 0;
+	totSize += size;
+	buffer += size;
+
+	size = ZZn2Tochar(this->Z, buffer, maxBuffer - totSize);
+	if (size <= 0) return 0;
+	totSize += size;
+	buffer += size;
+
+	size = ZZn2Tochar(this->cube, buffer, maxBuffer - totSize);
+	if (size <= 0) return 0;
+	totSize += size;
+	buffer += size;*/
     
     return totSize;
     break;
@@ -972,7 +1057,7 @@ SM9CurveParams::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
     if (len <= 0) return FALSE;
     buffer += len;
   
-    this->p = charToBig(buffer, &len);
+    this->q = charToBig(buffer, &len);
     if (len <= 0) return FALSE;
     buffer += len;
   
@@ -980,26 +1065,26 @@ SM9CurveParams::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
     if (len <= 0) return FALSE;
     buffer += len;
   
-    this->qsquared = pow(q, 2);
+    //this->qsquared = pow(q, 2);
 
-    this->P = charToECn(buffer, &len);
-    if (len <= 0) return FALSE;
-    buffer += len;
+    //this->P = charToECn(buffer, &len);
+    //if (len <= 0) return FALSE;
+    //buffer += len;
 
-    this->Z = charToZZn2(buffer, &len);
-    if (len <= 0) return FALSE;
-    buffer += len;
+    //this->Z = charToZZn2(buffer, &len);
+    //if (len <= 0) return FALSE;
+    //buffer += len;
 
-    this->cube = charToZZn2(buffer, &len);
-    if (len <= 0) return FALSE;
-    buffer += len;
+    //this->cube = charToZZn2(buffer, &len);
+    //if (len <= 0) return FALSE;
+    //buffer += len;
 
 // Set up the elliptic curve 
 #ifdef AFFINE
-  ecurve(0,1,params.p,MR_AFFINE);   
+  ecurve(0,1,params.q,MR_AFFINE);   
 #endif
 #ifdef PROJECTIVE
-  ecurve(0,1,this->p,MR_PROJECTIVE);
+  ecurve(0,1,this->q,MR_PROJECTIVE);
 #endif
 
     return TRUE;

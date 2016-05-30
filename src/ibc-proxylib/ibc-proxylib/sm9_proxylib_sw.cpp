@@ -6,7 +6,7 @@
 using namespace std;
 
 #ifdef BENCHMARKING
-	#include "benchmark.h"
+#include "benchmark.h"
 #endif
 #include "sm9_proxylib_api.h"
 #include "sm9_proxylib.h"
@@ -32,100 +32,76 @@ extern Miracl precisionBit;
 //		Z: the value Z = e(P, P) (where e() is the Rate pairing)
 
 BOOL 
-sm9_sw_generate_params(SM9CurveParams &params)
+	sm9_sw_generate_params(SM9CurveParams &params)
 {
-  miracl *mip=&precisionBit;
+	miracl *mip=&precisionBit;
+	ZZn2 X;
 
-  mip->IOBASE = 10;
-  // Generate a q value.  This can be fixed or random, depending on the
-  // SIMPLE pre-compiler directive.  If SIMPLE, we use the fixed value
-  // 2^159 + 2^17 + 1.  Otherwise we select a random QBITS-bits prime.
-  
-#ifdef SIMPLE
-  // Fixed q
-  params.q= pow((Big)2,159) + pow((Big)2,17) + 1;
-#else
-  // Random q 
-  
-  forever {
-    Big n=rand(QBITS-1,2);  // 159 bit number, base 2 
-    params.q=2*n+1;            // 160 bit
-    while (!prime(params.q)) params.q+=2;
-    if (bits(params.q)>QBITS) continue;
-    break;
-  }
-#endif
-  
-  params.qsquared = pow((Big)params.q, 2);
-  //  cout << "q = " << params.q << ", q^2 = " << params.qsquared << endl;
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
 
-  // Generate a p value.  This is a random PBITS-bits prime. 
-  Big t=(pow((Big)2,PBITS)-1)/(2*params.q);
-  Big s=(pow((Big)2,PBITS-1)-1)/(2*params.q);
-  Big n;
-  forever 
-    {
-      n=rand(t);
-      if (n<s) continue;
-      params.p = 2 * n * params.q - 1;
-      if (params.p % 24 != 11) continue;  // must be 2 mod 3, also 3 mod 4
-      if (prime(params.p)) break;
-    }
-  
-  // Set up the elliptic curve 
+	Big t= (char *)"600000000058F98A";  //参数t
+
+	params.q=36*pow(t,4)+36*pow(t,3)+24*t*t+6*t+1; // 基域特征
+	Big tr=6*t*t+1; // 迹
+	params.N=params.q+1-tr;   // 
+	params.cf=1;
+	params.a = 0;
+	params.b = 0x05;
+	params.cid = 0x12;
+	params.k = 12;
+	params.eid = 0x04; // R-ate 对
+
+
 #ifdef AFFINE
-  ecurve(0,1,params.p,MR_AFFINE);   
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
 #endif
 #ifdef PROJECTIVE
-  ecurve(0,1,params.p,MR_PROJECTIVE);
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-  //cout << "p: " << params.p << endl;
+	set_frobenius_constant(X);
 
-  // Find suitable cube root of unity (solution in Fp2 of x^3=1 mod p)  
-  forever {
-    //    cube=pow(randn2(),(p+1)*(p-1)/3);
-    params.cube = pow(randn2(), (params.p + 1)/3);
-    params.cube = pow(params.cube, params.p - 1);
-    if (!params.cube.isunity()) break;
-  }
-  
-  // Check to see that the value is actually correct.
-  if (!(params.cube * params.cube * params.cube).isunity()) {
-    PRINT_DEBUG_STRING("Setup failed.  Unable to find a cube root of unity.");
-    return FALSE;
-  }
-  
-  // Choose an arbitrary generator point P
-  Big cof=2*n;
-  forever {
-    while (!params.P.set(randn())) ;
-    params.P *= cof;
-    if (!params.P.iszero()) break;
-  }
+#if defined(MIX_BUILD_FOR_SYSTEM_PARAM_GEN)
+	forever {
+		while (!params.P1.set(randn())) ;
+		params.P1 *= params.cf;
+		if (!params.P1.iszero()) break;
+	}
 
-  //cout << "P: " << params.P << endl;
+	params.P2=hash_and_map2((char *)"Server");
+	cofactor(params.P2,X,t);   // fast multiplication by cf
+#else
+	char * xp1_str =       "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD";
+	char * yp1_str =       "21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616";
+	char * xp2_part1_str = "85AEF3D078640C98597B6027B441A01FF1DD2C190F5E93C454806C11D8806141";
+	char * yp2_part1_str = "17509B092E845C1266BA0D262CBEE6ED0736A96FA347C8BD856DC76B84EBEB96";
+	char * xp2_part2_str = "3722755292130B08D2AAB97FD34EC120EE265948D19C17ABF9B7213BAF82D65B";
+	char * yp2_part2_str = "A7CF28D519BE3DA65F3170153D278FF247EFBA98A71A08116215BBA5C999A7C7";
 
-  // Compute an optional EBrick class for pairing pre-computation
-#if 0
-  Big xx, yy;
-  params.P.get(xx, yy);
-  EBrick B(xx, yy,(Big)0,(Big)1,params.p,8,QBITS); 
+	params.P1.set(xp1_str,yp1_str);
+
+	ZZn2 xp2,yp2;
+
+	xp2.set((Big)xp2_part2_str, xp2_part1_str);
+	yp2.set((Big)yp2_part2_str, yp2_part1_str);
+	params.P2.set(xp2,yp2);
 #endif
 
-  //cout << "Cube root of unity: " << params.cube << endl;
+	cout<<"q:"<<params.q<<endl;
+	cout<<"N:"<<params.N<<endl;
+	cout<<"cf:"<<params.cf<<endl;
+	cout<<"k:"<<params.k<<endl;
+	cout<<"P1:"<<params.P1<<endl;
+	cout<<"P2:"<<params.P2<<endl;
 
-  //
-  // Precompute the value Z = e(P, P) using the Tate pairing.  We could do this
-  // at any point down the road, but it's more efficient to do it now.
-  //    
-  if (ecap(params.P, params.P, params.q, params.cube, params.Z) == FALSE) {
-    PRINT_DEBUG_STRING("Parameter generation failed.  Unable to compute Z.");
-    return FALSE;
-  }
-  
-  // Success
-  return TRUE;
+	if (ecap(params.P, params.P, params.q, params.cube, params.Z) == FALSE) {
+		PRINT_DEBUG_STRING("Parameter generation failed.  Unable to compute Z.");
+		return FALSE;
+	}
+
+	// Success
+	return TRUE;
 }
 
 //// PRE1_keygen()
