@@ -42,11 +42,15 @@ int main()
 	char data_value[2048] = {0};
 	int data_len = 2048;
 
+	void *msk, *mpk;
+
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	sm9_proxylib_serializeParams(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_deserializeParams(data_value, data_len, gParams,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_deserializeParams(data_value, data_len, &gParams,SM9_SERIALIZE_BINARY);
+
+	sm9_proxylib_generateMasterKey(gParams, &mpk,&msk,SM9_SCHEME_SW);
 
 	return 0;
 

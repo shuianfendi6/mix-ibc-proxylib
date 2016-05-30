@@ -36,7 +36,7 @@ extern "C" {
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_destroyParams(void *params);
 
-	int sm9_proxylib_generateMasterKey(void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
 
 
 

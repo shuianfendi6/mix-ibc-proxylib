@@ -12,18 +12,6 @@
 #include "sm3.h"
 #include "pairing_3.h"
 
-//
-// Macros
-//
-
-#define PRINT_DEBUG_STRING(x) printDebugString(x)
-#define ASCII_SEPARATOR "#"
-
-//
-// Data structures and Classes
-//
-
-// Public parameters (shared among all users in a system)
 class SM9CurveParams {
 public:
 

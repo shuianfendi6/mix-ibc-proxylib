@@ -142,6 +142,43 @@ BOOL
 	return TRUE;
 }
 
+
+
+BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk)
+{
+	Big imsk;
+
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_SIGN) 
+	imsk="0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4";
+#elif defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_EX) 
+	imsk="02E65B0762D042F51F0D23542B13ED8CFA2E9A0E7206361E013A283905E31F";
+#elif defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_WRAP) || defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_EN)
+	imsk="01EDEE3778F441F8DEA3D9FA0ACC4E07EE36C93F9A08618AF4AD85CEDE1C22";
+#else
+	while(0 == (imsk=rand(params.N)))
+	{
+
+	};
+#endif
+
+	msk.master = imsk;
+
+	mpk.Ppub2 = imsk * params.P2;
+	mpk.Ppub1 = imsk * params.P1;
+
+	cout<<"Ppub2:"<<mpk.Ppub2<<endl;
+	cout<<"Ppub1:"<<mpk.Ppub1<<endl;
+
+	return TRUE;
+}
+
+
+
 //// PRE1_keygen()
 ////
 //// Generate a public/secret keypair for the PRE1 scheme.  
@@ -395,7 +432,7 @@ BOOL
 //// Serialize a delegation key into a buffer
 //
 //int
-//SerializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+//SerializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 //{
 //  int totSize = 0;
 //
@@ -404,14 +441,14 @@ BOOL
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
-//  case SERIALIZE_BINARY:
+//  case SM9_SERIALIZE_BINARY:
 //  {
 //    int len = ECnTochar (delKey, buffer, maxBuffer);
 //    if (len <= 0) return 0;
 //    return len;
 //    break;
 //  }	
-//  case SERIALIZE_HEXASCII:
+//  case SM9_SERIALIZE_HEXASCII:
 //
 //    //string temp;
 //    //buffer << delKey;
@@ -433,7 +470,7 @@ BOOL
 //// Deserialize a delegation key from a buffer
 //
 //BOOL
-//DeserializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SERIALIZE_MODE mode, char *buffer, int bufSize)
+//DeserializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
 //{
 //  // Make sure we've been given a real buffer
 //  if (buffer == NULL) {
@@ -445,7 +482,7 @@ BOOL
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
-//  case SERIALIZE_BINARY:
+//  case SM9_SERIALIZE_BINARY:
 //    int len;
 //
 //    //cout << "got one " << len << endl;
@@ -454,7 +491,7 @@ BOOL
 //    return TRUE;
 //    break;
 //
-//  case SERIALIZE_HEXASCII:
+//  case SM9_SERIALIZE_HEXASCII:
 //    // Serialize to hexadecimal in ASCII 
 //    // TBD
 //    return FALSE;
@@ -469,246 +506,244 @@ BOOL
 //// Class members (ProxyPK_PRE1)
 ////
 //
-//int
-//ProxyPK_PRE1::getSerializedSize(SERIALIZE_MODE mode)
-//{
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//    //return (PBITS/8 + 10) * 4;
-//    return 2*136;
-//    break;
-//  case SERIALIZE_HEXASCII:
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}  
-//
-//int
-//ProxyPK_PRE1::serialize(SERIALIZE_MODE mode, char *buffer, int maxBuffer)
-//{
-//  int totSize = 0;
-//  // Make sure we've been given a large enough buffer
-//  if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//	{
-//
-//    int size = ZZn2Tochar(this->Zpub1, buffer, maxBuffer);
-//    if (size <= 0) return 0;
-//    totSize += size;
-//    buffer += size;
-//    //cout << "Zpub1: " << this->Zpub1 << endl;
-//    //cout << "Ppub2: " << this->Ppub2 << endl;
-//    //cout << "zzn size: " << size << endl;
-//
-//    size = ECnTochar(this->Ppub2, buffer, maxBuffer - totSize);
-//    if (size <= 0) return 0;
-//    totSize += size;
-//    buffer += size;
-//
-//    return totSize;
-//    break;
-//	}
-//  case SERIALIZE_HEXASCII:
-//    // Serialize to hexadecimal in ASCII 
-//    Big x, y;
-//    string temp;
-//    this->Zpub1.get(x, y);
-//    buffer << x;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//    buffer << y;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//
-//    this->Ppub2.get(x, y);
-//    buffer << x;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//    buffer << y;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//
-//    strcpy(buffer, temp.c_str());
-//    return strlen(buffer);
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-//BOOL
-//ProxyPK_PRE1::deserialize(SERIALIZE_MODE mode, char *buffer, int bufSize)
-//{
-//  // Make sure we've been given a real buffer
-//  if (buffer == NULL) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//    int len;
-//    this->Zpub1 = charToZZn2(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    buffer += len;
-//    //cout << "got one " << len << endl;
-//
-//    this->Ppub2 = charToECn(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    //cout << "Zpub1: " << this->Zpub1 << endl;
-//    //cout << "Ppub2: " << this->Ppub2 << endl;
-//    return TRUE;
-//    break;
-//
-//  case SERIALIZE_HEXASCII:
-//    // Serialize to hexadecimal in ASCII 
-//    // TBD
-//    return FALSE;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-////
-//// Class members (ProxySK_PRE1)
-////
-//
-//int
-//ProxySK_PRE1::getSerializedSize(SERIALIZE_MODE mode)
-//{
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//    return (QBITS/8 + 10) * 2;
-//    break;
-//  case SERIALIZE_HEXASCII:
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}  
-//
-//int
-//ProxySK_PRE1::serialize(SERIALIZE_MODE mode, char *buffer, int maxBuffer)
-//{
-//  int totSize = 0;
-//
-//  // Make sure we've been given a large enough buffer
-//  if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//	{
-//    int len = BigTochar (this->a1, buffer, maxBuffer);
-//    if (len <= 0) return 0;
-//    buffer += len;
-//    totSize += len;
-//
-//    len = BigTochar (this->a2, buffer, maxBuffer);
-//    if (len <= 0) return 0;
-//    buffer += len;
-//    totSize += len;
-//
-//    //cout << "a1: " << this->a1 << endl;
-//    //cout << "a2: " << this->a2 << endl;
-//
-//    return totSize;
-//
-//    break;
-//	}
-//  case SERIALIZE_HEXASCII:
-//
-//    string temp;
-//    buffer << this->a1;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//    buffer << this->a2;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//
-//    strcpy(buffer, temp.c_str());
-//    return strlen(buffer);
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-//BOOL
-//ProxySK_PRE1::deserialize(SERIALIZE_MODE mode, char *buffer, int bufSize)
-//{
-//  // Make sure we've been given a real buffer
-//  if (buffer == NULL) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SERIALIZE_BINARY:
-//    int len;
-//
-//    //cout << "got one " << len << endl;
-//    this->a1 = charToBig(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    buffer += len;
-//
-//    this->a2 = charToBig(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    //cout << "a1: " << this->a1 << endl;
-//    //cout << "a2: " << this->a2 << endl;
-//    return TRUE;
-//    break;
-//
-//  case SERIALIZE_HEXASCII:
-//    // Serialize to hexadecimal in ASCII 
-//    // TBD
-//    return FALSE;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
+int
+SM9ProxyMPK_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
+{
+  switch (mode) {
+  case SM9_SERIALIZE_BINARY:
+    //return (PBITS/8 + 10) * 4;
+    return 2*136;
+    break;
+  case SM9_SERIALIZE_HEXASCII:
+    break;
+  }
+
+  // Invalid serialization mode
+  return 0;
+}  
+
+int
+SM9ProxyMPK_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+ // int totSize = 0;
+ // // Make sure we've been given a large enough buffer
+ // if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
+ //   return 0;
+ // }
+
+ // // Set base-16 ASCII encoding
+ // miracl *mip=&precisionBits;
+ // mip->IOBASE = 16;
+
+ // switch (mode) {
+ // case SM9_SERIALIZE_BINARY:
+	//{
+
+ //   int size = ZZn2Tochar(this->Zpub1, buffer, maxBuffer);
+ //   if (size <= 0) return 0;
+ //   totSize += size;
+ //   buffer += size;
+ //   //cout << "Zpub1: " << this->Zpub1 << endl;
+ //   //cout << "Ppub2: " << this->Ppub2 << endl;
+ //   //cout << "zzn size: " << size << endl;
+
+ //   size = ECnTochar(this->Ppub2, buffer, maxBuffer - totSize);
+ //   if (size <= 0) return 0;
+ //   totSize += size;
+ //   buffer += size;
+
+ //   return totSize;
+ //   break;
+	//}
+ // case SM9_SERIALIZE_HEXASCII:
+ //   // Serialize to hexadecimal in ASCII 
+ //   Big x, y;
+ //   string temp;
+ //   this->Zpub1.get(x, y);
+ //   buffer << x;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+ //   buffer << y;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+
+ //   this->Ppub2.get(x, y);
+ //   buffer << x;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+ //   buffer << y;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+
+ //   strcpy(buffer, temp.c_str());
+ //   return strlen(buffer);
+ //   break;
+ // }
+
+  // Invalid serialization mode
+  return 0;
+}
+
+BOOL
+SM9ProxyMPK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+  // Make sure we've been given a real buffer
+  if (buffer == NULL) {
+    return 0;
+  }
+
+  // Set base-16 ASCII encoding
+  //miracl *mip=&precisionBits;
+  //mip->IOBASE = 16;
+
+  //switch (mode) {
+  //case SM9_SERIALIZE_BINARY:
+  //  int len;
+  //  this->Zpub1 = charToZZn2(buffer, &len);
+  //  if (len <= 0) return FALSE;
+  //  buffer += len;
+  //  //cout << "got one " << len << endl;
+
+  //  this->Ppub2 = charToECn(buffer, &len);
+  //  if (len <= 0) return FALSE;
+  //  //cout << "Zpub1: " << this->Zpub1 << endl;
+  //  //cout << "Ppub2: " << this->Ppub2 << endl;
+  //  return TRUE;
+  //  break;
+
+  //case SM9_SERIALIZE_HEXASCII:
+  //  // Serialize to hexadecimal in ASCII 
+  //  // TBD
+  //  return FALSE;
+  //  break;
+  //}
+
+  // Invalid serialization mode
+  return 0;
+}
+
+
+
+int
+SM9ProxyMSK_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
+{
+  switch (mode) {
+  case SM9_SERIALIZE_BINARY:
+    return (QBITS/8 + 10) * 2;
+    break;
+  case SM9_SERIALIZE_HEXASCII:
+    break;
+  }
+
+  // Invalid serialization mode
+  return 0;
+}  
+
+int
+SM9ProxyMSK_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+  int totSize = 0;
+
+ // // Make sure we've been given a large enough buffer
+ // if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
+ //   return 0;
+ // }
+
+ // // Set base-16 ASCII encoding
+ // miracl *mip=&precisionBits;
+ // mip->IOBASE = 16;
+
+ // switch (mode) {
+ // case SM9_SERIALIZE_BINARY:
+	//{
+ //   int len = BigTochar (this->a1, buffer, maxBuffer);
+ //   if (len <= 0) return 0;
+ //   buffer += len;
+ //   totSize += len;
+
+ //   len = BigTochar (this->a2, buffer, maxBuffer);
+ //   if (len <= 0) return 0;
+ //   buffer += len;
+ //   totSize += len;
+
+ //   //cout << "a1: " << this->a1 << endl;
+ //   //cout << "a2: " << this->a2 << endl;
+
+ //   return totSize;
+
+ //   break;
+	//}
+ // case SM9_SERIALIZE_HEXASCII:
+
+ //   string temp;
+ //   buffer << this->a1;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+ //   buffer << this->a2;
+ //   temp.append(buffer);
+ //   temp.append(ASCII_SEPARATOR);
+
+ //   strcpy(buffer, temp.c_str());
+ //   return strlen(buffer);
+ //   break;
+ // }
+
+  // Invalid serialization mode
+  return 0;
+}
+
+BOOL
+SM9ProxyMSK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+  //// Make sure we've been given a real buffer
+  //if (buffer == NULL) {
+  //  return 0;
+  //}
+
+  //// Set base-16 ASCII encoding
+  //miracl *mip=&precisionBits;
+  //mip->IOBASE = 16;
+
+  //switch (mode) {
+  //case SM9_SERIALIZE_BINARY:
+  //  int len;
+
+  //  //cout << "got one " << len << endl;
+  //  this->a1 = charToBig(buffer, &len);
+  //  if (len <= 0) return FALSE;
+  //  buffer += len;
+
+  //  this->a2 = charToBig(buffer, &len);
+  //  if (len <= 0) return FALSE;
+  //  //cout << "a1: " << this->a1 << endl;
+  //  //cout << "a2: " << this->a2 << endl;
+  //  return TRUE;
+  //  break;
+
+  //case SM9_SERIALIZE_HEXASCII:
+  //  // Serialize to hexadecimal in ASCII 
+  //  // TBD
+  //  return FALSE;
+  //  break;
+  //}
+
+  // Invalid serialization mode
+  return 0;
+}
 //
 ////
 //// Class members (ProxyCiphertext_PRE1)
 ////
 //
 //int
-//ProxyCiphertext_PRE1::getSerializedSize(SERIALIZE_MODE mode)
+//ProxyCiphertext_PRE1::getSerializedSize(SM9_SERIALIZE_MODE mode)
 //{
 //  switch (mode) {
-//  case SERIALIZE_BINARY:
+//  case SM9_SERIALIZE_BINARY:
 //    //return (PBITS/8 + 10) * 3;
 //    return (1+8+136*2);
 //    break;
-//  case SERIALIZE_HEXASCII:
+//  case SM9_SERIALIZE_HEXASCII:
 //    break;
 //  }
 //
@@ -717,7 +752,7 @@ BOOL
 //}  
 //
 //int
-//ProxyCiphertext_PRE1::serialize(SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+//ProxyCiphertext_PRE1::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 //{
 //  int totSize = 0;
 //
@@ -732,7 +767,7 @@ BOOL
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
-//  case SERIALIZE_BINARY:
+//  case SM9_SERIALIZE_BINARY:
 //	{
 //    *buffer = (char)this->type;
 //    buffer++;
@@ -757,7 +792,7 @@ BOOL
 //
 //    break;
 //	}
-//  case SERIALIZE_HEXASCII:
+//  case SM9_SERIALIZE_HEXASCII:
 //
 //#if 0
 //
@@ -785,7 +820,7 @@ BOOL
 //}
 //
 //BOOL
-//ProxyCiphertext_PRE1::deserialize(SERIALIZE_MODE mode, char *buffer, int bufSize)
+//ProxyCiphertext_PRE1::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
 //{
 //  // Make sure we've been given a real buffer
 //  if (buffer == NULL) {
@@ -797,7 +832,7 @@ BOOL
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
-//  case SERIALIZE_BINARY:
+//  case SM9_SERIALIZE_BINARY:
 //    int len;
 //    this->type = (CIPHERTEXT_TYPE)(*buffer);
 //    buffer++;
@@ -820,7 +855,7 @@ BOOL
 //    return TRUE;
 //    break;
 //
-//  case SERIALIZE_HEXASCII:
+//  case SM9_SERIALIZE_HEXASCII:
 //    // Serialize to hexadecimal in ASCII 
 //    // TBD
 //    return FALSE;

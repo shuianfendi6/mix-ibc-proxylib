@@ -3,13 +3,13 @@
 
 class SM9ProxyMPK_SW: public SM9ProxyMPK {
 public:
-	ZZn2 Zpub1;
-	ECn Ppub2;
+	ECn2 Ppub2;
+	ECn  Ppub1;
 
 	SM9ProxyMPK_SW() { schemeType = SM9_SCHEME_SW; }
-	SM9ProxyMPK_SW(ZZn2 &Zp1, ECn &Pp2) { this->schemeType = SM9_SCHEME_SW;
-	this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
-	void set(ZZn2 &Zp1, ECn &Pp2) { this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
+	SM9ProxyMPK_SW(ECn2 &Pp2, ECn &Pp1) { this->schemeType = SM9_SCHEME_SW;
+	this->Ppub2 = Pp2; this->Ppub1 = Pp1; }
+	void set(ECn2 &Pp2, ECn &Pp1) { this->Ppub1 = Pp1; this->Ppub2 = Pp2; }
 
 	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
 	virtual int serialize(SM9_SERIALIZE_MODE mode,
@@ -18,20 +18,19 @@ public:
 		char *buffer, int maxBuffer);
 
 	BOOL operator==(SM9ProxyMPK_SW &second) {
-		return ((this->Zpub1 == second.Zpub1) && 
-			(this->Ppub2 == second.Ppub2));
+		return ((this->Ppub2 == second.Ppub2) && 
+			(this->Ppub1 == second.Ppub1));
 	}
 };
 
 class SM9ProxyMSK_SW: public SM9ProxyMSK {
 public:
-	Big a1;
-	Big a2;
+	Big master;
 
 	SM9ProxyMSK_SW() { this->schemeType = SM9_SCHEME_SW; }
-	SM9ProxyMSK_SW(Big &sk1, Big &sk2) { this->schemeType = SM9_SCHEME_SW; 
-	this->set(sk1, sk2); }
-	void set(Big &sk1, Big &sk2) { this->a1 = sk1; this->a2 = sk2; }
+	SM9ProxyMSK_SW(Big &sk) { this->schemeType = SM9_SCHEME_SW; 
+	this->set(sk); }
+	void set(Big &sk) { this->master = sk; }
 
 	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
 	virtual int serialize(SM9_SERIALIZE_MODE mode,
@@ -40,8 +39,7 @@ public:
 		char *buffer, int maxBuffer);
 
 	BOOL operator==(SM9ProxyMSK_SW &second) {
-		return ((this->a1 == second.a1) && 
-			(this->a2 == second.a2));
+		return ((this->master == second.master));
 	}
 };
 
@@ -138,7 +136,7 @@ public:
 //
 //// Cryptographic Routines
 BOOL sm9_sw_generate_params(SM9CurveParams &params);
-BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMPK_SW &msk);
+BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 //BOOL PRE1_keygen(CurveParams &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey);
 //BOOL PRE1_level1_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);
 //BOOL PRE1_level2_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);

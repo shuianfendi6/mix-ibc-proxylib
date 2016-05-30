@@ -97,10 +97,34 @@ int smo_proxylib_destroyParams(void *params) {
 }
 
 
-int sm9_proxylib_generateMasterKey(void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
+int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
 {
+	SM9CurveParams *pparams = (SM9CurveParams *)params;
+	int error = SM9_ERROR_OTHER;
 
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9ProxyMPK_SW *pmpk = new SM9ProxyMPK_SW;
+			SM9ProxyMSK_SW *pmsk = new SM9ProxyMSK_SW;
 
+			if (sm9_sw_generate_masterkey(*pparams, *pmpk,*pmsk) == TRUE) {
+				error = SM9_ERROR_NONE;
+			}
+
+			*mpk = (void*) pmpk;
+			*msk = (void*) pmsk;
+
+			return error;
+
+			break;
+		}
+	case SM9_SCHEME_HW:
+		{
+			return error;
+			break;
+		}
+	}
 }
 
 //

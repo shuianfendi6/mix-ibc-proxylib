@@ -1062,6 +1062,7 @@ BOOL
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
 
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
