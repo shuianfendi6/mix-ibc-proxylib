@@ -1,6 +1,8 @@
 #ifndef __SM9__PROXYLIB_H__
 #define __SM9__PROXYLIB_H__
 
+
+
 #include "ecn.h"
 #include "zzn2.h"
 
@@ -125,15 +127,11 @@ public:
 	}
 };
 
-// Main C++ interface
-
-BOOL sm9_initLibrary(BOOL selfseed = TRUE, char *seedbuf = NULL,
-		 int bufSize = 0);
 
 // Utility Routines
 
-BOOL fast_pairing(ECn2& P,ZZn& Qx,ZZn& Qy,Big &x,ZZn2 &X,ZZn12& res)
-BOOL ecap(ECn2& P,ECn& Q,Big& x,ZZn2 &X,ZZn12& r)
+BOOL fast_pairing(ECn2& P,ZZn& Qx,ZZn& Qy,Big &x,ZZn2 &X,ZZn12& res);
+BOOL ecap(ECn2& P,ECn& Q,Big& x,ZZn2 &X,ZZn12& r);
 ECn map_to_point(char *ID);
 void strip(char *name);
 

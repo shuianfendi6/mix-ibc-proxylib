@@ -18,12 +18,9 @@ using namespace std;
 #include "benchmark.h"
 #endif
 
-//#ifdef WIN32
-//#include <windows.h>
-//#include <wincrypt.h>
-//#endif
 using namespace std;
-Miracl precisionBit(32,0);
+
+Miracl precisionBits(32,0);
 
 // encodePlaintextAsBig()
 //
@@ -75,9 +72,6 @@ decodePlaintextFromBig(SM9CurveParams &params,
 }
   
 
-using namespace std;
-
-Miracl precisionBits(2048*10,0);
 
 #ifdef MR_COUNT_OPS
 extern "C"
@@ -100,7 +94,7 @@ extern "C"
 #endif
 
 
-Big H1(char *string)
+static Big H1(char *string)
 { // Hash a zero-terminated string to a number < modulus
 	Big h,p;
 	char s[HASH_LEN];
@@ -128,7 +122,7 @@ Big H1(char *string)
 	return h;
 }
 
-Big H2(ZZn12 x)
+static Big H2(ZZn12 x)
 { // Compress and hash an Fp12 to a big number
 	sha256 sh;
 	ZZn4 u;
@@ -977,7 +971,7 @@ SM9CurveParams::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
   }
 
   // Set base-16 ASCII encoding
-  miracl *mip=&precisionBit;
+  miracl *mip=&precisionBits;
   mip->IOBASE = 16;
 
   switch (mode) {
@@ -1040,7 +1034,7 @@ SM9CurveParams::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
   }
 
   // Set base-16 ASCII encoding
-  miracl *mip=&precisionBit;
+  miracl *mip=&precisionBits;
   mip->IOBASE = 16;
 
   switch (mode) {

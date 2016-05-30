@@ -17,7 +17,7 @@ static struct timeval gTstart, gTend;
 static struct timezone gTz;
 extern Benchmark gBenchmark;
 #endif
-extern Miracl precisionBit;
+extern Miracl precisionBits;
 
 // sm9_sw_generate_params()
 //
@@ -34,13 +34,15 @@ extern Miracl precisionBit;
 BOOL 
 	sm9_sw_generate_params(SM9CurveParams &params)
 {
-	miracl *mip=&precisionBit;
+	miracl *mip=&precisionBits;
 	ZZn2 X;
 
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
+	
+	Big t= (char *)"600000000058F98A";  //参数t 
 
-	Big t= (char *)"600000000058F98A";  //参数t
+	cout<<"t:"<<t<<endl;
 
 	params.q=36*pow(t,4)+36*pow(t,3)+24*t*t+6*t+1; // 基域特征
 	Big tr=6*t*t+1; // 迹
@@ -95,9 +97,30 @@ BOOL
 	cout<<"P1:"<<params.P1<<endl;
 	cout<<"P2:"<<params.P2<<endl;
 
-	if (ecap(params.P, params.P, params.q, params.cube, params.Z) == FALSE) {
-		PRINT_DEBUG_STRING("Parameter generation failed.  Unable to compute Z.");
+	ZZn12 g;
+
+	if (ecap(params.P2,params.P1,t,X,g) == FALSE)
+	{
+		cout<<"err P1 P2.";
 		return FALSE;
+	}
+	else
+	{
+		ZZn12 tmp = pow(g,params.N);
+
+		ZZn12 one;
+
+		one.set((Big)1);
+
+		cout<<"g:"<<g<<endl;
+		cout<<"tmp:"<<tmp<<endl;
+		cout<<"one:"<<one<<endl;
+
+		if (tmp != one)
+		{
+			cout<<"err P1 P2.";
+			return FALSE;
+		}
 	}
 
 	// Success
@@ -362,7 +385,7 @@ BOOL
 //  int totSize = 0;
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -403,7 +426,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -457,7 +480,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -518,7 +541,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -577,7 +600,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -628,7 +651,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -690,7 +713,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
@@ -755,7 +778,7 @@ BOOL
 //  }
 //
 //  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBit;
+//  miracl *mip=&precisionBits;
 //  mip->IOBASE = 16;
 //
 //  switch (mode) {
