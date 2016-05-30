@@ -16,11 +16,8 @@ using namespace std;
 #include <cstring>
 #include <time.h>
 
-// proxylib_generateParams()
-//
-// Allocates memory and generates a set of public parameters 
-// for use with the library.
-int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
+int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) 
+{
 	int error = SM9_ERROR_OTHER;
 
 	SM9CurveParams *curveParams = new SM9CurveParams();
@@ -40,60 +37,55 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 	*params = (void*) curveParams;
 	return error;
 }
-//
-//// proxylib_serializeParams()
-////
-//// Serializes a set of parameters into a buffer.
-//
-//int proxylib_serializeParams(void *params, char *buffer, int *bufferSize,
-//		int bufferAvailSize, SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
-//	int serialSize = 0;
-//
-//	CurveParams *cp = (CurveParams*) params;
-//
-//	switch (schemeID) {
-//	case SCHEME_PRE1:
-//		if (cp->getSerializedSize(SERIALIZE_BINARY) <= bufferAvailSize) {
-//			*bufferSize = cp->serialize(SERIALIZE_BINARY, buffer,
-//					bufferAvailSize);
-//			if (*bufferSize > 0) {
-//				error = ERROR_NONE;
-//			}
-//		}
-//		break;
-//	case SCHEME_PRE2:
-//		if (cp->getSerializedSize(SERIALIZE_BINARY) <= bufferAvailSize) {
-//			*bufferSize = cp->serialize(SERIALIZE_BINARY, buffer,
-//					bufferAvailSize);
-//			if (*bufferSize > 0) {
-//				error = ERROR_NONE;
-//			}
-//		}
-//		break;
-//	}
-//
-//	return error;
-//}
-//
-////
-//// Deserializes a buffer of parameters and returns a newly-allocated buffer.
-//
-//int proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
-//		SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
-//
-//	CurveParams *cp = new CurveParams;
-//	if (cp->deserialize(SERIALIZE_BINARY, buffer, bufferSize) == FALSE) {
-//		delete cp;
-//		*params = NULL;
-//	} else {
-//		error = ERROR_NONE;
-//		*params = cp;
-//	}
-//
-//	return error;
-//}
+
+int sm9_proxylib_serializeParams(void *params, char *buffer, int *bufferSize,
+	int bufferAvailSize, SM9_SCHEME_TYPE schemeID) 
+{
+	int error = SM9_ERROR_OTHER;
+	int serialSize = 0;
+
+	SM9CurveParams *cp = (SM9CurveParams*) params;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
+			*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
+				bufferAvailSize);
+			if (*bufferSize > 0) {
+				error = SM9_ERROR_NONE;
+			}
+		}
+		break;
+	case SM9_SCHEME_HW:
+		if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
+			*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
+				bufferAvailSize);
+			if (*bufferSize > 0) {
+				error = SM9_ERROR_NONE;
+			}
+		}
+		break;
+	}
+
+	return error;
+}
+
+int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	SM9CurveParams *cp = new SM9CurveParams;
+	if (cp->deserialize(SM9_SERIALIZE_BINARY, buffer, bufferSize) == FALSE) {
+		delete cp;
+		*params = NULL;
+	} else {
+		error = SM9_ERROR_NONE;
+		*params = cp;
+	}
+
+	return error;
+}
 //
 //// proxylib_destroyParams()
 ////
@@ -106,7 +98,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		free(cp);
 //	}
 //
-//	return ERROR_NONE;
+//	return SM9_ERROR_NONE;
 //}
 //
 //// proxylib_generateKeys()
@@ -116,14 +108,14 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //int proxylib_generateKeys(void *params, void **pk, void **sk,
 //		SCHEME_TYPE schemeID) {
 //	CurveParams *cp = (CurveParams*) params;
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
 //		ProxyPK_PRE1 *pubKey = new ProxyPK_PRE1();
 //		ProxySK_PRE1 *secKey = new ProxySK_PRE1();
 //		if (PRE1_keygen(*cp, *pubKey, *secKey) == TRUE) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		*pk = (void*) pubKey;
 //		*sk = (void*) secKey;
@@ -133,7 +125,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		ProxyPK_PRE2 *pubKey = new ProxyPK_PRE2();
 //		ProxySK_PRE2 *secKey = new ProxySK_PRE2();
 //		if (PRE2_keygen(*cp, *pubKey, *secKey) == TRUE) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		*pk = (void*) pubKey;
 //		*sk = (void*) secKey;
@@ -151,39 +143,39 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //int proxylib_serializeKeys(void *params, void *pk, void *sk, char *pkBuf,
 //		char *skBuf, int *pkBufSize, int *skBufSize, int bufferAvailSize,
 //		SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //
 //	CurveParams *cp = (CurveParams*) params;
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
 //		ProxyPK_PRE1 *pubkey = (ProxyPK_PRE1*) pk;
 //		*pkBufSize
-//				= pubkey->serialize(SERIALIZE_BINARY, pkBuf, bufferAvailSize);
+//				= pubkey->serialize(SM9_SERIALIZE_BINARY, pkBuf, bufferAvailSize);
 //		if (*pkBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //
 //		ProxySK_PRE1 *seckey = (ProxySK_PRE1*) sk;
 //		*skBufSize
-//				= seckey->serialize(SERIALIZE_BINARY, skBuf, bufferAvailSize);
+//				= seckey->serialize(SM9_SERIALIZE_BINARY, skBuf, bufferAvailSize);
 //		if (*skBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		break;
 //	}
 //	case SCHEME_PRE2: {
 //		ProxyPK_PRE2 *pubkey = (ProxyPK_PRE2*) pk;
 //		*pkBufSize
-//				= pubkey->serialize(SERIALIZE_BINARY, pkBuf, bufferAvailSize);
+//				= pubkey->serialize(SM9_SERIALIZE_BINARY, pkBuf, bufferAvailSize);
 //		if (*pkBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //
 //		ProxySK_PRE2 *seckey = (ProxySK_PRE2*) sk;
 //		*skBufSize
-//				= seckey->serialize(SERIALIZE_BINARY, skBuf, bufferAvailSize);
+//				= seckey->serialize(SM9_SERIALIZE_BINARY, skBuf, bufferAvailSize);
 //		if (*skBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		break;
 //	}
@@ -198,34 +190,34 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //int proxylib_deserializeKeys(void *params, char *pkBuf, char *skBuf,
 //		int pkBufSize, int skBufSize, void **pk, void **sk,
 //		SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //
 //	CurveParams *cp = (CurveParams*) params;
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
 //		ProxyPK_PRE1 *pubkey = new ProxyPK_PRE1;
-//		if (pubkey->deserialize(SERIALIZE_BINARY, pkBuf, pkBufSize) == TRUE) {
-//			error = ERROR_NONE;
+//		if (pubkey->deserialize(SM9_SERIALIZE_BINARY, pkBuf, pkBufSize) == TRUE) {
+//			error = SM9_ERROR_NONE;
 //		}
 //		*pk = (void*) pubkey;
 //
 //		ProxySK_PRE1 *seckey = new ProxySK_PRE1;
-//		if (seckey->deserialize(SERIALIZE_BINARY, skBuf, skBufSize) == TRUE) {
-//			error = ERROR_NONE;
+//		if (seckey->deserialize(SM9_SERIALIZE_BINARY, skBuf, skBufSize) == TRUE) {
+//			error = SM9_ERROR_NONE;
 //		}
 //		*sk = (void*) seckey;
 //		break;
 //	}
 //	case SCHEME_PRE2: {
 //		ProxyPK_PRE2 *pubkey = new ProxyPK_PRE2;
-//		if (pubkey->deserialize(SERIALIZE_BINARY, pkBuf, pkBufSize) == TRUE) {
-//			error = ERROR_NONE;
+//		if (pubkey->deserialize(SM9_SERIALIZE_BINARY, pkBuf, pkBufSize) == TRUE) {
+//			error = SM9_ERROR_NONE;
 //		}
 //		*pk = (void*) pubkey;
 //
 //		ProxySK_PRE2 *seckey = new ProxySK_PRE2;
-//		if (seckey->deserialize(SERIALIZE_BINARY, skBuf, skBufSize) == TRUE) {
-//			error = ERROR_NONE;
+//		if (seckey->deserialize(SM9_SERIALIZE_BINARY, skBuf, skBufSize) == TRUE) {
+//			error = SM9_ERROR_NONE;
 //		}
 //		*sk = (void*) seckey;
 //		break;
@@ -240,7 +232,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //// Destroy a public or secret key.
 //
 //int proxylib_destroyKeys(void *pk, void *sk, SCHEME_TYPE schemeID) {
-//	int error = ERROR_NONE;
+//	int error = SM9_ERROR_NONE;
 //
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
@@ -277,17 +269,17 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 ////
 //// Encrypt a message using a public key.
 ////
-//// Returns: ERROR_NONE, ERROR_OTHER, ERROR_PLAINTEXT_TOO_LONG
+//// Returns: SM9_ERROR_NONE, SM9_ERROR_OTHER, SM9_ERROR_PLAINTEXT_TOO_LONG
 //
 //int proxylib_encrypt(void *params, void *pk, char *message, int messageLen,
 //		char *ciphertext, int *ciphLen, CIPHERTEXT_TYPE ctype,
 //		SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //	CurveParams *cp = (CurveParams *) params;
 //	Big msg;
 //
 //	if (encodePlaintextAsBig(*cp, message, messageLen, msg) == FALSE) {
-//		error = ERROR_PLAINTEXT_TOO_LONG;
+//		error = SM9_ERROR_PLAINTEXT_TOO_LONG;
 //		return error;
 //	}
 //
@@ -299,23 +291,23 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		switch (ctype) {
 //		case CIPH_FIRST_LEVEL:
 //			if (PRE1_level1_encrypt(*cp, msg, *pubkey, *ctext_ptr) == FALSE) {
-//				return ERROR_OTHER;
+//				return SM9_ERROR_OTHER;
 //			}
 //			break;
 //		case CIPH_SECOND_LEVEL:
 //			if (PRE1_level2_encrypt(*cp, msg, *pubkey, *ctext_ptr) == FALSE) {
-//				return ERROR_OTHER;
+//				return SM9_ERROR_OTHER;
 //			}
 //			break;
 //		default:
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //		/* No information provided in documentation (there is no documentation)
 //		 * regarding required values. All chosen array sizes are completely arbitrary.
 //		 */
-//		*ciphLen = ctext_ptr->getSerializedSize(SERIALIZE_BINARY);
+//		*ciphLen = ctext_ptr->getSerializedSize(SM9_SERIALIZE_BINARY);
 //
-//		int result = ctext_ptr->serialize(SERIALIZE_BINARY, ciphertext,
+//		int result = ctext_ptr->serialize(SM9_SERIALIZE_BINARY, ciphertext,
 //				*ciphLen+1000);
 //		if (result > 0) {
 //			result = result;
@@ -329,21 +321,21 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		switch (ctype) {
 //		case CIPH_FIRST_LEVEL:
 //			if (PRE2_level1_encrypt(*cp, msg, *pubkey, ctext) == FALSE) {
-//				return ERROR_OTHER;
+//				return SM9_ERROR_OTHER;
 //			}
 //			break;
 //		case CIPH_SECOND_LEVEL:
 //			if (PRE2_level2_encrypt(*cp, msg, *pubkey, ctext) == FALSE) {
-//				return ERROR_OTHER;
+//				return SM9_ERROR_OTHER;
 //			}
 //			break;
 //		default:
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //
-//		*ciphLen = ctext.serialize(SERIALIZE_BINARY, ciphertext, *ciphLen);
+//		*ciphLen = ctext.serialize(SM9_SERIALIZE_BINARY, ciphertext, *ciphLen);
 //		if (*ciphLen > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //	}
 //		break;
@@ -357,11 +349,11 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //// Decrypt a message using a secret key.  Places the result into
 //// message, and returns the length in messageLen.
 ////
-//// Returns: ERROR_NONE, ERROR_OTHER, ERROR_PLAINTEXT_TOO_LONG
+//// Returns: SM9_ERROR_NONE, SM9_ERROR_OTHER, SM9_ERROR_PLAINTEXT_TOO_LONG
 //
 //int proxylib_decrypt(void *params, void *sk, char *message, int *messageLen,
 //		char *ciphertext, int ciphLen, SCHEME_TYPE schemeID) {
-//	int error = ERROR_NONE;
+//	int error = SM9_ERROR_NONE;
 //	CurveParams *cp = (CurveParams *) params;
 //	Big msg;
 //	switch (schemeID) {
@@ -369,31 +361,31 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //
 //		// Deserialize the ciphertext
 //		ProxyCiphertext_PRE1 ctext;
-//		if (ctext.deserialize(SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
-//			return ERROR_OTHER;
+//		if (ctext.deserialize(SM9_SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		ProxySK_PRE1 *seckey = (ProxySK_PRE1 *) sk;
 //		if (PRE1_decrypt(*cp, ctext, *seckey, msg) == FALSE) {
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //	}
 //		break;
 //	case SCHEME_PRE2: {
 //		// Deserialize the ciphertext
 //		ProxyCiphertext_PRE2 ctext;
-//		if (ctext.deserialize(SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
-//			return ERROR_OTHER;
+//		if (ctext.deserialize(SM9_SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		ProxySK_PRE2 *seckey = (ProxySK_PRE2 *) sk;
 //		if (PRE2_decrypt(*cp, ctext, *seckey, msg) == FALSE) {
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //	}
 //		break;
 //	default:
-//		return ERROR_OTHER;
+//		return SM9_ERROR_OTHER;
 //	}
 //
 //	// Decode the result as a binary buffer
@@ -404,7 +396,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //	 */
 //	if (decodePlaintextFromBig(*cp, message, 1000, messageLen, msg)
 //			== FALSE) {
-//		return ERROR_OTHER;
+//		return SM9_ERROR_OTHER;
 //	}
 //
 //	return error;
@@ -417,7 +409,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //int proxylib_generateDelegationKey(void *params, void *sk1, void *pk2,
 //		void** delKey, SCHEME_TYPE schemeID) {
 //	CurveParams *cp = (CurveParams*) params;
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
@@ -428,7 +420,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		//memset(delegationKey,0,sizeof(DelegationKey_PRE1));
 //
 //		if (PRE1_delegate(*cp, *pubKey, *secKey, *delegationKey) == TRUE) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		*delKey = (void*) delegationKey;
 //	}
@@ -441,7 +433,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		//memset(delegationKey,0,sizeof(DelegationKey_PRE2));
 //
 //		if (PRE2_delegate(*cp, *pubKey, *secKey, *delegationKey) == TRUE) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		*delKey = (void*) delegationKey;
 //	}
@@ -458,25 +450,25 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //int proxylib_serializeDelegationKey(void *params, void *delKey,
 //		char *delKeyBuf, int *delKeyBufSize, int bufferAvailSize,
 //		SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //
 //	CurveParams *cp = (CurveParams*) params;
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
 //		DelegationKey_PRE1 *dk = (DelegationKey_PRE1*) delKey;
-//		*delKeyBufSize = SerializeDelegationKey_PRE1(*dk, SERIALIZE_BINARY,
+//		*delKeyBufSize = SerializeDelegationKey_PRE1(*dk, SM9_SERIALIZE_BINARY,
 //				delKeyBuf, bufferAvailSize);
 //		if (*delKeyBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		break;
 //	}
 //	case SCHEME_PRE2: {
 //		DelegationKey_PRE2 *dk = (DelegationKey_PRE2*) delKey;
-//		*delKeyBufSize = SerializeDelegationKey_PRE2(*dk, SERIALIZE_BINARY,
+//		*delKeyBufSize = SerializeDelegationKey_PRE2(*dk, SM9_SERIALIZE_BINARY,
 //				delKeyBuf, bufferAvailSize);
 //		if (*delKeyBufSize > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //		break;
 //	}
@@ -493,18 +485,18 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 // proxylib_deserializeParams(char *buffer, int bufferSize, void **delKey,
 // SCHEME_TYPE schemeID)
 // {
-// int error = ERROR_OTHER;
+// int error = SM9_ERROR_OTHER;
 //
 // switch(schemeID) {
 // case SCHEME_PRE1:
 // {
 // DelegationKey_PRE1 *dk = new DelegationKey_PRE1;
-// if (DeserializeDelegationKey_PRE1(*dk, SERIALIZE_BINARY,
+// if (DeserializeDelegationKey_PRE1(*dk, SM9_SERIALIZE_BINARY,
 // buffer, bufferSize) == FALSE) {
 // delete dk;
 // *delKey = NULL;
 // } else {
-// error = ERROR_NONE;
+// error = SM9_ERROR_NONE;
 // *delKey = (void*)dk;
 // }
 // break;
@@ -512,12 +504,12 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 // case SCHEME_PRE2:
 // {
 // DelegationKey_PRE2 *dk = new DelegationKey_PRE2;
-// if (DeserializeDelegationKey_PRE2(*dk, SERIALIZE_BINARY,
+// if (DeserializeDelegationKey_PRE2(*dk, SM9_SERIALIZE_BINARY,
 // buffer, bufferSize) == FALSE) {
 // delete dk;
 // *delKey = NULL;
 // } else {
-// error = ERROR_NONE;
+// error = SM9_ERROR_NONE;
 // *delKey = (void*)dk;
 // }
 // break;
@@ -532,7 +524,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //// Destroy a public or secret key.
 //
 //int proxylib_destroyDelegationKey(void *delKey, SCHEME_TYPE schemeID) {
-//	int error = ERROR_NONE;
+//	int error = SM9_ERROR_NONE;
 //
 //	switch (schemeID) {
 //	case SCHEME_PRE1: {
@@ -562,7 +554,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //
 //int proxylib_reencrypt(void *params, void *rk, char *ciphertext, int ciphLen,
 //		char *newciphertext, int *newCiphLen, SCHEME_TYPE schemeID) {
-//	int error = ERROR_OTHER;
+//	int error = SM9_ERROR_OTHER;
 //	CurveParams *cp = (CurveParams *) params;
 //
 //	switch (schemeID) {
@@ -570,21 +562,21 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		// Deserialize the original ciphertext
 //		ProxyCiphertext_PRE1 ctext;
 //		ProxyCiphertext_PRE1 newctext;
-//		if (ctext.deserialize(SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
-//			return ERROR_OTHER;
+//		if (ctext.deserialize(SM9_SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		// Reencrypt the ciphertext using the re-encryption key
 //		DelegationKey_PRE1 *delKey = (DelegationKey_PRE1 *) rk;
 //		if (PRE1_reencrypt(*cp, ctext, *delKey, newctext) == FALSE) {
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		// Serialize the re-encrypted ciphertext
-//		*newCiphLen = newctext.getSerializedSize(SERIALIZE_BINARY);
-//		newctext.serialize(SERIALIZE_BINARY, newciphertext,*newCiphLen+1000);
+//		*newCiphLen = newctext.getSerializedSize(SM9_SERIALIZE_BINARY);
+//		newctext.serialize(SM9_SERIALIZE_BINARY, newciphertext,*newCiphLen+1000);
 //		if (*newCiphLen > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //	}
 //		break;
@@ -592,26 +584,26 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 //		// Deserialize the original ciphertext
 //		ProxyCiphertext_PRE2 ctext;
 //		ProxyCiphertext_PRE2 newctext;
-//		if (ctext.deserialize(SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
-//			return ERROR_OTHER;
+//		if (ctext.deserialize(SM9_SERIALIZE_BINARY, ciphertext, ciphLen) == FALSE) {
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		// Reencrypt the ciphertext using the re-encryption key
 //		DelegationKey_PRE2 *delKey = (ECn *) rk;
 //		if (PRE2_reencrypt(*cp, ctext, *delKey, newctext) == FALSE) {
-//			return ERROR_OTHER;
+//			return SM9_ERROR_OTHER;
 //		}
 //
 //		// Serialize the re-encrypted ciphertext
-//		*newCiphLen = newctext.serialize(SERIALIZE_BINARY, newciphertext,
+//		*newCiphLen = newctext.serialize(SM9_SERIALIZE_BINARY, newciphertext,
 //				*newCiphLen);
 //		if (*newCiphLen > 0) {
-//			error = ERROR_NONE;
+//			error = SM9_ERROR_NONE;
 //		}
 //	}
 //		break;
 //	default:
-//		return ERROR_OTHER;
+//		return SM9_ERROR_OTHER;
 //	}
 //
 //	return error;

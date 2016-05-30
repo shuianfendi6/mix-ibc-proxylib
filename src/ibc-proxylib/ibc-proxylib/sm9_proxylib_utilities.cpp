@@ -30,19 +30,19 @@ Miracl precisionBits(32,0);
 // Returns FALSE if the message is too long to fit.
 
 BOOL
-encodePlaintextAsBig(SM9CurveParams &params,
-		     char *message, int messageLen, Big &msg)
+	encodePlaintextAsBig(SM9CurveParams &params,
+	char *message, int messageLen, Big &msg)
 {
-  // First, determine if the message is too large.
-  if ((messageLen << 3) > params.maxPlaintextSize()) {
-    // Message too long
-    msg = (Big)0;
-    return FALSE;
-  }
+	// First, determine if the message is too large.
+	if ((messageLen << 3) > params.maxPlaintextSize()) {
+		// Message too long
+		msg = (Big)0;
+		return FALSE;
+	}
 
-  // Next, encode the plaintext as a Big
-  msg = from_binary(messageLen, message);
-  return TRUE;
+	// Next, encode the plaintext as a Big
+	msg = from_binary(messageLen, message);
+	return TRUE;
 }
 
 // decodePlaintextFromBig()
@@ -53,24 +53,24 @@ encodePlaintextAsBig(SM9CurveParams &params,
 // Returns FALSE if there is an error.
 
 BOOL
-decodePlaintextFromBig(SM9CurveParams &params,
-		     char *message, int maxMessage, 
-		     int *messageLen, Big &msg)
+	decodePlaintextFromBig(SM9CurveParams &params,
+	char *message, int maxMessage, 
+	int *messageLen, Big &msg)
 {
-  // First, determine if the message is too large.
-  if ((maxMessage << 3) < bits(msg)) {
-    // Not enough room to decode message
-    *messageLen = 0;
-    return FALSE;
-  }
-  
-  // Next, encode the plaintext as a Big
-  // HAVE CHANGED THIS TO ADD ONE BIT, original value was one character short.
-  *messageLen = (bits(msg) / 8)+1;
-  to_binary(msg, *messageLen, message, FALSE);
-  return TRUE;
+	// First, determine if the message is too large.
+	if ((maxMessage << 3) < bits(msg)) {
+		// Not enough room to decode message
+		*messageLen = 0;
+		return FALSE;
+	}
+
+	// Next, encode the plaintext as a Big
+	// HAVE CHANGED THIS TO ADD ONE BIT, original value was one character short.
+	*messageLen = (bits(msg) / 8)+1;
+	to_binary(msg, *messageLen, message, FALSE);
+	return TRUE;
 }
-  
+
 
 
 #ifdef MR_COUNT_OPS
@@ -946,152 +946,202 @@ static int
 }
 
 int
-SM9CurveParams::getSerializedSize(SM9_SERIALIZE_MODE mode)
+	SM9CurveParams::getSerializedSize(SM9_SERIALIZE_MODE mode)
 {
-  switch (mode) {
-  case SM9_SERIALIZE_BINARY:
-    return (PBITS/8 + 10) * 9;
-    break;
-  case SM9_SERIALIZE_HEXASCII:
-    break;
-  }
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		return (PBITS/8 + 10) * 9;
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		break;
+	}
 
-  // Invalid serialization mode
-  return 0;
+	// Invalid serialization mode
+	return 0;
 }  
 
 int
-SM9CurveParams::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+	SM9CurveParams::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 {
-  int totSize = 0;
+	int totSize = 0;
+	int size = 0;
 
-  // Make sure we've been given a large enough buffer
-  if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
-    return 0;
-  }
+	// Make sure we've been given a large enough buffer
+	if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
+		return 0;
+	}
 
-  // Set base-16 ASCII encoding
-  miracl *mip=&precisionBits;
-  mip->IOBASE = 16;
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
 
-  switch (mode) {
-  case SM9_SERIALIZE_BINARY:
-    //int bits;
-    //Big p, q, qsquared;
-    //ECn P;  
-    //ZZn2 Z;
-    //ZZn2 Zprecomp;
-    //ZZn2 cube;
-    
-    Big bbits = this->bits_local;
-    int size = BigTochar(bbits, buffer, maxBuffer);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
-    
-    size = BigTochar(this->q, buffer, maxBuffer - totSize);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
-    
-    size = BigTochar(this->N, buffer, maxBuffer - totSize);
-    if (size <= 0) return 0;
-    totSize += size;
-    buffer += size;
-    
-	/*  size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
-	if (size <= 0) return 0;
-	totSize += size;
-	buffer += size;
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
 
-	size = ZZn2Tochar(this->Z, buffer, maxBuffer - totSize);
-	if (size <= 0) return 0;
-	totSize += size;
-	buffer += size;
 
-	size = ZZn2Tochar(this->cube, buffer, maxBuffer - totSize);
-	if (size <= 0) return 0;
-	totSize += size;
-	buffer += size;*/
-    
-    return totSize;
-    break;
-  
-    //  case SERIALIZE_HEXASCII:
-    //break;
-  }
+			size = BigTochar(this->cid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
 
-  // Invalid serialization mode
-  return 0;
+			size = BigTochar(this->q, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->cf, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->N, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->k, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			ZZn2 a,b;
+
+			this->P2.get(a,b);
+
+			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->eid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			return totSize;
+		}
+		break;
+
+	case SM9_SERIALIZE_HEXASCII:
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
 }
 
 BOOL
-SM9CurveParams::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+	SM9CurveParams::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
 {
-  // Make sure we've been given a real buffer
-  if (buffer == NULL) {
-    return 0;
-  }
+	// Make sure we've been given a real buffer
+	if (buffer == NULL) {
+		return 0;
+	}
 
-  // Set base-16 ASCII encoding
-  miracl *mip=&precisionBits;
-  mip->IOBASE = 16;
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
 
-  switch (mode) {
-  case SM9_SERIALIZE_BINARY:
-    //int bits;
-    //Big p, q, qsquared;
-    //ECn P;  
-    //ZZn2 Z;
-    //ZZn2 Zprecomp;
-    //ZZn2 cube;
-  
-    int len;
-    this->bits_local = toint(charToBig(buffer, &len));
-    if (len <= 0) return FALSE;
-    buffer += len;
-  
-    this->q = charToBig(buffer, &len);
-    if (len <= 0) return FALSE;
-    buffer += len;
-  
-    this->q = charToBig(buffer, &len);
-    if (len <= 0) return FALSE;
-    buffer += len;
-  
-    //this->qsquared = pow(q, 2);
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			int len;
 
-    //this->P = charToECn(buffer, &len);
-    //if (len <= 0) return FALSE;
-    //buffer += len;
+			this->cid = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
-    //this->Z = charToZZn2(buffer, &len);
-    //if (len <= 0) return FALSE;
-    //buffer += len;
+			this->q = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
-    //this->cube = charToZZn2(buffer, &len);
-    //if (len <= 0) return FALSE;
-    //buffer += len;
+			this->a = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
-// Set up the elliptic curve 
+			this->b = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->cf = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->N = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->k = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			// Set up the elliptic curve 
 #ifdef AFFINE
-  ecurve(0,1,params.q,MR_AFFINE);   
+			ecurve(this->a,this->b,this.q,MR_AFFINE);   
 #endif
 #ifdef PROJECTIVE
-  ecurve(0,1,this->q,MR_PROJECTIVE);
+			ecurve(this->a,this->b,this->q,MR_PROJECTIVE);
 #endif
 
-    return TRUE;
-    break;
+			this->P1 = charToECn(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
+			ZZn2 a = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
-  case SM9_SERIALIZE_HEXASCII:
-    // Serialize to hexadecimal in ASCII 
-    // TBD
-    return FALSE;
-    break;
-  }
+			ZZn2 b = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
 
-  // Invalid serialization mode
-  return 0;
+			this->P2.set(a,b);
+
+			this->eid = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			cout<<"q:"<<(this->q)<<endl;
+			cout<<"N:"<<(this->N)<<endl;
+			cout<<"cf:"<<(this->cf)<<endl;
+			cout<<"k:"<<(this->k)<<endl;
+			cout<<"P1:"<<(this->P1)<<endl;
+			cout<<"P2:"<<(this->P2)<<endl;
+			cout<<"a:"<<(this->a)<<endl;
+			cout<<"b:"<<(this->b)<<endl;
+
+			return TRUE;
+		}
+		
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		// Serialize to hexadecimal in ASCII 
+		// TBD
+		return FALSE;
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
 }

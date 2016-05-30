@@ -35,6 +35,11 @@ extern "C" {
 	int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_destroyParams(void *params);
+
+	int sm9_proxylib_generateMasterKey(void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
+
+
+
 	int sm9_proxylib_generateKeys(void *params, void **pk, void **sk, 
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_serializeKeys(void *params, void *pk, void *sk, char *pkBuf, char *skBuf,

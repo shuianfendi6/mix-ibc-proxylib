@@ -39,8 +39,6 @@ public:
 	ECn2 P2;
 	Big eid;
 
-	Big master;
-	ECn2 Ppub_s;
 	ZZn2 X;
 	
 	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
@@ -60,9 +58,48 @@ public:
 			(this->N == second.N) &&
 			(this->P1 == second.P1) &&
 			(this->P2 == second.P2) &&
-			(this->Ppub_s == second.Ppub_s) &&
 			(this->k == second.k)
 			);
+	}
+};
+
+// ProxyPK: Public Key class
+//
+// This is a top-level class; specific proxy re-encryption schemes
+// implement subclasses of this structure.
+
+class SM9ProxyMPK {
+public:
+	SM9_SCHEME_TYPE schemeType;
+
+	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode) { return 0; } 
+	virtual int serialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer) {
+			return 0;
+	}
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer) {
+			return FALSE;
+	}
+};
+
+// ProxySK: Secret Key class
+//
+// This is a top-level class; specific proxy re-encryption schemes
+// implement subclasses of this structure.
+
+class SM9ProxyMSK {
+public:
+	SM9_SCHEME_TYPE schemeType;
+
+	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode) { return 0; } 
+	virtual int serialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer) {
+			return 0;
+	}
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer) {
+			return FALSE;
 	}
 };
 
