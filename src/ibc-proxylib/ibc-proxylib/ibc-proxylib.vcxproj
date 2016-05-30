@@ -91,6 +91,9 @@
     <ClCompile Include="proxylib_utilities.cpp" />
     <ClCompile Include="sm3.c" />
     <ClCompile Include="sm9_proxylib_api.cpp" />
+    <ClCompile Include="sm9_proxylib_hw.cpp" />
+    <ClCompile Include="sm9_proxylib_sw.cpp" />
+    <ClCompile Include="sm9_proxylib_utilities.cpp" />
     <ClCompile Include="zzn.cpp" />
     <ClCompile Include="zzn12a.cpp" />
     <ClCompile Include="zzn2.cpp" />
@@ -110,7 +113,10 @@
     <ClInclude Include="proxylib_pre1.h" />
     <ClInclude Include="proxylib_pre2.h" />
     <ClInclude Include="sm3.h" />
+    <ClInclude Include="sm9_proxylib.h" />
     <ClInclude Include="sm9_proxylib_api.h" />
+    <ClInclude Include="sm9_proxylib_hw.h" />
+    <ClInclude Include="sm9_proxylib_sw.h" />
     <ClInclude Include="zzn.h" />
     <ClInclude Include="zzn12a.h" />
     <ClInclude Include="zzn2.h" />
