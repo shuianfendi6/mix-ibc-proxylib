@@ -20,16 +20,8 @@ extern Benchmark gBenchmark;
 extern Miracl precisionBits;
 
 // sm9_sw_generate_params()
-//
-// Generate global public parameters for use with the software scheme.  A single set of
-// parameters is shared among all users in a software deployment.
-//
-// Public parameters consist of the following elements:
-//		q: a QBITS-bits prime number (order of group G)
-//		p: a PBITS-bits prime number (defines the field F_p)
-//		cube: a cube root of unity (solution in Fp2 of x^3=1 mod p)
-//		P: a generator of group G
-//		Z: the value Z = e(P, P) (where e() is the Rate pairing)
+
+static char * t_str = "600000000058F98A";
 
 BOOL 
 	sm9_sw_generate_params(SM9CurveParams &params)
@@ -40,7 +32,7 @@ BOOL
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
 	
-	Big t= (char *)"600000000058F98A";  //参数t 
+	Big t= (char *)t_str;  //参数t 
 
 	cout<<"t:"<<t<<endl;
 
@@ -62,17 +54,38 @@ BOOL
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	set_frobenius_constant(X);
+	
 
 #if defined(MIX_BUILD_FOR_SYSTEM_PARAM_GEN)
 	forever {
-		while (!params.P1.set(randn())) ;
+		while (!params.P1.set(randn()));
 		params.P1 *= params.cf;
-		if (!params.P1.iszero()) break;
+		if (!params.P1.iszero()) 
+		{
+			break;
+		}
+	}
+	
+	forever
+	{
+		X.set((ZZn)1,(ZZn)randn());
+		if (!params.P2.set(X))
+		{
+			continue;
+		}
+		else
+		{
+			if(!params.P2.iszero())
+			{
+				break;
+			}
+			else
+			{
+				continue;
+			}
+		}
 	}
 
-	params.P2=hash_and_map2((char *)"Server");
-	cofactor(params.P2,X,t);   // fast multiplication by cf
 #else
 	char * xp1_str =       "93DE051D62BF718FF5ED0704487D01D6E1E4086909DC3280E8C4E4817C66DDDD";
 	char * yp1_str =       "21FE8DDA4F21E607631065125C395BBC1C1C00CBFA6024350C464CD70A3EA616";
@@ -89,6 +102,8 @@ BOOL
 	yp2.set((Big)yp2_part2_str, yp2_part1_str);
 	params.P2.set(xp2,yp2);
 #endif
+
+	set_frobenius_constant(X);
 
 	cout<<"q:"<<params.q<<endl;
 	cout<<"N:"<<params.N<<endl;
