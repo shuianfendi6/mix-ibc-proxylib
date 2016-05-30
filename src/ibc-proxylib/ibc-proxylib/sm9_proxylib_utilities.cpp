@@ -23,8 +23,6 @@ using namespace std;
 //#include <wincrypt.h>
 //#endif
 using namespace std;
-
-BOOL gDebugPrint = TRUE;
 Miracl precisionBit(32,0);
 
 // encodePlaintextAsBig()

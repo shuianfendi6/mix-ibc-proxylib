@@ -60,7 +60,7 @@ extern "C" {
 		char *newciphertext, int *newCiphLen, SM9_SCHEME_TYPE schemeID);
 
 
-#ifdef __SM9__PROXYLIB_API_H__
+#ifdef __cplusplus
 }
 #endif
 

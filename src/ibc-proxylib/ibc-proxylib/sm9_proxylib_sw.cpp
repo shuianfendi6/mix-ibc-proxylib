@@ -19,17 +19,17 @@ extern Benchmark gBenchmark;
 #endif
 extern Miracl precisionBit;
 
-// PRE1_generate_params()
+// sm9_sw_generate_params()
 //
-// Generate global public parameters for use with the PRE1 scheme.  A single set of
-// parameters is shared among all users in a PRE1 deployment.
+// Generate global public parameters for use with the software scheme.  A single set of
+// parameters is shared among all users in a software deployment.
 //
 // Public parameters consist of the following elements:
 //		q: a QBITS-bits prime number (order of group G)
 //		p: a PBITS-bits prime number (defines the field F_p)
 //		cube: a cube root of unity (solution in Fp2 of x^3=1 mod p)
 //		P: a generator of group G
-//		Z: the value Z = e(P, P) (where e() is the Tate pairing)
+//		Z: the value Z = e(P, P) (where e() is the Rate pairing)
 
 BOOL 
 sm9_sw_generate_params(SM9CurveParams &params)

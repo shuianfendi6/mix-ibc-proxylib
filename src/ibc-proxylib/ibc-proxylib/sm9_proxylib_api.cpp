@@ -20,7 +20,7 @@ using namespace std;
 //
 // Allocates memory and generates a set of public parameters 
 // for use with the library.
-int proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
+int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID) {
 	int error = SM9_ERROR_OTHER;
 
 	SM9CurveParams *curveParams = new SM9CurveParams();
