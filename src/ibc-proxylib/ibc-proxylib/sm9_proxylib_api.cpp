@@ -86,20 +86,23 @@ int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
 
 	return error;
 }
-//
-//// proxylib_destroyParams()
-////
-//// Deallocates a set of parameters created using
-//// proxylib_generateParams().
-//
-//int proxylib_destroyParams(void *params) {
-//	if (params != NULL) {
-//		CurveParams *cp = (CurveParams*) params;
-//		free(cp);
-//	}
-//
-//	return SM9_ERROR_NONE;
-//}
+
+int smo_proxylib_destroyParams(void *params) {
+	if (params != NULL) {
+		SM9CurveParams *cp = (SM9CurveParams*) params;
+		free(cp);
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+
+int sm9_proxylib_generateMasterKey(void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
+{
+
+
+}
+
 //
 //// proxylib_generateKeys()
 ////

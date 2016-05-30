@@ -138,7 +138,7 @@ public:
 //
 //// Cryptographic Routines
 BOOL sm9_sw_generate_params(SM9CurveParams &params);
-BOOL sm9_sw_generate_master(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMPK_SW &msk);
+BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMPK_SW &msk);
 //BOOL PRE1_keygen(CurveParams &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey);
 //BOOL PRE1_level1_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);
 //BOOL PRE1_level2_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);
