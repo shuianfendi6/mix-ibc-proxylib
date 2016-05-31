@@ -46,6 +46,8 @@ int main()
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
+	sm9_proxylib_getSerializeObjectSize(gParams, SM9_SERIALIZE_BINARY, &data_len);
+
 	sm9_proxylib_serializeObject(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 
 	sm9_proxylib_deserializeObject(data_value, data_len, &gParamsDS,SM9_SERIALIZE_BINARY);
