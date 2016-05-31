@@ -20,7 +20,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
 
-	SM9CurveParams *curveParams = new SM9CurveParams();
+	SM9CurveParams_SW *curveParams = new SM9CurveParams_SW();
 	switch (schemeID) {
 	case SM9_SCHEME_SW:
 		if (sm9_sw_generate_params(*curveParams) == TRUE) {
@@ -38,44 +38,28 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 	return error;
 }
 
-int sm9_proxylib_serializeParams(void *params, char *buffer, int *bufferSize,
-	int bufferAvailSize, SM9_SCHEME_TYPE schemeID) 
+int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize,
+	int bufferAvailSize, SM9_SERIALIZE_MODE mode) 
 {
 	int error = SM9_ERROR_OTHER;
-	int serialSize = 0;
+	SM9Object *cp = (SM9Object*) params;
 
-	SM9CurveParams *cp = (SM9CurveParams*) params;
-
-	switch (schemeID) {
-	case SM9_SCHEME_SW:
-		if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
-			*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
-				bufferAvailSize);
-			if (*bufferSize > 0) {
-				error = SM9_ERROR_NONE;
-			}
+	if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
+		*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
+			bufferAvailSize);
+		if (*bufferSize > 0) {
+			error = SM9_ERROR_NONE;
 		}
-		break;
-	case SM9_SCHEME_HW:
-		if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
-			*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
-				bufferAvailSize);
-			if (*bufferSize > 0) {
-				error = SM9_ERROR_NONE;
-			}
-		}
-		break;
 	}
-
 	return error;
 }
 
-int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
-	SM9_SCHEME_TYPE schemeID)
+int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
+	SM9_SERIALIZE_MODE mode)
 {
 	int error = SM9_ERROR_OTHER;
 
-	SM9CurveParams *cp = new SM9CurveParams;
+	SM9Object *cp = new SM9CurveParams_SW;
 	if (cp->deserialize(SM9_SERIALIZE_BINARY, buffer, bufferSize) == FALSE) {
 		delete cp;
 		*params = NULL;
@@ -87,9 +71,11 @@ int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
 	return error;
 }
 
-int sm9_proxylib_destroyParams(void *params) {
-	if (params != NULL) {
-		SM9CurveParams *cp = (SM9CurveParams*) params;
+int sm9_proxylib_destroyObject(void *params) {
+
+	if (params)
+	{
+		SM9Object *cp = (SM9Object*) params;
 		free(cp);
 	}
 
@@ -99,12 +85,13 @@ int sm9_proxylib_destroyParams(void *params) {
 
 int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
 {
-	SM9CurveParams *pparams = (SM9CurveParams *)params;
 	int error = SM9_ERROR_OTHER;
 
 	switch (schemeID) {
 	case SM9_SCHEME_SW:
 		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+
 			SM9ProxyMPK_SW *pmpk = new SM9ProxyMPK_SW;
 			SM9ProxyMSK_SW *pmsk = new SM9ProxyMSK_SW;
 
@@ -125,6 +112,8 @@ int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHE
 			break;
 		}
 	}
+
+	return error;
 }
 
 //

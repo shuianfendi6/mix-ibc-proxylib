@@ -27,43 +27,36 @@ extern "C" {
 		SM9_ERROR_OTHER = 100,
 	} SM9_ERRORID;
 
+	typedef enum _SM9_OBJ_TYPE{
+		SM9_OBJ_PARAM,
+		SM9_OBJ_MSK,
+		SM9_OBJ_MPK,
+		SM9_OBJ_SK,
+		SM9_OBJ_PK,
+	}SM9_OBJ_TYPE;
+
 	// C-compatible wrapper routines.  See documentation for usage.
-	//
+
+	int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize, 
+		int bufferAvailSize, SM9_SERIALIZE_MODE mode);
+	int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
+		SM9_SERIALIZE_MODE mode);
+	int sm9_proxylib_destroyObject(void *params);
+
 	int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_serializeParams(void *params, char *buffer, int *bufferSize, 
-		int bufferAvailSize, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
-		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_destroyParams(void *params);
 
 	int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
 
-
-
 	int sm9_proxylib_generateKeys(void *params, void **pk, void **sk, 
 		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_serializeKeys(void *params, void *pk, void *sk, char *pkBuf, char *skBuf,
-		int *pkBufSize, int *skBufSize, int bufferAvailSize, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_deserializeKeys(void *params, char *pkBuf, char *skBuf,
-		int pkBufSize, int skBufSize, void **pk, void **sk, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_destroyKeys(void *pk, void *sk, SM9_SCHEME_TYPE schemeID);
+	
 	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 
 		char *ciphertext, int *ciphLen, SM9_CIPHERTEXT_TYPE ctype,
 		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_generateDelegationKey(void *params, void *sk1, void *pk2, void** delKey, 
-		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_serializeDelegationKey(void *params, void *delKey, char *delKeyBuf,
-		int *delKeyBufSize, int bufferAvailSize, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_serializeDelegationKey(void *params, void *delKey, char *delKeyBuf,
-		int *delKeyBufSize, int bufferAvailSize, SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_destroyDelegationKey(void *delKey, SM9_SCHEME_TYPE schemeID);
+	
 	int sm9_proxylib_decrypt(void *params, void *sk, char *message, int *messageLen, 
 		char *ciphertext, int ciphLen, 
 		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_reencrypt(void *params, void *rk, 
-		char *ciphertext, int ciphLen, 
-		char *newciphertext, int *newCiphLen, SM9_SCHEME_TYPE schemeID);
-
 
 #ifdef __cplusplus
 }

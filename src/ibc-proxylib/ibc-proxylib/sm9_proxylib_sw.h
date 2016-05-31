@@ -1,7 +1,47 @@
 #ifndef __PROXYLIB_PRE_SW_H__
 #define __PROXYLIB_PRE_SW_H__
 
-class SM9ProxyMPK_SW: public SM9ProxyMPK {
+
+class SM9CurveParams_SW :public SM9Object{
+public:
+
+	int bits_local;
+
+	Big cid;  // 曲线的识别符
+	Big q;  
+	Big a,b;
+	Big beta; // 不使用当cid=12
+	Big cf,N;
+	Big k;    // 嵌入次数k
+	ECn P1;
+	ECn2 P2;
+	Big eid;
+
+	ZZn2 X;
+
+	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
+	virtual int serialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual int maxPlaintextSize() {
+		Big temp;
+		X.get(temp);
+		return bits(temp);
+	}
+
+	BOOL operator==(SM9CurveParams_SW &second) {
+		return ((this->bits_local == second.bits_local) && 
+			(this->q == second.q) &&
+			(this->N == second.N) &&
+			(this->P1 == second.P1) &&
+			(this->P2 == second.P2) &&
+			(this->k == second.k)
+			);
+	}
+};
+
+class SM9ProxyMPK_SW: public SM9Object {
 public:
 	ECn2 Ppub2;
 	ECn  Ppub1;
@@ -23,7 +63,7 @@ public:
 	}
 };
 
-class SM9ProxyMSK_SW: public SM9ProxyMSK {
+class SM9ProxyMSK_SW: public SM9Object {
 public:
 	Big master;
 
@@ -43,7 +83,7 @@ public:
 	}
 };
 
-class SM9ProxyPK_SW: public SM9ProxyPK {
+class SM9ProxyPK_SW: public SM9Object {
 public:
 	ZZn2 Zpub1;
 	ECn Ppub2;
@@ -65,7 +105,7 @@ public:
 	}
 };
 
-class SM9ProxySK_SW: public SM9ProxySK {
+class SM9ProxySK_SW: public SM9Object {
 public:
 	Big a1;
 	Big a2;
@@ -135,8 +175,8 @@ public:
 //typedef ECn DelegationKey_PRE1;
 //
 //// Cryptographic Routines
-BOOL sm9_sw_generate_params(SM9CurveParams &params);
-BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
+BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
+BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 //BOOL PRE1_keygen(CurveParams &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey);
 //BOOL PRE1_level1_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);
 //BOOL PRE1_level2_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);

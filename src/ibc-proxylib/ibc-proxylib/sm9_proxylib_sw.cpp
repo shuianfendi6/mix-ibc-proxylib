@@ -19,12 +19,198 @@ extern Benchmark gBenchmark;
 #endif
 extern Miracl precisionBits;
 
-// sm9_sw_generate_params()
+
+static ECn 
+	charToECn (char *c, int *totLen)
+{
+	ECn e;
+	Big x,y;
+	int len = 0;
+	char *orig = c;
+	//   format: 4 bytes length, followed by the big
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	x = from_binary (len, c);
+	c += len;
+	//  cout << "Len1 " << len << " x " << x;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	y = from_binary (len, c);
+	c += len;
+	//  cout << " Len2 " << len << " y " << y << "\n";
+
+	e.set (x, y);
+
+	*totLen = c - orig;
+	return e;
+}
+
+static Big
+	charToBig (char *c, int *totLen)
+{
+	Big a;
+	int len;
+	char *orig = c;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	a = from_binary (len, c);
+	c += len;
+
+	*totLen = c - orig;
+	return a;
+}
+
+static int
+	BigTochar (Big &x, char *c, int s)
+{
+	int len = 0;
+	int totlen = sizeof (int);
+
+	//   format: 4 bytes length, followed by the big
+	if (s <= sizeof (int))
+		return -1;
+	// Code assumes epoint contains either nulls or bigs > 0
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (x.iszero()) {
+		len = 0;
+	} else {
+		len = to_binary (x, s, c, FALSE);
+	}
+
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+	totlen += len;
+	s -= len;
+	c += len;
+	//  cout << "Len1 " << len << " x " << x;
+
+	return totlen;
+}
+
+static ZZn2 
+	charToZZn2 (char *c, int *totLen)
+{
+	ZZn2 z;
+	int len;
+	Big a,b;
+	char *orig = c;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	a = from_binary (len, c);
+	c += len;
+	//  cout << "chartozzn2 a: (" << len << ") " 
+	//    << a << "\n";
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	b = from_binary (len, c);
+	//  cout << "chartozzn2 b: (" << len << ") " 
+	//   << b << "\n";
+	c += len;
+
+	z.set (a, b);
+
+	*totLen = c - orig;
+	return z;
+}
+
+static int
+	ECnTochar (ECn &e, char *c, int s)
+{
+
+	Big x, y;
+	e.get(x, y);
+	int len = 0;
+	int totlen = sizeof (int)*2;
+
+	//  cout << "Entering ECnTochar" << endl;
+	//   format: 4 bytes length, followed by the big
+	if (s <= sizeof (int))
+		return -1;
+	// Code assumes epoint contains either nulls or bigs > 0
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (x.iszero()) {
+		len = 0;
+	} else {  
+		len = to_binary (x, s, c, FALSE);
+	}
+	if (len < 0) {
+		return -1;
+	}
+
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+
+	totlen += len;
+	s -= len;
+	c += len;
+	//    cout << "Len1 " << len << " x " << x;
+
+
+	if (s <= sizeof (int))
+		return -1;
+	s -= sizeof (int);
+	c += sizeof (int);
+	len = to_binary (y, s, c, FALSE);
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+	totlen += len;
+	//  cout << "Len2 " << len << " y " << y;
+
+	return totlen;
+}
+
+static int
+	ZZn2Tochar (ZZn2 &z, char *c, int s)
+{
+	int len = 0;
+	int totlen = 2*sizeof(int);
+	Big a,b;
+	z.get (a, b);
+
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (a.iszero()) {
+
+		len = 0;
+	} else {
+		len = to_binary(a, s, c, FALSE);
+	}
+	if (len < 0)
+		return -1;
+	*(c - sizeof(int));
+	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
+	totlen += len;
+	s -= len;
+	c += len;
+
+
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (b.iszero()) {
+		len = 0;
+	} else {
+		len = to_binary(b, s, c, FALSE);
+	}
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
+	totlen += len;
+
+	return totlen;
+}
 
 static char * t_str = "600000000058F98A";
 
 BOOL 
-	sm9_sw_generate_params(SM9CurveParams &params)
+	sm9_sw_generate_params(SM9CurveParams_SW &params)
 {
 	miracl *mip=&precisionBits;
 	ZZn2 X;
@@ -144,7 +330,7 @@ BOOL
 
 
 
-BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk)
+BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk)
 {
 	Big imsk;
 
@@ -178,6 +364,209 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 }
 
 
+int
+	SM9CurveParams_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
+{
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		return 317;
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}  
+
+int
+	SM9CurveParams_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+	int totSize = 0;
+	int size = 0;
+
+	// Make sure we've been given a large enough buffer
+	if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
+		return 0;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+
+
+			size = BigTochar(this->cid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->q, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->cf, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->N, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->k, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			ZZn2 a,b;
+
+			this->P2.get(a,b);
+
+			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->eid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			return totSize;
+		}
+		break;
+
+	case SM9_SERIALIZE_HEXASCII:
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+BOOL
+	SM9CurveParams_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+	// Make sure we've been given a real buffer
+	if (buffer == NULL) {
+		return 0;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			int len;
+
+			this->cid = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->q = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->a = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->b = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->cf = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->N = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->k = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			// Set up the elliptic curve 
+#ifdef AFFINE
+			ecurve(this->a,this->b,this.q,MR_AFFINE);   
+#endif
+#ifdef PROJECTIVE
+			ecurve(this->a,this->b,this->q,MR_PROJECTIVE);
+#endif
+
+			this->P1 = charToECn(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			ZZn2 a = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			ZZn2 b = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->P2.set(a,b);
+
+			this->eid = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			cout<<"q:"<<(this->q)<<endl;
+			cout<<"N:"<<(this->N)<<endl;
+			cout<<"cf:"<<(this->cf)<<endl;
+			cout<<"k:"<<(this->k)<<endl;
+			cout<<"P1:"<<(this->P1)<<endl;
+			cout<<"P2:"<<(this->P2)<<endl;
+			cout<<"a:"<<(this->a)<<endl;
+			cout<<"b:"<<(this->b)<<endl;
+
+			return TRUE;
+		}
+
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		// Serialize to hexadecimal in ASCII 
+		// TBD
+		return FALSE;
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+
 
 //// PRE1_keygen()
 ////
@@ -188,7 +577,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 //// Where P is the public generator of G, and Z = e(P, P).
 //
 //BOOL 
-//PRE1_keygen(SM9CurveParams &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey)
+//PRE1_keygen(SM9CurveParams_SW &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey)
 //{
 //  // Pick random secret key (a1, a2) \in Z*q x Z*q, and store in "secretKey"
 //  Big a1=rand(params.q);
@@ -223,7 +612,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 //// res2 = (plaintext) * Z^k
 //
 //BOOL 
-//PRE1_level1_encrypt(SM9CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
+//PRE1_level1_encrypt(SM9CurveParams_SW &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
 //{
 //#ifdef BENCHMARKING
 //  gettimeofday(&gTstart, &gTz);
@@ -267,7 +656,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 ////
 //// res1 = kP, res2 = (plaintext) * Z^{(a1)k}
 //
-//BOOL PRE1_level2_encrypt(SM9CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
+//BOOL PRE1_level2_encrypt(SM9CurveParams_SW &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
 //{
 //#ifdef BENCHMARKING
 //  gettimeofday(&gTstart, &gTz);
@@ -311,7 +700,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 //// delegators verify the correctness of any delegatee public key
 //// by e.g., requiring the delegatee to "prove knowledge" of the secret key.
 //
-//BOOL PRE1_delegate(SM9CurveParams &params, ProxyPK_PRE1 &delegatee, ProxySK_PRE1 &delegator, DelegationKey_PRE1 &reskey)
+//BOOL PRE1_delegate(SM9CurveParams_SW &params, ProxyPK_PRE1 &delegatee, ProxySK_PRE1 &delegator, DelegationKey_PRE1 &reskey)
 //{
 //#ifdef BENCHMARKING
 //  gettimeofday(&gTstart, &gTz);
@@ -337,7 +726,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 //// res2 = c2
 //
 //BOOL 
-//PRE1_reencrypt(SM9CurveParams &params, ProxyCiphertext_PRE1 &origCiphertext, 
+//PRE1_reencrypt(SM9CurveParams_SW &params, ProxyCiphertext_PRE1 &origCiphertext, 
 //	       DelegationKey_PRE1 &delegationKey, 
 //	       ProxyCiphertext_PRE1 &newCiphertext)
 //{
@@ -381,7 +770,7 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams &params,SM9ProxyMPK_SW &mpk,SM9Pro
 //// To decrypt case 2: plaintext = c2 / c1^inv(a2)
 //// To decrypt case 3: plaintext = c2 / e(c1, (delegation = a1 * P))
 //
-//BOOL PRE1_decrypt(SM9CurveParams &params, ProxyCiphertext_PRE1 &ciphertext, ProxySK_PRE1 &secretKey, Big &plaintext)
+//BOOL PRE1_decrypt(SM9CurveParams_SW &params, ProxyCiphertext_PRE1 &ciphertext, ProxySK_PRE1 &secretKey, Big &plaintext)
 //{
 //#ifdef BENCHMARKING
 //  gettimeofday(&gTstart, &gTz);
@@ -629,7 +1018,7 @@ SM9ProxyMSK_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
 {
   switch (mode) {
   case SM9_SERIALIZE_BINARY:
-    return (QBITS/8 + 10) * 2;
+    return 0;
     break;
   case SM9_SERIALIZE_HEXASCII:
     break;

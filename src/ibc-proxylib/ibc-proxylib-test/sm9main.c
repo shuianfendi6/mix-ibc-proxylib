@@ -46,11 +46,11 @@ int main()
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
-	sm9_proxylib_serializeParams(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_serializeObject(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_deserializeParams(data_value, data_len, &gParamsDS,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_deserializeObject(data_value, data_len, &gParamsDS,SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_destroyParams(gParamsDS);
+	sm9_proxylib_destroyObject(gParamsDS);
 
 	sm9_proxylib_generateMasterKey(gParams, &mpk,&msk,SM9_SCHEME_SW);
 
