@@ -7,7 +7,7 @@
 
 #define NUMENCRYPTIONS 100
 
-void *gParams, *gParams2;
+void *gParams, *gParamsDS;
 int testNum = 0, testsSuccess = 0;
 
 //
@@ -48,7 +48,9 @@ int main()
 
 	sm9_proxylib_serializeParams(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_deserializeParams(data_value, data_len, &gParams,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_deserializeParams(data_value, data_len, &gParamsDS,SM9_SERIALIZE_BINARY);
+
+	sm9_proxylib_destroyParams(gParamsDS);
 
 	sm9_proxylib_generateMasterKey(gParams, &mpk,&msk,SM9_SCHEME_SW);
 

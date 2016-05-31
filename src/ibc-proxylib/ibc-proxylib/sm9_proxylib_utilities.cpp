@@ -950,7 +950,7 @@ int
 {
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
-		return (PBITS/8 + 10) * 9;
+		return 317;
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		break;
