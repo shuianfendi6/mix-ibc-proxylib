@@ -23,18 +23,39 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 	SM9CurveParams_SW *curveParams = new SM9CurveParams_SW();
 	switch (schemeID) {
 	case SM9_SCHEME_SW:
+		curveParams->objectType = SM9_OBJ_SW_PARAM;
 		if (sm9_sw_generate_params(*curveParams) == TRUE) {
 			error = SM9_ERROR_NONE;
 		}
+		else
+		{
+			delete curveParams;
+			curveParams = NULL;
+		}
 		break;
 	case SM9_SCHEME_HW:
-		//if (PRE2_generate_params(*curveParams) == TRUE) {
-		//	error = SM9_ERROR_NONE;
-		//}
+		// add hardware here
 		break;
 	}
 
 	*params = (void*) curveParams;
+	return error;
+}
+
+int sm9_proxylib_getSerializeObjectSize(void *params, SM9_SERIALIZE_MODE mode, int *serialSize)
+{
+	int error = SM9_ERROR_OTHER;
+	SM9Object *cp = (SM9Object*) params;
+
+	if (serialSize)
+	{
+		*serialSize = cp->getSerializedSize(mode);
+
+		if (*serialSize) {
+			error = SM9_ERROR_NONE;
+		}
+	}
+
 	return error;
 }
 
@@ -44,8 +65,10 @@ int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize,
 	int error = SM9_ERROR_OTHER;
 	SM9Object *cp = (SM9Object*) params;
 
-	if (cp->getSerializedSize(SM9_SERIALIZE_BINARY) <= bufferAvailSize) {
-		*bufferSize = cp->serialize(SM9_SERIALIZE_BINARY, buffer,
+	if (cp->getSerializedSize(mode) <= bufferAvailSize) {
+		(*(int *)buffer) = cp->objectType; 
+
+		*bufferSize = cp->serialize(mode, buffer,
 			bufferAvailSize);
 		if (*bufferSize > 0) {
 			error = SM9_ERROR_NONE;
@@ -58,9 +81,44 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 	SM9_SERIALIZE_MODE mode)
 {
 	int error = SM9_ERROR_OTHER;
+	SM9Object *cp = NULL;
 
-	SM9Object *cp = new SM9CurveParams_SW;
-	if (cp->deserialize(SM9_SERIALIZE_BINARY, buffer, bufferSize) == FALSE) {
+	char bufferBin[1024];
+	int bufferBinLen = 1024;
+
+	switch(mode)
+	{
+	case SM9_SERIALIZE_BINARY:
+		{
+			memcpy(bufferBin, buffer,bufferSize);
+			bufferBinLen = bufferSize;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		{
+			Hex2Bin(buffer,bufferSize,(unsigned char *)bufferBin,&bufferBinLen);
+		}
+		break;
+	}
+
+	int totLen = 0; 
+
+	SM9_OBJ_TYPE type = getSM9ObjectType(bufferBin,&totLen);
+
+	switch(type)
+	{
+	case SM9_OBJ_SW_PARAM:
+		{
+			cp = new SM9CurveParams_SW;
+		}
+		break;
+
+	default:
+		return error;
+		break;
+	}
+
+	if (cp->deserialize(SM9_SERIALIZE_BINARY, bufferBin, bufferBinLen) == FALSE) {
 		delete cp;
 		*params = NULL;
 	} else {

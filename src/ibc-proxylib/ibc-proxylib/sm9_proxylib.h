@@ -15,10 +15,22 @@ public:
 	SM9_SCHEME_TYPE schemeType;
 	SM9_OBJ_TYPE    objectType;
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode) { return 0; } 
+	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode) {return trySerialize(mode,NULL, 0); } 
+
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer) { return 0; } 
+
 	virtual int serialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer) {
-			return 0;
+			int totSize = 0;
+			int size = 0;
+
+			// Make sure we've been given a large enough buffer
+			if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
+				return 0;
+			}
+
+			return this->trySerialize(mode, buffer, maxBuffer);
 	}
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer) {
@@ -44,6 +56,11 @@ int ZZn2Tochar (ZZn2 &z, char *c, int s);
 ECn2 hash_and_map2(char *ID);
 void cofactor(ECn2& S,ZZn2 &F,Big& x);
 void set_frobenius_constant(ZZn2 &X);
+SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
+
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
+
 
 #define PROJECTIVE
 #define HASH_LEN 20

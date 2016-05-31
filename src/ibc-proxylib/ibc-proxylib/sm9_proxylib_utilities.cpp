@@ -706,4 +706,60 @@ ZZn12 GT_pow(ZZn12 &res,Big &e,ZZn2 &X,Big &r,Big WB[4],Big B[4][4])
 	return pow(4,Y,u);
 }
 
+#define CHAR_TO_16(achar) ((achar)>='0'&&(achar)<='9'?((achar)-'0'):((((((achar)>='A'  )&&( (achar)<='Z' )  ))? ((achar)-'A'): ((achar)-'a')) + 10))
 
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen)
+{
+	long i;
+	unsigned long sn_len = ulINLen / 2;
+
+	if(sn_len > *pulOUTLen)
+	{
+		*pulOUTLen = sn_len;
+		return -1;
+	}
+
+	*pulOUTLen = sn_len;
+
+	if(0 == pbOUT)
+	{
+
+	}
+	else
+	{
+		memset(pbOUT, 0,sn_len);
+		for (i = 0; i < sn_len; i++) {
+			pbOUT[i] += CHAR_TO_16(*(pbIN + i * 2)) * 16;
+			pbOUT[i] += CHAR_TO_16(*(pbIN + i * 2 + 1));
+		}
+	}
+
+	return 0;
+}
+
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen)
+{
+	long i;
+	unsigned long sn_len = ulINLen * 2;
+
+	if(sn_len > *pulOUTLen)
+	{
+		*pulOUTLen = sn_len;
+		return -1;
+	}
+
+	*pulOUTLen = sn_len;
+
+	if(0 == pbOUT)
+	{
+
+	}
+	else
+	{
+		for (i = 0; i < ulINLen; i++) {
+			sprintf(pbOUT + 2 * i, "%02X", pbIN[i]);
+		}
+	}
+
+	return 0;
+}

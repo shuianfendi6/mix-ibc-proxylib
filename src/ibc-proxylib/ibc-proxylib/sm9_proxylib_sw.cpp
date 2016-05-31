@@ -19,6 +19,15 @@ extern Benchmark gBenchmark;
 #endif
 extern Miracl precisionBits;
 
+SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	return (SM9_OBJ_TYPE)toint(charToBig(c,totLen));
+}
 
 static ECn 
 	charToECn (char *c, int *totLen)
@@ -363,111 +372,107 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9
 	return TRUE;
 }
 
+int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
+	char *buffer, int maxBuffer) { 
+		int totSize = 0;
+		int size = 0;
 
-int
-	SM9CurveParams_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
-{
-	switch (mode) {
-	case SM9_SERIALIZE_BINARY:
-		return 317;
-		break;
-	case SM9_SERIALIZE_HEXASCII:
-		break;
-	}
+		char bufferLocal[1024] = {0};
+		int bufferLocalLen = 1024;
 
-	// Invalid serialization mode
-	return 0;
-}  
-
-int
-	SM9CurveParams_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
-{
-	int totSize = 0;
-	int size = 0;
-
-	// Make sure we've been given a large enough buffer
-	if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
-		return 0;
-	}
-
-	// Set base-16 ASCII encoding
-	miracl *mip=&precisionBits;
-	mip->IOBASE = 16;
-
-	switch (mode) {
-	case SM9_SERIALIZE_BINARY:
+		if (buffer == NULL)
 		{
-
-
-			size = BigTochar(this->cid, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->q, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->a, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->b, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->cf, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->N, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->k, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			ZZn2 a,b;
-
-			this->P2.get(a,b);
-
-			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			size = BigTochar(this->eid, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
-
-			return totSize;
+			buffer = bufferLocal;
+			maxBuffer = bufferLocalLen;
 		}
-		break;
 
-	case SM9_SERIALIZE_HEXASCII:
-		break;
-	}
+		// Set base-16 ASCII encoding
+		miracl *mip=&precisionBits;
+		mip->IOBASE = 16;
 
-	// Invalid serialization mode
-	return 0;
+		switch (mode) {
+		case SM9_SERIALIZE_BINARY:
+			{
+				size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->cid, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->q, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->a, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->b, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->cf, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->N, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->k, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				ZZn2 a,b;
+
+				this->P2.get(a,b);
+
+				size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->eid, buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				return totSize;
+			}
+			break;
+		case SM9_SERIALIZE_HEXASCII:
+			{
+				bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+
+				Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+
+				return maxBuffer;
+			}
+			break;
+		}
+
+		// Invalid serialization mode
+		return 0;
 }
 
 BOOL
@@ -487,6 +492,10 @@ BOOL
 	case SM9_SERIALIZE_BINARY:
 		{
 			int len;
+
+			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			if (len <= 0) return FALSE;
+			buffer += len;
 
 			this->cid = charToBig(buffer, &len);
 			if (len <= 0) return FALSE;
@@ -895,24 +904,9 @@ BOOL
 //// Class members (ProxyPK_PRE1)
 ////
 //
-int
-SM9ProxyMPK_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
-{
-  switch (mode) {
-  case SM9_SERIALIZE_BINARY:
-    //return (PBITS/8 + 10) * 4;
-    return 2*136;
-    break;
-  case SM9_SERIALIZE_HEXASCII:
-    break;
-  }
-
-  // Invalid serialization mode
-  return 0;
-}  
 
 int
-SM9ProxyMPK_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 {
  // int totSize = 0;
  // // Make sure we've been given a large enough buffer
@@ -1011,25 +1005,7 @@ SM9ProxyMPK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
   return 0;
 }
 
-
-
-int
-SM9ProxyMSK_SW::getSerializedSize(SM9_SERIALIZE_MODE mode)
-{
-  switch (mode) {
-  case SM9_SERIALIZE_BINARY:
-    return 0;
-    break;
-  case SM9_SERIALIZE_HEXASCII:
-    break;
-  }
-
-  // Invalid serialization mode
-  return 0;
-}  
-
-int
-SM9ProxyMSK_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+int SM9ProxyMSK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 {
   int totSize = 0;
 
@@ -1081,8 +1057,7 @@ SM9ProxyMSK_SW::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
   return 0;
 }
 
-BOOL
-SM9ProxyMSK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+BOOL SM9ProxyMSK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
 {
   //// Make sure we've been given a real buffer
   //if (buffer == NULL) {

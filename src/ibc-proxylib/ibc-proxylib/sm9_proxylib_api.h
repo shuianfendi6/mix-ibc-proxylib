@@ -28,15 +28,23 @@ extern "C" {
 	} SM9_ERRORID;
 
 	typedef enum _SM9_OBJ_TYPE{
-		SM9_OBJ_PARAM,
-		SM9_OBJ_MSK,
-		SM9_OBJ_MPK,
-		SM9_OBJ_SK,
-		SM9_OBJ_PK,
+		SM9_OBJ_NONE = 0,
+		SM9_OBJ_SW_PARAM,
+		SM9_OBJ_SW_MSK,
+		SM9_OBJ_SW_MPK,
+		SM9_OBJ_SW_SK,
+		SM9_OBJ_SW_PK,
+
+		SM9_OBJ_HW_PARAM,
+		SM9_OBJ_HW_MSK,
+		SM9_OBJ_HW_MPK,
+		SM9_OBJ_HW_SK,
+		SM9_OBJ_HW_PK,
+
 	}SM9_OBJ_TYPE;
 
 	// C-compatible wrapper routines.  See documentation for usage.
-
+	int sm9_proxylib_getSerializeObjectSize(void *params, SM9_SERIALIZE_MODE mode, int *serialSize);
 	int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize, 
 		int bufferAvailSize, SM9_SERIALIZE_MODE mode);
 	int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,

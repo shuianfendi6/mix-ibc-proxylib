@@ -19,8 +19,7 @@ public:
 
 	ZZn2 X;
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
-	virtual int serialize(SM9_SERIALIZE_MODE mode,
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -51,8 +50,7 @@ public:
 	this->Ppub2 = Pp2; this->Ppub1 = Pp1; }
 	void set(ECn2 &Pp2, ECn &Pp1) { this->Ppub1 = Pp1; this->Ppub2 = Pp2; }
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
-	virtual int serialize(SM9_SERIALIZE_MODE mode,
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -72,8 +70,7 @@ public:
 	this->set(sk); }
 	void set(Big &sk) { this->master = sk; }
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
-	virtual int serialize(SM9_SERIALIZE_MODE mode,
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -93,8 +90,7 @@ public:
 	this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
 	void set(ZZn2 &Zp1, ECn &Pp2) { this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
-	virtual int serialize(SM9_SERIALIZE_MODE mode,
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -115,8 +111,7 @@ public:
 	this->set(sk1, sk2); }
 	void set(Big &sk1, Big &sk2) { this->a1 = sk1; this->a2 = sk2; }
 
-	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode); 
-	virtual int serialize(SM9_SERIALIZE_MODE mode,
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
