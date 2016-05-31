@@ -87,7 +87,7 @@ int sm9_proxylib_deserializeParams(char *buffer, int bufferSize, void **params,
 	return error;
 }
 
-int smo_proxylib_destroyParams(void *params) {
+int sm9_proxylib_destroyParams(void *params) {
 	if (params != NULL) {
 		SM9CurveParams *cp = (SM9CurveParams*) params;
 		free(cp);
