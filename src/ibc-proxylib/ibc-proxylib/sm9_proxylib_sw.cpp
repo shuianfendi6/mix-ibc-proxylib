@@ -376,11 +376,85 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk)
 {
 	Big isk;
+	
 
 	miracl *mip=&precisionBits;
 
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
+
+	//cacl ds_hid01
+	{
+		Big t1,t2, hid01 = 0x01;
+
+		Big id = from_binary(userIDLen, userID);
+
+		Big id_union_hid;
+
+		char buffer[1024];
+		int pos = 0;
+
+		pos += to_binary(id,1024,buffer+pos);
+		pos += to_binary(hid01,1024,buffer+pos);
+
+		id_union_hid = from_binary(pos, buffer);
+
+		char h1_str[1024] = {0};
+		int h1_len = 1024;
+
+		char n_str[1024];
+		int n_len = 1024;
+
+		n_len = to_binary(params.N,n_len, n_str);
+
+		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+		Big h1 = from_binary(h1_len,h1_str);
+
+		t1 = h1 + msk.master;
+
+		t2 =  pow(msk.master * inverse(t1,params.N),1,params.N);
+
+		sk.ds_hid01 = t2 * params.P1;
+	}
+
+	//cacl de_hid02
+	{
+		Big t1,t2, hid01 = 0x02;
+
+		Big id = from_binary(userIDLen, userID);
+
+		Big id_union_hid;
+
+		char buffer[1024];
+		int pos = 0;
+
+		pos += to_binary(id,1024,buffer+pos);
+		pos += to_binary(hid01,1024,buffer+pos);
+
+		id_union_hid = from_binary(pos, buffer);
+
+		char h1_str[1024] = {0};
+		int h1_len = 1024;
+
+		char n_str[1024];
+		int n_len = 1024;
+
+		n_len = to_binary(params.N,n_len, n_str);
+
+		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+		Big h1 = from_binary(h1_len,h1_str);
+
+		t1 = h1 + msk.master;
+
+		t2 =  pow(msk.master * inverse(t1,params.N),1,params.N);
+
+		sk.de_hid02 = t2 * params.P2;
+	}
+	
+
+
 
 	//t1 = 
 
@@ -560,11 +634,13 @@ BOOL
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			ZZn2 a = charToZZn2(buffer, &len);
+			ZZn2 a,b;
+
+			a = charToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			ZZn2 b = charToZZn2(buffer, &len);
+			b = charToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1023,11 +1099,13 @@ BOOL
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			ZZn2 a = charToZZn2(buffer, &len);
+			ZZn2 a,b;
+
+			a = charToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			ZZn2 b = charToZZn2(buffer, &len);
+			b = charToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1135,6 +1213,146 @@ BOOL SM9ProxyMSK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufS
 	// Invalid serialization mode
 	return 0;
 }
+
+
+
+int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+	int totSize = 0;
+	int size = 0;
+
+	char bufferLocal[1024] = {0};
+	int bufferLocalLen = 1024;
+
+	if (buffer == NULL)
+	{
+		buffer = bufferLocal;
+		maxBuffer = bufferLocalLen;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->ds_hid01, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			ZZn2 a,b;
+
+			this->de_hid02.get(a,b);
+
+			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			this->de_hid03.get(a,b);
+
+			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+
+			return totSize;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		{
+			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+
+			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+
+			return maxBuffer;
+		}
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+BOOL SM9ProxySK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+	// Make sure we've been given a real buffer
+	if (buffer == NULL) {
+		return 0;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			int len;
+
+			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->ds_hid01 = charToECn(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			ZZn2 a,b;
+
+			a = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			b = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->de_hid02.set(a,b);
+
+			a = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			b = charToZZn2(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->de_hid03.set(a,b);
+
+			return TRUE;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		// Serialize to hexadecimal in ASCII 
+		// TBD
+		return FALSE;
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
 //
 ////
 //// Class members (ProxyCiphertext_PRE1)

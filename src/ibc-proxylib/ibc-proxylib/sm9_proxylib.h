@@ -58,6 +58,9 @@ void cofactor(ECn2& S,ZZn2 &F,Big& x);
 void set_frobenius_constant(ZZn2 &X);
 SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
 
+int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);
+int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len);
+
 extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
 extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
 

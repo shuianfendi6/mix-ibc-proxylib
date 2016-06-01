@@ -84,7 +84,7 @@ class SM9ProxySK_SW: public SM9Object {
 public:
 	ECn2 de_hid02;
 	ECn2 de_hid03;
-	ECn  ds;
+	ECn  ds_hid01;
 
 	SM9ProxySK_SW() { this->schemeType = SM9_SCHEME_SW; }
 
@@ -94,7 +94,7 @@ public:
 		char *buffer, int maxBuffer);
 
 	BOOL operator==(SM9ProxySK_SW &second) {
-		return ((this->ds == second.ds) && 
+		return ((this->ds_hid01 == second.ds_hid01) && 
 			(this->de_hid02 == second.de_hid02) && 
 			(this->de_hid03 == second.de_hid03)
 			);

@@ -198,7 +198,7 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 }
 
 
-Big SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
+int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 {
 	miracl *mip=&precisionBits;
 	mip->IOBASE=16;
