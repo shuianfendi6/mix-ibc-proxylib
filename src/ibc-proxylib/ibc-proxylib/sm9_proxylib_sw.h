@@ -42,13 +42,13 @@ public:
 
 class SM9ProxyMPK_SW: public SM9Object {
 public:
-	ECn2 Ppub2;
-	ECn  Ppub1;
+	ECn2 Ppubs;
+	ECn  Ppube;
 
 	SM9ProxyMPK_SW() { schemeType = SM9_SCHEME_SW; }
 	SM9ProxyMPK_SW(ECn2 &Pp2, ECn &Pp1) { this->schemeType = SM9_SCHEME_SW;
-	this->Ppub2 = Pp2; this->Ppub1 = Pp1; }
-	void set(ECn2 &Pp2, ECn &Pp1) { this->Ppub1 = Pp1; this->Ppub2 = Pp2; }
+	this->Ppubs = Pp2; this->Ppube = Pp1; }
+	void set(ECn2 &Pp2, ECn &Pp1) { this->Ppube = Pp1; this->Ppubs = Pp2; }
 
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -56,8 +56,8 @@ public:
 		char *buffer, int maxBuffer);
 
 	BOOL operator==(SM9ProxyMPK_SW &second) {
-		return ((this->Ppub2 == second.Ppub2) && 
-			(this->Ppub1 == second.Ppub1));
+		return ((this->Ppubs == second.Ppubs) && 
+			(this->Ppube == second.Ppube));
 	}
 };
 
@@ -80,36 +80,13 @@ public:
 	}
 };
 
-class SM9ProxyPK_SW: public SM9Object {
-public:
-	ZZn2 Zpub1;
-	ECn Ppub2;
-
-	SM9ProxyPK_SW() { schemeType = SM9_SCHEME_SW; }
-	SM9ProxyPK_SW(ZZn2 &Zp1, ECn &Pp2) { this->schemeType = SM9_SCHEME_SW;
-	this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
-	void set(ZZn2 &Zp1, ECn &Pp2) { this->Zpub1 = Zp1; this->Ppub2 = Pp2; }
-
-	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
-		char *buffer, int maxBuffer);
-	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
-		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyPK_SW &second) {
-		return ((this->Zpub1 == second.Zpub1) && 
-			(this->Ppub2 == second.Ppub2));
-	}
-};
-
 class SM9ProxySK_SW: public SM9Object {
 public:
-	Big a1;
-	Big a2;
+	ECn2 de_hid02;
+	ECn2 de_hid03;
+	ECn  ds;
 
 	SM9ProxySK_SW() { this->schemeType = SM9_SCHEME_SW; }
-	SM9ProxySK_SW(Big &sk1, Big &sk2) { this->schemeType = SM9_SCHEME_SW; 
-	this->set(sk1, sk2); }
-	void set(Big &sk1, Big &sk2) { this->a1 = sk1; this->a2 = sk2; }
 
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
@@ -117,8 +94,10 @@ public:
 		char *buffer, int maxBuffer);
 
 	BOOL operator==(SM9ProxySK_SW &second) {
-		return ((this->a1 == second.a1) && 
-			(this->a2 == second.a2));
+		return ((this->ds == second.ds) && 
+			(this->de_hid02 == second.de_hid02) && 
+			(this->de_hid03 == second.de_hid03)
+			);
 	}
 };
 //
@@ -172,6 +151,7 @@ public:
 //// Cryptographic Routines
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
+BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk);
 //BOOL PRE1_keygen(CurveParams &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey);
 //BOOL PRE1_level1_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);
 //BOOL PRE1_level2_encrypt(CurveParams &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext);

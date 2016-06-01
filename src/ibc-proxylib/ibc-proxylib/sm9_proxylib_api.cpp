@@ -141,7 +141,7 @@ int sm9_proxylib_destroyObject(void *params) {
 }
 
 
-int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
+int sm9_proxylib_generateMasterKeys(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -174,41 +174,39 @@ int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHE
 	return error;
 }
 
-//
-//// proxylib_generateKeys()
-////
-//// Generate a public/private keypair.  Allocates memory.
-//
-//int proxylib_generateKeys(void *params, void **pk, void **sk,
-//		SCHEME_TYPE schemeID) {
-//	CurveParams *cp = (CurveParams*) params;
-//	int error = SM9_ERROR_OTHER;
-//
-//	switch (schemeID) {
-//	case SCHEME_PRE1: {
-//		ProxyPK_PRE1 *pubKey = new ProxyPK_PRE1();
-//		ProxySK_PRE1 *secKey = new ProxySK_PRE1();
-//		if (PRE1_keygen(*cp, *pubKey, *secKey) == TRUE) {
-//			error = SM9_ERROR_NONE;
-//		}
-//		*pk = (void*) pubKey;
-//		*sk = (void*) secKey;
-//	}
-//		break;
-//	case SCHEME_PRE2: {
-//		ProxyPK_PRE2 *pubKey = new ProxyPK_PRE2();
-//		ProxySK_PRE2 *secKey = new ProxySK_PRE2();
-//		if (PRE2_keygen(*cp, *pubKey, *secKey) == TRUE) {
-//			error = SM9_ERROR_NONE;
-//		}
-//		*pk = (void*) pubKey;
-//		*sk = (void*) secKey;
-//	}
-//		break;
-//	}
-//
-//	return error;
-//}
+int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int userIDLen, void **sk,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMSK_SW *pmsk = (SM9ProxyMSK_SW *)msk;
+
+			SM9ProxySK_SW *psk = new SM9ProxySK_SW;
+
+			if (sm9_sw_calculate_privatekey(*pparams, *pmsk, userID, userIDLen, *psk) == TRUE) {
+				error = SM9_ERROR_NONE;
+			}
+
+			*sk = (void*) psk;
+			return error;
+
+			break;
+		}
+	case SM9_SCHEME_HW:
+		{
+			return error;
+			break;
+		}
+	}
+
+	return error;
+}
+
+
 //
 //// proxylib_serializeKeys()
 ////

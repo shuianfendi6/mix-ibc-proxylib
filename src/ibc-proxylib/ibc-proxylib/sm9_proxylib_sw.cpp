@@ -363,11 +363,34 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9
 
 	msk.master = imsk;
 
-	mpk.Ppub2 = imsk * params.P2;
-	mpk.Ppub1 = imsk * params.P1;
+	mpk.Ppubs = imsk * params.P2;
+	mpk.Ppube = imsk * params.P1;
 
-	cout<<"Ppub2:"<<mpk.Ppub2<<endl;
-	cout<<"Ppub1:"<<mpk.Ppub1<<endl;
+	cout<<"Ppubs:"<<mpk.Ppubs<<endl;
+	cout<<"Ppube:"<<mpk.Ppube<<endl;
+
+	return TRUE;
+}
+
+
+BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk)
+{
+	Big isk;
+
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	//t1 = 
+
+	//sk.master = imsk;
+
+	//mpk.Ppubs = imsk * params.P2;
+	//mpk.Ppube = imsk * params.P1;
+
+	//cout<<"Ppubs:"<<mpk.Ppubs<<endl;
+	//cout<<"Ppube:"<<mpk.Ppube<<endl;
 
 	return TRUE;
 }
@@ -602,11 +625,11 @@ BOOL
 //    return FALSE;
 //  }
 //  
-//  // Compute the value Ppub2 = (a2 * P) \in G
-//  ECn Ppub2 = (a2 * params.P);
+//  // Compute the value Ppubs = (a2 * P) \in G
+//  ECn Ppubs = (a2 * params.P);
 //  
-//  // Store the values (Zpub1, Ppub2) \in G_T x G in "publicKey"
-//  publicKey.set(Zpub1, Ppub2);
+//  // Store the values (Zpub1, Ppubs) \in G_T x G in "publicKey"
+//  publicKey.set(Zpub1, Ppubs);
 //  
 //  // Success
 //  return TRUE;
@@ -715,8 +738,8 @@ BOOL
 //  gettimeofday(&gTstart, &gTz);
 //#endif
 // 
-//  // Compute reskey = delegator.a1 * delegatee.Ppub2
-//  reskey = delegator.a1 * (delegatee.Ppub2);
+//  // Compute reskey = delegator.a1 * delegatee.Ppubs
+//  reskey = delegator.a1 * (delegatee.Ppubs);
 //
 //#ifdef BENCHMARKING
 //  gettimeofday(&gTend, &gTz);
@@ -934,14 +957,14 @@ int
 
 			// real value
 
-			size = ECnTochar(this->Ppub1, buffer, maxBuffer - totSize);
+			size = ECnTochar(this->Ppube, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
 			ZZn2 a,b;
 
-			this->Ppub2.get(a,b);
+			this->Ppubs.get(a,b);
 
 			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
@@ -996,7 +1019,7 @@ BOOL
 
 			// real value
 
-			this->Ppub1 = charToECn(buffer, &len);
+			this->Ppube = charToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1008,7 +1031,7 @@ BOOL
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->Ppub2.set(a,b);
+			this->Ppubs.set(a,b);
 
 			return TRUE;
 		}

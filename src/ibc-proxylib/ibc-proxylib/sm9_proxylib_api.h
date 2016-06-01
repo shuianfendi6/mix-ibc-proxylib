@@ -53,9 +53,9 @@ extern "C" {
 
 	int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID);
 
-	int sm9_proxylib_generateMasterKey(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_generateMasterKeys(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID);
 
-	int sm9_proxylib_generateKeys(void *params, void **pk, void **sk, 
+	int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int userIDLen, void **sk, 
 		SM9_SCHEME_TYPE schemeID);
 	
 	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 
