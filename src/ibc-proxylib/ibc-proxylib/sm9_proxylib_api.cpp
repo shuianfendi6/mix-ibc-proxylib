@@ -137,6 +137,16 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 			cp = new SM9ProxySGN_SW;
 		}
 		break;
+	case SM9_OBJ_SW_WRAP:
+		{
+			cp = new SM9ProxyWRAP_SW;
+		}
+		break;
+	case SM9_OBJ_SW_DATA:
+		{
+			cp = new SM9ProxyDATA_SW;
+		}
+		break;
 
 	default:
 		return error;

@@ -127,6 +127,40 @@ public:
 	}
 };
 
+class SM9ProxyWRAP_SW: public SM9Object {
+public:
+	ECn C;
+
+	SM9ProxyWRAP_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_WRAP;}
+
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+
+	BOOL operator==(SM9ProxyWRAP_SW &second) {
+		return ((this->C == second.C)
+			);
+	}
+};
+
+class SM9ProxyDATA_SW: public SM9Object {
+public:
+	Big data;
+
+	SM9ProxyDATA_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_DATA;}
+
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+
+	BOOL operator==(SM9ProxyDATA_SW &second) {
+		return ((this->data == second.data)
+			);
+	}
+};
+
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk);
