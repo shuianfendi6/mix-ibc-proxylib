@@ -31,6 +31,7 @@ extern "C" {
 		SM9_OBJ_SW_SGN,
 		SM9_OBJ_SW_WRAP,
 		SM9_OBJ_SW_DATA,
+		SM9_OBJ_SW_CIPHER,
 
 		SM9_OBJ_HW_PARAM,
 		SM9_OBJ_HW_MSK,
@@ -70,8 +71,6 @@ extern "C" {
 	// unwrap
 	int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int userIDLen, void *wrapkey, void **key,
 		SM9_SCHEME_TYPE schemeID);
-
-
 
 	// encrypt
 	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 

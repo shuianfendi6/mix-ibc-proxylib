@@ -161,6 +161,25 @@ public:
 	}
 };
 
+class SM9ProxyCipher_SW: public SM9Object {
+public:
+	Big C1,C2,C3;
+
+	SM9ProxyCipher_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_DATA;}
+
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+
+	BOOL operator==(SM9ProxyCipher_SW &second) {
+		return ((this->C1 == second.C1)&&
+			(this->C2 == second.C2)&&
+			(this->C3 == second.C3)
+			);
+	}
+};
+
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk);
