@@ -453,6 +453,39 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 		sk.de_hid02 = t2 * params.P2;
 	}
 	
+	{
+		Big t1,t2, hid01 = 0x03;
+
+		Big id = from_binary(userIDLen, userID);
+
+		Big id_union_hid;
+
+		char buffer[1024];
+		int pos = 0;
+
+		pos += to_binary(id,1024,buffer+pos);
+		pos += to_binary(hid01,1024,buffer+pos);
+
+		id_union_hid = from_binary(pos, buffer);
+
+		char h1_str[1024] = {0};
+		int h1_len = 1024;
+
+		char n_str[1024];
+		int n_len = 1024;
+
+		n_len = to_binary(params.N,n_len, n_str);
+
+		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+		Big h1 = from_binary(h1_len,h1_str);
+
+		t1 = h1 + msk.master;
+
+		t2 =  pow(msk.master * inverse(t1,params.N),1,params.N);
+
+		sk.de_hid03 = t2 * params.P2;
+	}
 
 
 
