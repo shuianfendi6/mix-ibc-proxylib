@@ -73,12 +73,12 @@ extern "C" {
 		SM9_SCHEME_TYPE schemeID);
 
 	// encrypt
-	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 
-		char *ciphertext, int *ciphLen,
+	int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+		void **cipher,
 		SM9_SCHEME_TYPE schemeID);
 	// decrypt
-	int sm9_proxylib_decrypt(void *params, void *sk, char *message, int *messageLen, 
-		char *ciphertext, int ciphLen, 
+	int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int userIDLen, 
+		void *cipher, void **plain,
 		SM9_SCHEME_TYPE schemeID);
 
 #ifdef __cplusplus

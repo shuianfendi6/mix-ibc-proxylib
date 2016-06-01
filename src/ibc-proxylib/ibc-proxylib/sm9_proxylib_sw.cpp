@@ -952,6 +952,17 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 	return TRUE;
 }
 
+
+BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *message, int messageLen, SM9ProxyCipher_SW &cipher)
+{
+	return TRUE;
+}
+
+BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyCipher_SW &cipher, SM9ProxyDATA_SW &plain)
+{
+	return TRUE;
+}
+
 int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
 	char *buffer, int maxBuffer) { 
 		int totSize = 0;
@@ -1232,6 +1243,8 @@ int
 	return 0;
 
 }
+
+
 
 BOOL
 	SM9ProxyMPK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)

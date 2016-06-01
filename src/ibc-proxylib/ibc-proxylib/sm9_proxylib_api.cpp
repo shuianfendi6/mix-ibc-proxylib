@@ -382,7 +382,12 @@ int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int u
 			SM9ProxyDATA_SW *pkey = new SM9ProxyDATA_SW;
 
 			if (sm9_sw_unwrap(*pparams, *pmpk, *psk, userID, userIDLen, *pwrapkey,*pkey) == TRUE) {
+				*key = (void*) pkey;
 				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pkey;
 			}
 
 			return error;
@@ -399,3 +404,78 @@ int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int u
 }
 
 
+// encrypt
+int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+	void **cipher,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+
+			SM9ProxyCipher_SW *pcipher = new SM9ProxyCipher_SW;
+
+			if (sm9_sw_encrypt(*pparams, *pmpk, userID, userIDLen, message, messageLen, *pcipher) == TRUE) {
+				*cipher = (void*) pcipher;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pcipher;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+// decrypt
+int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int userIDLen, 
+	void *cipher, void **plain,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyCipher_SW *pcipher = (SM9ProxyCipher_SW*)cipher;
+
+			SM9ProxyDATA_SW *pplain = new SM9ProxyDATA_SW;
+
+			if (sm9_sw_decrypt(*pparams, *pmpk, *psk, userID, userIDLen, *pcipher,*pplain) == TRUE) {
+				*plain = (void*) pplain;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete plain;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
