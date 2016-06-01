@@ -682,10 +682,6 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	ZZn12 g;
 	ZZn2 X;
-	ZZn12 w;
-	ZZn4 w1, w2, w3;
-	ZZn2 w11, w12, w21, w22,w31,w32;
-	ZZn w111,w112, w121,w122, w211,w212,w221,w222,w311,w312,w321,w322;
 
 	set_frobenius_constant(X);
 
@@ -694,7 +690,6 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	ecap(mpk.Ppubs,params.P1, params.t, X, g);
 
 	cout <<"g:"<<g<<endl;
-
 
 	Big t1,t2, hid01 = 0x01;
 
@@ -734,329 +729,33 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	cout <<"tv"<<tv<<endl;
 
-	w = tv;
-	w.get(w1,w2,w3);
-
-	w1.get(w11,w12);
-	w2.get(w21,w22);
-	w3.get(w31,w32);
-
-	w11.get(w111,w112);
-	w21.get(w211,w212);
-	w31.get(w311,w312);
-	w12.get(w121,w122);
-	w22.get(w221,w222);
-	w32.get(w321,w322);
-	{
-		char w_item[32] = {0};
-
-		pos = 0;
-
-		int w_item_len = 0;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w322,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w321,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w312,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w311,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w222,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w221,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w212,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w211,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w122,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w121,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w112,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w111,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		Big tv2 = from_binary(pos,buffer);
-
-		cout <<"tv2:"<<tv2<<endl;
-	}
-
 	ZZn12 u;
 
 	ecap(P,sgn.S,params.t,X,u);
 
 	cout <<"u:"<<u<<endl;
 
-	w = u;
-	w.get(w1,w2,w3);
-
-	w1.get(w11,w12);
-	w2.get(w21,w22);
-	w3.get(w31,w32);
-
-	w11.get(w111,w112);
-	w21.get(w211,w212);
-	w31.get(w311,w312);
-	w12.get(w121,w122);
-	w22.get(w221,w222);
-	w32.get(w321,w322);
-	{
-		char w_item[32] = {0};
-
-		pos = 0;
-
-		int w_item_len = 0;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w322,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w321,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w312,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w311,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w222,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w221,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w212,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w211,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w122,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w121,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w112,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w111,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		Big uu = from_binary(pos,buffer);
-
-		cout <<"uu:"<<uu<<endl;
-	}
-
 	ZZn12 w_ = u * tv;
 
 	cout <<"w_:"<<w_<<endl;
 
-	w = w_; // w_ to string
-	w.get(w1,w2,w3);
-
-	w1.get(w11,w12);
-	w2.get(w21,w22);
-	w3.get(w31,w32);
-
-	w11.get(w111,w112);
-	w21.get(w211,w212);
-	w31.get(w311,w312);
-	w12.get(w121,w122);
-	w22.get(w221,w222);
-	w32.get(w321,w322);
-	{
-		char w_item[32] = {0};
-
-		pos = 0;
-
-		int w_item_len = 0;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w322,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w321,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w312,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w311,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w222,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w221,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w212,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w211,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w122,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w121,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w112,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		w_item_len = 32;
-		w_item_len = to_binary(w111,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
-
-		Big ww_ = from_binary(pos,buffer);
-
-		cout <<"ww_:"<<ww_<<endl;
-	}
-
 	pos = 0;
-
-	char buffer3[1024] = {0};
 
 	Big M;
 
 	M = from_binary(messageLen, message);
 
-	pos += to_binary(M,1024,buffer3 + pos);
+	pos += to_binary(M,1024,buffer + pos);
+	pos += to_binaryZZn12(w_,1024,buffer + pos);
 
-	memcpy(buffer3+pos, buffer, 12 * 32);
-
-	pos += 12 * 32;
-
-	Big m_and_w = from_binary(pos,buffer3);
+	Big m_and_w = from_binary(pos,buffer);
 
 	cout <<"m_and_w:"<<m_and_w<<endl;
 
 	char h2_str[1024] = {0};
 	int h2_len = 1024;
 
-	SM9_H2(buffer3, pos,n_str,n_len, h2_str,&h2_len);
+	SM9_H2(buffer, pos,n_str,n_len, h2_str,&h2_len);
 
 	Big h2 = from_binary(h2_len,h2_str);
 
