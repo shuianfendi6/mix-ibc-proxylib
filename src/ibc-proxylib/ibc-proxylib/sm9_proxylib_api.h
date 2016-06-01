@@ -57,11 +57,21 @@ extern "C" {
 
 	int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int userIDLen, void **sk, 
 		SM9_SCHEME_TYPE schemeID);
-	
-	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 
-		char *ciphertext, int *ciphLen, SM9_CIPHERTEXT_TYPE ctype,
+
+	// sign
+	int sm9_proxylib_sign(void *params, void *sk, char *message, int messageLen, 
+		char *ciphertext, int *ciphLen, 
 		SM9_SCHEME_TYPE schemeID);
-	
+	// verify
+	int sm9_proxylib_verify(void *params, void *pk, char *message, int messageLen, 
+		char *ciphertext, int ciphLen, 
+		SM9_SCHEME_TYPE schemeID);
+
+	// encrypt
+	int sm9_proxylib_encrypt(void *params, void *pk, char *message, int messageLen, 
+		char *ciphertext, int *ciphLen,
+		SM9_SCHEME_TYPE schemeID);
+	// decrypt
 	int sm9_proxylib_decrypt(void *params, void *sk, char *message, int *messageLen, 
 		char *ciphertext, int ciphLen, 
 		SM9_SCHEME_TYPE schemeID);

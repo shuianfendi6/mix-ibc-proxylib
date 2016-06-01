@@ -214,6 +214,47 @@ int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int u
 }
 
 
+// sign
+int sm9_proxylib_sign(void *params, void *sk, char *message, int messageLen, 
+	char *ciphertext, int *ciphLen, 
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW *) sk;
+
+			if (sm9_sw_sign(*pparams, message, messageLen, *psk) == TRUE) {
+				error = SM9_ERROR_NONE;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+// verify
+int sm9_proxylib_verify(void *params, void *pk, char *message, int messageLen, 
+	char *ciphertext, int ciphLen, 
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	return error;
+}
+
 //
 //// proxylib_serializeKeys()
 ////

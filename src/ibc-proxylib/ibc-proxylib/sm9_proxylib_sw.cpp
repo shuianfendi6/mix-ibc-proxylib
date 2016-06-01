@@ -494,6 +494,12 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	return TRUE;
 }
 
+BOOL sm9_sw_sign(SM9CurveParams_SW &params, char *message, int messageLen, SM9ProxySK_SW &sk)
+{
+
+	return TRUE;
+}
+
 int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
 	char *buffer, int maxBuffer) { 
 		int totSize = 0;
