@@ -4,13 +4,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-	typedef enum {
-		SM9_CIPH_FIRST_LEVEL = 0,
-		SM9_CIPH_SECOND_LEVEL = 1,
-		SM9_CIPH_REENCRYPTED = 2
-	} SM9_CIPHERTEXT_TYPE;
-
 	typedef enum {
 		SM9_SCHEME_SW = 0,       // 软件加密
 		SM9_SCHEME_HW = 1,       // 硬件加密
@@ -72,12 +65,10 @@ extern "C" {
 		SM9_SCHEME_TYPE schemeID);
 
 	// wrap
-	int sm9_proxylib_wrap(void *params, void *mpk, void *sk, char *message, int messageLen, 
-		void **sgn,
+	int sm9_proxylib_wrap(void *params, void *mpk, char * userID, int userIDLen, char *seed, int seedLen, void **key, void **wrapkey, 
 		SM9_SCHEME_TYPE schemeID);
 	// unwrap
-	int sm9_proxylib_unwrap(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
-		void *sgn,
+	int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int userIDLen, void *wrapkey, void **key,
 		SM9_SCHEME_TYPE schemeID);
 
 

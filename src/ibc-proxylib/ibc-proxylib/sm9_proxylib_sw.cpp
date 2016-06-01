@@ -328,6 +328,9 @@ BOOL
 	miracl *mip=&precisionBits;
 	ZZn2 X;
 
+	srand(time(NULL)); // 设定随机数种子
+	irand(rand());
+
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
 
@@ -680,8 +683,8 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
 
-	ZZn12 g;
 	ZZn2 X;
+	ZZn12 g;
 
 	set_frobenius_constant(X);
 
@@ -773,6 +776,180 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	{
 		return FALSE;
 	}
+}
+
+BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *seed, int seedLen, SM9ProxyDATA_SW &key, SM9ProxyWRAP_SW &wrapkey)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x03;
+
+	Big ID;
+
+	ZZn12 g;
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	ID = from_binary(userIDLen,userID);
+
+	Big ID_union_hid;
+	char buffer[1024];
+	int pos = 0;
+
+	pos += to_binary(ID,1024,buffer+pos);
+
+	pos += to_binary(hid,1024,buffer+pos);
+
+	ID_union_hid = from_binary(pos, buffer);
+
+	Big t1 = 0;
+	//calc t1
+
+	char h1_str[1024] = {0};
+	int h1_len = 1024;
+
+	char n_str[1024];
+	int n_len = 1024;
+
+	n_len = to_binary(params.N,n_len, n_str);
+
+	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+	Big h1 = from_binary(h1_len,h1_str);
+
+	int key_wrap_len = 0x0100;
+
+	ECn QB = h1 * params.P1;
+
+	QB += mpk.Ppube;
+
+	cout <<"QB:"<<QB<<endl;
+
+	Big r;
+	
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_WRAP) 
+	r = "74015F8489C01EF4270456F9E6475BFB602BDE7F33FD482AB4E3684A6722";
+#else
+	if (NULL == seed || 0 == seedLen)
+	{
+		while(0 == (r=rand(params.N)))
+		{
+
+		};
+	}
+	else
+	{
+		r = from_binary(seedLen,seed);
+	}
+#endif
+
+	ECn C= r*QB;
+
+	cout <<"r:"<<r<<endl;
+
+	cout <<"C:"<<C<<endl;
+
+	set_frobenius_constant(X);
+
+	ecap(params.P2,mpk.Ppube,params.t,X,g);
+
+	ZZn12 w = pow(g,r);
+
+	pos = 0;
+
+	Big cx,cy;
+
+	C.get(cx,cy);
+
+	pos += to_binary(cx,1024,buffer + pos);
+
+	pos += to_binary(cy,1024,buffer + pos);
+
+	pos += to_binaryZZn12(w,1024,buffer + pos);
+
+	pos += to_binary(ID,1024,buffer + pos);
+
+	Big value_union = from_binary(pos,buffer);
+
+	cout <<"value_union:"<<value_union<<endl;
+
+	char key_wrap_data[0x100];
+
+	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+
+	Big K = from_binary(key_wrap_len/8, key_wrap_data);
+
+	cout <<"K:"<<K<<endl;
+
+	key.data = K;
+	wrapkey.C = C;
+
+	return TRUE;
+}
+
+BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyWRAP_SW &wrapkey, SM9ProxyDATA_SW &key)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x03;
+
+	ZZn12 w_;
+	ZZn2 X;
+	int pos = 0;
+	char buffer[1024];
+
+	set_frobenius_constant(X);
+
+	ecap(sk.de_hid03, wrapkey.C,params.t,X,w_);
+
+	cout <<"w_:"<<w_<<endl;
+
+	pos = 0;
+
+	Big ID;
+
+	ID = from_binary(userIDLen,userID);
+
+	Big cx,cy;
+
+	wrapkey.C.get(cx,cy);
+
+	pos += to_binary(cx,1024,buffer + pos);
+
+	pos += to_binary(cy,1024,buffer + pos);
+
+	pos += to_binaryZZn12(w_,1024,buffer + pos);
+
+	pos += to_binary(ID,1024,buffer + pos);
+
+	Big value_union = from_binary(pos,buffer);
+
+	cout <<"value_union:"<<value_union<<endl;
+
+	char key_wrap_data[0x100];
+	int key_wrap_len = 0x0100;
+
+	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+
+	Big K_ = from_binary(key_wrap_len/8, key_wrap_data);
+
+	key.data = K_;
+
+	cout <<"K_:"<<K_<<endl;
+
+	return TRUE;
 }
 
 int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,

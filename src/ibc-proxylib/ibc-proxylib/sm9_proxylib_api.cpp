@@ -232,6 +232,7 @@ int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int u
 			}
 			else
 			{
+				delete psk;
 				return error;
 			}
 
@@ -267,7 +268,11 @@ int sm9_proxylib_sign(void *params, void *mpk, void *sk, char *message, int mess
 
 			if (sm9_sw_sign(*pparams, *pmpk, message, messageLen, *psk, *psgn) == TRUE) {
 				error = SM9_ERROR_NONE;
-				*sgn = (void *)psgn;
+				*sgn = (void*) psgn;
+			}
+			else
+			{
+				delete psgn;
 			}
 
 			return error;
@@ -313,3 +318,79 @@ int sm9_proxylib_verify(void *params,void *mpk, char *userID, int userIDLen, cha
 
 	return error;
 }
+
+// wrap
+int sm9_proxylib_wrap(void *params, void *mpk, char * userID, int userIDLen, char *seed, int seedLen, void **key, void **wrapkey, 
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+
+			SM9ProxyDATA_SW *pkey = new SM9ProxyDATA_SW;
+			SM9ProxyWRAP_SW *pwrapkey = new SM9ProxyWRAP_SW;
+
+			if (sm9_sw_wrap(*pparams, *pmpk, userID, userIDLen, seed, seedLen, *pkey,*pwrapkey) == TRUE) {
+
+				*key = (void*) pkey;
+				*wrapkey = (void*) pwrapkey;
+
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pkey;
+				delete pwrapkey;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+// unwrap
+int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int userIDLen, void *wrapkey, void **key,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyWRAP_SW *pwrapkey = (SM9ProxyWRAP_SW*)wrapkey;
+
+			SM9ProxyDATA_SW *pkey = new SM9ProxyDATA_SW;
+
+			if (sm9_sw_unwrap(*pparams, *pmpk, *psk, userID, userIDLen, *pwrapkey,*pkey) == TRUE) {
+				error = SM9_ERROR_NONE;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+
