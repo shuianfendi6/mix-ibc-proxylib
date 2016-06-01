@@ -240,6 +240,7 @@ BOOL
 	params.cid = 0x12;
 	params.k = 12;
 	params.eid = 0x04; // R-ate ¶Ô
+	params.t = t;
 
 
 #ifdef AFFINE
@@ -375,9 +376,6 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9
 
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk)
 {
-	Big isk;
-	
-
 	miracl *mip=&precisionBits;
 
 	mip->IOBASE = 16;
@@ -494,8 +492,191 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	return TRUE;
 }
 
-BOOL sm9_sw_sign(SM9CurveParams_SW &params, char *message, int messageLen, SM9ProxySK_SW &sk)
+BOOL sm9_sw_sign(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message, int messageLen, SM9ProxySK_SW &sk, SM9ProxySGN_SW &sgn)
 {
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	ZZn12 g;
+	ZZn2 X;
+
+	set_frobenius_constant(X);
+
+	cout <<"X:"<<X<<endl;
+
+	ecap(mpk.Ppubs,params.P1, params.t, X, g);
+
+	cout <<"g:"<<g<<endl;
+
+	Big r;
+
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_SIGN) 
+	r = "033C8616B06704813203DFD00965022ED15975C662337AED648835DC4B1CBE";
+#else
+	while(0 == (r=rand(params.N)))
+	{
+
+	};
+#endif
+
+	ZZn12 w = pow(g,r);
+
+	ZZn4 w1, w2, w3;
+	ZZn2 w11, w12, w21, w22,w31,w32;
+	ZZn w111,w112, w121,w122, w211,w212,w221,w222,w311,w312,w321,w322;
+
+	w.get(w1,w2,w3);
+
+	w1.get(w11,w12);
+	w2.get(w21,w22);
+	w3.get(w31,w32);
+
+	w11.get(w111,w112);
+	w21.get(w211,w212);
+	w31.get(w311,w312);
+	w12.get(w121,w122);
+	w22.get(w221,w222);
+	w32.get(w321,w322);
+
+	cout <<"w:"<<w<<endl;
+
+	int pos = 0;
+
+	Big ww;
+
+	char buffer[1024] = {0};
+
+	{
+		char w_item[32] = {0};
+
+		pos = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w322,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w321,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w312,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w311,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w222,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w221,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w212,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w211,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w122,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w121,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w112,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w111,w_item_len,w_item);
+		pos += 32 - w_item_len;
+		memcpy(buffer+pos, w_item, w_item_len);
+		pos += w_item_len;
+
+		ww = from_binary(pos,buffer);
+
+		cout <<"ww:"<<ww<<endl;
+	}
+
+	pos = 0;
+
+	char buffer2[1024] = {0};
+
+	Big M;
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_SIGN) 
+	M = from_binary(strlen("Chinese IBS standard"),"Chinese IBS standard");
+#else
+	M = from_binary(messageLen, message);
+#endif
+
+	pos += to_binary(M,1024,buffer2 + pos);
+
+	memcpy(buffer2+pos, buffer, 12 * 32);
+
+	pos += 12 * 32;
+
+	Big m_and_w = from_binary(pos,buffer2);
+
+	cout <<"m_and_w:"<<m_and_w<<endl;
+
+	char h2_str[1024] = {0};
+	int h2_len = 1024;
+
+	char n_str[1024];
+	int n_len = 1024;
+
+	n_len = to_binary(params.N,n_len, n_str);
+
+	SM9_H2(buffer2, pos,n_str,n_len, h2_str,&h2_len);
+
+	Big h = from_binary(h2_len,h2_str);
+
+	cout <<"h:"<<h<<endl;
+
+	Big l = (r-h + params.N)%params.N;
+
+	cout <<"l:"<<l<<endl;
+
+	ECn S = l * sk.ds_hid01;
+
+	cout <<"S:"<<S<<endl;
+
+	sgn.h = h;
+	sgn.S = S;
 
 	return TRUE;
 }
@@ -522,6 +703,11 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
 		case SM9_SERIALIZE_BINARY:
 			{
 				size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+				if (size <= 0) return 0;
+				totSize += size;
+				buffer += size;
+
+				size = BigTochar(this->t, buffer, maxBuffer - totSize);
 				if (size <= 0) return 0;
 				totSize += size;
 				buffer += size;
@@ -625,6 +811,10 @@ BOOL
 			if (len <= 0) return FALSE;
 			buffer += len;
 
+			this->t = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
 			this->cid = charToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
@@ -704,336 +894,6 @@ BOOL
 	// Invalid serialization mode
 	return 0;
 }
-
-
-
-//// PRE1_keygen()
-////
-//// Generate a public/secret keypair for the PRE1 scheme.  
-//// Secret keys have the form (a1, a2) \in Z*q x Z*q.
-//// Public keys have the form (Z^a1, a2*P) \in G_T x G.
-////
-//// Where P is the public generator of G, and Z = e(P, P).
-//
-//BOOL 
-//PRE1_keygen(SM9CurveParams_SW &params, ProxyPK_PRE1 &publicKey, ProxySK_PRE1 &secretKey)
-//{
-//  // Pick random secret key (a1, a2) \in Z*q x Z*q, and store in "secretKey"
-//  Big a1=rand(params.q);
-//  Big a2=rand(params.q);
-//  secretKey.set(a1, a2);
-//
-//  // Compute the value Z^a1 \in G_T by computing:
-//  // Zpub1 = e(P, a1 * P)
-//  ECn temp = (a1 * params.P);
-//  ZZn2 Zpub1;
-//  if (ecap(params.P, temp, params.q, params.cube, Zpub1) == FALSE) {
-//    PRINT_DEBUG_STRING("Key generation failed due to pairing operation.");
-//    return FALSE;
-//  }
-//  
-//  // Compute the value Ppubs = (a2 * P) \in G
-//  ECn Ppubs = (a2 * params.P);
-//  
-//  // Store the values (Zpub1, Ppubs) \in G_T x G in "publicKey"
-//  publicKey.set(Zpub1, Ppubs);
-//  
-//  // Success
-//  return TRUE;
-//}
-//
-//// PRE1_level1_encrypt()
-////
-//// Takes a plaintext and a public key and generates a first-level
-//// (non-re-encryptable) ciphertext in the values res1 and res2.
-////
-//// res1 = Z^{(a_i)k}
-//// res2 = (plaintext) * Z^k
-//
-//BOOL 
-//PRE1_level1_encrypt(SM9CurveParams_SW &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
-//{
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTstart, &gTz);
-//#endif
-//
-//  SAFESTATIC Big k;
-//  SAFESTATIC ZZn2 temp, c1, c2;
-//  SAFESTATIC ZZn2 zPlaintext;
-//
-//  // Select a random value k \in Z*q, and compute res1 = Zpub1^k
-//  k = rand(params.q);
-//
-//  c1 = pow(publicKey.Zpub1, k);
-//  
-//  // Compute res2 = plaintext * Z^k
-//  temp = pow(params.Z, k);
-//  //cout << "encrypt: params.Z = " << params.Z << endl;
-//  //cout << "encrypt: temp = " << temp << endl;
-//  zPlaintext.set(plaintext, 0);
-//
-//  //cout << "encrypt: plaintext = " << zPlaintext << endl;
-//  c2 = zPlaintext * temp;
-//  //cout << "encrypt: c1 = " << c1 << endl;
-//  //cout << "encrypt: c2 = " << c2 << endl;
-//
-//  // Set the ciphertext data structure with (c1, c2)
-//  ciphertext.set(CIPH_FIRST_LEVEL, c1, c2);
-//
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTend, &gTz);
-//  gBenchmark.CollectTiming(LEVELONEENCTIMING, CalculateUsecs(gTstart, gTend));
-//#endif
-//
-//  return true;
-//}
-//
-//// PRE1_level2_encrypt()
-////
-//// Takes a plaintext and a public key and generates a second-level
-//// (re-encryptable) ciphertext in the values res1 and res2
-////
-//// res1 = kP, res2 = (plaintext) * Z^{(a1)k}
-//
-//BOOL PRE1_level2_encrypt(SM9CurveParams_SW &params, Big &plaintext, ProxyPK_PRE1 &publicKey, ProxyCiphertext_PRE1 &ciphertext)
-//{
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTstart, &gTz);
-//#endif
-//
-//  SAFESTATIC Big k;
-//  SAFESTATIC ECn c1;
-//  SAFESTATIC ZZn2 temp, c2;
-//  SAFESTATIC ZZn2 zPlaintext;
-//  
-//  // Select a random value k \in Z*q and compute res1 = (k * P)  
-//  k = rand(params.q);
-//  c1 = k * params.P;
-//
-//  // Compute res2 = plaintext * Zpub1^k
-//  zPlaintext.set(plaintext, 0);
-//  temp = pow(publicKey.Zpub1, k);
-//  c2 = zPlaintext * temp;
-//  
-//  // Set the ciphertext structure with (c1, c2)
-//  ciphertext.set(CIPH_SECOND_LEVEL, c1, c2);
-//
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTend, &gTz);
-//  gBenchmark.CollectTiming(LEVELTWOENCTIMING, CalculateUsecs(gTstart, gTend));
-//#endif
-//
-//  return true;
-//}
-//
-//// PRE1_delegate()
-////
-//// Given a delegate's public key and the original target's secret key,
-//// produce a delegation key that can be used to re-encrypt second
-//// level ciphertexts.
-////
-//// reskey = delegator.a1 * (delegatee.b2 * P)
-////
-//// A security note: It may be possible for an adversary to use the key 
-//// delegation process as an oracle for decryption.  It is recommended that
-//// delegators verify the correctness of any delegatee public key
-//// by e.g., requiring the delegatee to "prove knowledge" of the secret key.
-//
-//BOOL PRE1_delegate(SM9CurveParams_SW &params, ProxyPK_PRE1 &delegatee, ProxySK_PRE1 &delegator, DelegationKey_PRE1 &reskey)
-//{
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTstart, &gTz);
-//#endif
-// 
-//  // Compute reskey = delegator.a1 * delegatee.Ppubs
-//  reskey = delegator.a1 * (delegatee.Ppubs);
-//
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTend, &gTz);
-//  gBenchmark.CollectTiming(DELEGATETIMING, CalculateUsecs(gTstart, gTend));
-//#endif
-//
-//  return true;
-//}
-//
-//// PRE1_reencrypt()
-////
-//// Given a "second-level" ciphertext (c1, c2), along with a 
-//// delegation key, produces a re-encrypted ciphertext.
-////
-//// res1 = e(kP, s1*s2*P) = Z^{k(s1)(s2)}
-//// res2 = c2
-//
-//BOOL 
-//PRE1_reencrypt(SM9CurveParams_SW &params, ProxyCiphertext_PRE1 &origCiphertext, 
-//	       DelegationKey_PRE1 &delegationKey, 
-//	       ProxyCiphertext_PRE1 &newCiphertext)
-//{
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTstart, &gTz);
-//#endif
-//
-//  SAFESTATIC ZZn2 res1;
-//
-//  // Compute the pairing res1 = e(kP, delegation)
-//  if (ecap(origCiphertext.c1a, delegationKey, params.q, params.cube, res1) == FALSE) {
-//    // Pairing failed.  Oops.
-//    PRINT_DEBUG_STRING("Re-encryption pairing failed."); 
-//    return false;
-//  }
-//
-//  // Set the result ciphertext to (res1, c2)
-//  newCiphertext.set(CIPH_REENCRYPTED, res1, origCiphertext.c2);
-//  
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTend, &gTz);
-//  gBenchmark.CollectTiming(REENCTIMING, CalculateUsecs(gTstart, gTend));
-//#endif
-//
-//  return true;
-//}
-//
-//// PRE1_decrypt()
-////
-//// Decrypt a ciphertext and return the plaintext.  This routine handles
-//// three different types of ciphertext.
-////
-//// 1. If this is a first-level ciphertext it will have the form:
-////    c1 = Z^{(a1)k}, c2 = plaintext * Z^k
-//// 2. If this is a re-encrypted ciphertext, it will have the form:
-////    c1 = Z^{k(a1)(a2)}, c2 = plaintext * Z^{(a1)k}
-//// 3. If this is a second-level ciphertext, it will have the form:
-////	  c1 = kP, c2 = plaintext * Z^{(a1)k}
-////
-//// To decrypt case 1: plaintext = c2 / c1^inv(a1)
-//// To decrypt case 2: plaintext = c2 / c1^inv(a2)
-//// To decrypt case 3: plaintext = c2 / e(c1, (delegation = a1 * P))
-//
-//BOOL PRE1_decrypt(SM9CurveParams_SW &params, ProxyCiphertext_PRE1 &ciphertext, ProxySK_PRE1 &secretKey, Big &plaintext)
-//{
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTstart, &gTz);
-//#endif
-//
-//  SAFESTATIC ECn del;
-//  SAFESTATIC ZZn2 temp;
-//  SAFESTATIC ZZn2 result;
-//
-// // Handle each type of ciphertext
-// switch(ciphertext.type) {
-// case CIPH_FIRST_LEVEL:
-//   // temp = c1^inv(a1)
-//   temp = pow(ciphertext.c1b, inverse(secretKey.a1, params.qsquared));
-//   //cout << "decrypt: temp = " << temp << endl;
-//   break;
-// case CIPH_REENCRYPTED:
-//   // temp = c1^inv(a2)
-//   temp = pow(ciphertext.c1b, inverse(secretKey.a2, params.qsquared));
-//   break;
-// case CIPH_SECOND_LEVEL:
-//   // temp = e(c1, a1 * P)
-//   del = secretKey.a1 * params.P;
-//   if (ecap(ciphertext.c1a, del, params.q, params.cube, temp) == FALSE) {
-//     PRINT_DEBUG_STRING("Decryption pairing failed.");
-//     return FALSE;
-//   }
-//   break;
-// default:
-//   PRINT_DEBUG_STRING("Decryption failed: invalid ciphertext type.");
-//   break;
-// }
-// 
-// // Compute plaintext = c2 / temp
-// result = ciphertext.c2 / temp;
-// result.get(plaintext);
-//
-//#ifdef BENCHMARKING
-//  gettimeofday(&gTend, &gTz);
-//  gBenchmark.CollectTiming(LEVELONEDECTIMING, CalculateUsecs(gTstart, gTend));
-//#endif
-//
-//  return true;
-//}
-//
-//// SerializeDelegationKey_PRE1()
-////
-//// Serialize a delegation key into a buffer
-//
-//int
-//SerializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
-//{
-//  int totSize = 0;
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SM9_SERIALIZE_BINARY:
-//  {
-//    int len = ECnTochar (delKey, buffer, maxBuffer);
-//    if (len <= 0) return 0;
-//    return len;
-//    break;
-//  }	
-//  case SM9_SERIALIZE_HEXASCII:
-//
-//    //string temp;
-//    //buffer << delKey;
-//    //temp.append(buffer);
-//    //temp.append(ASCII_SEPARATOR);
-//
-//    //strcpy(buffer, temp.c_str());
-//    //return strlen(buffer);
-//    return 0;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-//// DeserializeDelegationKey_PRE1()
-////
-//// Deserialize a delegation key from a buffer
-//
-//BOOL
-//DeserializeDelegationKey_PRE1(DelegationKey_PRE1 &delKey, SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
-//{
-//  // Make sure we've been given a real buffer
-//  if (buffer == NULL) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SM9_SERIALIZE_BINARY:
-//    int len;
-//
-//    //cout << "got one " << len << endl;
-//    delKey = charToECn(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    return TRUE;
-//    break;
-//
-//  case SM9_SERIALIZE_HEXASCII:
-//    // Serialize to hexadecimal in ASCII 
-//    // TBD
-//    return FALSE;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-////
-//// Class members (ProxyPK_PRE1)
-////
-//
 
 int
 	SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
@@ -1384,139 +1244,102 @@ BOOL SM9ProxySK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSi
 	return 0;
 }
 
-//
-////
-//// Class members (ProxyCiphertext_PRE1)
-////
-//
-//int
-//ProxyCiphertext_PRE1::getSerializedSize(SM9_SERIALIZE_MODE mode)
-//{
-//  switch (mode) {
-//  case SM9_SERIALIZE_BINARY:
-//    //return (PBITS/8 + 10) * 3;
-//    return (1+8+136*2);
-//    break;
-//  case SM9_SERIALIZE_HEXASCII:
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}  
-//
-//int
-//ProxyCiphertext_PRE1::serialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
-//{
-//  int totSize = 0;
-//
-//  // Make sure we've been given a large enough buffer
-//  if (buffer == NULL || maxBuffer < this->getSerializedSize(mode)) {
-//
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SM9_SERIALIZE_BINARY:
-//	{
-//    *buffer = (char)this->type;
-//    buffer++;
-//    totSize++;
-//
-//    int len = ECnTochar (this->c1a, buffer, maxBuffer - totSize);
-//    if (len <= 0) return 0;
-//    buffer += len;
-//    totSize += len;
-//
-//    len = ZZn2Tochar (this->c1b, buffer, maxBuffer - totSize);
-//    if (len <= 0) return 0;
-//    buffer += len;
-//    totSize += len;
-//
-//    len = ZZn2Tochar (this->c2, buffer, maxBuffer - totSize);
-//    if (len <= 0) return 0;
-//    buffer += len;
-//    totSize += len;
-//
-//    return totSize;
-//
-//    break;
-//	}
-//  case SM9_SERIALIZE_HEXASCII:
-//
-//#if 0
-//
-//    string temp;
-//    buffer << this->c1a;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//    buffer << this->c1b;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//    buffer << this->c2;
-//    temp.append(buffer);
-//    temp.append(ASCII_SEPARATOR);
-//
-//    strcpy(buffer, temp.c_str());
-//    return strlen(buffer);
-//#endif
-//
-//    return 0;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
-//
-//BOOL
-//ProxyCiphertext_PRE1::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
-//{
-//  // Make sure we've been given a real buffer
-//  if (buffer == NULL) {
-//    return 0;
-//  }
-//
-//  // Set base-16 ASCII encoding
-//  miracl *mip=&precisionBits;
-//  mip->IOBASE = 16;
-//
-//  switch (mode) {
-//  case SM9_SERIALIZE_BINARY:
-//    int len;
-//    this->type = (CIPHERTEXT_TYPE)(*buffer);
-//    buffer++;
-//
-//    //cout << "got one " << len << endl;
-//    this->c1a = charToECn(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    buffer += len;
-//
-//    this->c1b = charToZZn2(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    buffer += len;
-//
-//    this->c2 = charToZZn2(buffer, &len);
-//    if (len <= 0) return FALSE;
-//    buffer += len;
-//
-//    //cout << "a1: " << this->a1 << endl;
-//    //cout << "a2: " << this->a2 << endl;
-//    return TRUE;
-//    break;
-//
-//  case SM9_SERIALIZE_HEXASCII:
-//    // Serialize to hexadecimal in ASCII 
-//    // TBD
-//    return FALSE;
-//    break;
-//  }
-//
-//  // Invalid serialization mode
-//  return 0;
-//}
+
+
+int SM9ProxySGN_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+	int totSize = 0;
+	int size = 0;
+
+	char bufferLocal[1024] = {0};
+	int bufferLocalLen = 1024;
+
+	if (buffer == NULL)
+	{
+		buffer = bufferLocal;
+		maxBuffer = bufferLocalLen;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->h, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->S, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			return totSize;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		{
+			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+
+			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+
+			return maxBuffer;
+		}
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+BOOL SM9ProxySGN_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+	// Make sure we've been given a real buffer
+	if (buffer == NULL) {
+		return 0;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			int len;
+
+			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->h = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->S = charToECn(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			return TRUE;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		// Serialize to hexadecimal in ASCII 
+		// TBD
+		return FALSE;
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
 

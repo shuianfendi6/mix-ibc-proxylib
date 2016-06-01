@@ -29,11 +29,13 @@ extern "C" {
 
 	typedef enum _SM9_OBJ_TYPE{
 		SM9_OBJ_NONE = 0,
+
 		SM9_OBJ_SW_PARAM,
 		SM9_OBJ_SW_MSK,
 		SM9_OBJ_SW_MPK,
 		SM9_OBJ_SW_SK,
 		SM9_OBJ_SW_PK,
+		SM9_OBJ_SW_SGN,
 
 		SM9_OBJ_HW_PARAM,
 		SM9_OBJ_HW_MSK,
@@ -59,8 +61,8 @@ extern "C" {
 		SM9_SCHEME_TYPE schemeID);
 
 	// sign
-	int sm9_proxylib_sign(void *params, void *sk, char *message, int messageLen, 
-		char *ciphertext, int *ciphLen, 
+	int sm9_proxylib_sign(void *params, void *mpk, void *sk, char *message, int messageLen, 
+		void **sgn,
 		SM9_SCHEME_TYPE schemeID);
 	// verify
 	int sm9_proxylib_verify(void *params, void *pk, char *message, int messageLen, 

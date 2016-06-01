@@ -215,8 +215,8 @@ int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int u
 
 
 // sign
-int sm9_proxylib_sign(void *params, void *sk, char *message, int messageLen, 
-	char *ciphertext, int *ciphLen, 
+int sm9_proxylib_sign(void *params, void *mpk, void *sk, char *message, int messageLen, 
+	void **sgn,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -225,11 +225,14 @@ int sm9_proxylib_sign(void *params, void *sk, char *message, int messageLen,
 	case SM9_SCHEME_SW:
 		{
 			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
-
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW *)mpk;
 			SM9ProxySK_SW *psk = (SM9ProxySK_SW *) sk;
 
-			if (sm9_sw_sign(*pparams, message, messageLen, *psk) == TRUE) {
+			SM9ProxySGN_SW *psgn = new SM9ProxySGN_SW;
+
+			if (sm9_sw_sign(*pparams, *pmpk, message, messageLen, *psk, *psgn) == TRUE) {
 				error = SM9_ERROR_NONE;
+				*sgn = (void *)psgn;
 			}
 
 			return error;
