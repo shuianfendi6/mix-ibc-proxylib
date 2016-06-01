@@ -117,6 +117,27 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 			cp = new SM9CurveParams_SW;
 		}
 		break;
+	case SM9_OBJ_SW_MSK:
+		{
+			cp = new SM9ProxyMSK_SW;
+		}
+		break;
+	case SM9_OBJ_SW_MPK:
+		{
+			cp = new SM9ProxyMPK_SW;
+		}
+		break;
+	case SM9_OBJ_SW_SK:
+		{
+			cp = new SM9ProxySK_SW;
+		}
+		break;
+	case SM9_OBJ_SW_SGN:
+		{
+			cp = new SM9ProxySGN_SW;
+		}
+		break;
+
 	default:
 		return error;
 		break;
