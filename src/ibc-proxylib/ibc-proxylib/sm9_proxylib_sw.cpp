@@ -487,17 +487,9 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 		sk.de_hid03 = t2 * params.P2;
 	}
 
-
-
-	//t1 = 
-
-	//sk.master = imsk;
-
-	//mpk.Ppubs = imsk * params.P2;
-	//mpk.Ppube = imsk * params.P1;
-
-	//cout<<"Ppubs:"<<mpk.Ppubs<<endl;
-	//cout<<"Ppube:"<<mpk.Ppube<<endl;
+	cout<<"ds_hid01:"<<sk.ds_hid01<<endl;
+	cout<<"de_hid02:"<<sk.de_hid02<<endl;
+	cout<<"de_hid03:"<<sk.de_hid03<<endl;
 
 	return TRUE;
 }

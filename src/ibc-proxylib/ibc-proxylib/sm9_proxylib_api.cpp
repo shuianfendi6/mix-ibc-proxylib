@@ -20,17 +20,22 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
 
-	SM9CurveParams_SW *curveParams = new SM9CurveParams_SW();
 	switch (schemeID) {
 	case SM9_SCHEME_SW:
-		curveParams->objectType = SM9_OBJ_SW_PARAM;
-		if (sm9_sw_generate_params(*curveParams) == TRUE) {
-			error = SM9_ERROR_NONE;
-		}
-		else
 		{
-			delete curveParams;
-			curveParams = NULL;
+			SM9CurveParams_SW *curveParams = new SM9CurveParams_SW();
+			curveParams->objectType = SM9_OBJ_SW_PARAM;
+			if (sm9_sw_generate_params(*curveParams) == TRUE) {
+				error = SM9_ERROR_NONE;
+				*params = (void*) curveParams;
+
+				return error;
+			}
+			else
+			{
+				delete curveParams;
+				curveParams = NULL;
+			}
 		}
 		break;
 	case SM9_SCHEME_HW:
@@ -38,7 +43,7 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 		break;
 	}
 
-	*params = (void*) curveParams;
+	
 	return error;
 }
 
@@ -112,7 +117,6 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 			cp = new SM9CurveParams_SW;
 		}
 		break;
-
 	default:
 		return error;
 		break;
@@ -155,20 +159,24 @@ int sm9_proxylib_generateMasterKeys(void *params, void **mpk,void **msk, SM9_SCH
 
 			if (sm9_sw_generate_masterkey(*pparams, *pmpk,*pmsk) == TRUE) {
 				error = SM9_ERROR_NONE;
+				*mpk = (void*) pmpk;
+				*msk = (void*) pmsk;
+
+				return error;
 			}
-
-			*mpk = (void*) pmpk;
-			*msk = (void*) pmsk;
-
-			return error;
-
-			break;
+			else
+			{
+				delete pmsk;
+				delete pmpk;
+			}
+			
 		}
+		break;
 	case SM9_SCHEME_HW:
 		{
 			return error;
-			break;
 		}
+		break;
 	}
 
 	return error;
@@ -193,14 +201,13 @@ int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int u
 
 			*sk = (void*) psk;
 			return error;
-
-			break;
 		}
+		break;
 	case SM9_SCHEME_HW:
 		{
 			return error;
-			break;
 		}
+		break;
 	}
 
 	return error;
