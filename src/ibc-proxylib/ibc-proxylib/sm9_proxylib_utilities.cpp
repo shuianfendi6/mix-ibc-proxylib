@@ -20,7 +20,7 @@ using namespace std;
 
 using namespace std;
 
-Miracl precisionBits(32,0);
+Miracl precisionBits(256,0);
 
 #ifdef MR_COUNT_OPS
 extern "C"

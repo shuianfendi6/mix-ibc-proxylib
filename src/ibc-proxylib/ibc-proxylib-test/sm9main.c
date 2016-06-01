@@ -43,6 +43,12 @@ int main()
 	int data_len = 2048;
 
 	void *msk, *mpk;
+	void *sk;
+	void *sgn;
+
+	char * message = "Chinese IBS standard";
+	int messageLen = strlen("Chinese IBS standard");
+
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
@@ -54,7 +60,13 @@ int main()
 
 	sm9_proxylib_destroyObject(gParamsDS);
 
-	sm9_proxylib_generateMasterKey(gParams, &mpk,&msk,SM9_SCHEME_SW);
+	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
+
+	sm9_proxylib_calculateUserKeys(gParams,msk,"Alice",strlen("Alice"),&sk,SM9_SCHEME_SW);
+
+	sm9_proxylib_sign(gParams,mpk,sk,message,messageLen,&sgn,SM9_SCHEME_SW);
+
+	sm9_proxylib_verify(gParams,mpk,"Alice",strlen("Alice"),message,messageLen,sgn,SM9_SCHEME_SW);
 
 	return 0;
 

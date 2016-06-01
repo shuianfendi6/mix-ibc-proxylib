@@ -197,10 +197,14 @@ int sm9_proxylib_calculateUserKeys(void *params, void *msk, char * userID, int u
 
 			if (sm9_sw_calculate_privatekey(*pparams, *pmsk, userID, userIDLen, *psk) == TRUE) {
 				error = SM9_ERROR_NONE;
+				*sk = (void*) psk;
+			}
+			else
+			{
+				return error;
 			}
 
-			*sk = (void*) psk;
-			return error;
+
 		}
 		break;
 	case SM9_SCHEME_HW:
@@ -249,11 +253,32 @@ int sm9_proxylib_sign(void *params, void *mpk, void *sk, char *message, int mess
 }
 
 // verify
-int sm9_proxylib_verify(void *params, void *pk, char *message, int messageLen, 
-	char *ciphertext, int ciphLen, 
+int sm9_proxylib_verify(void *params,void *mpk, char *userID, int userIDLen, char *message, int messageLen, 
+	void *sgn,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxySGN_SW *psgn = (SM9ProxySGN_SW*)sgn;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+
+			if (sm9_sw_verify(*pparams, *pmpk, message, messageLen, userID,userIDLen, *psgn) == TRUE) {
+				error = SM9_ERROR_NONE;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
 
 	return error;
 }

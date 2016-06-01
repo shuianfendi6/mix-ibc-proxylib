@@ -65,8 +65,8 @@ extern "C" {
 		void **sgn,
 		SM9_SCHEME_TYPE schemeID);
 	// verify
-	int sm9_proxylib_verify(void *params, void *pk, char *message, int messageLen, 
-		char *ciphertext, int ciphLen, 
+	int sm9_proxylib_verify(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+		void *sgn,
 		SM9_SCHEME_TYPE schemeID);
 
 	// encrypt
