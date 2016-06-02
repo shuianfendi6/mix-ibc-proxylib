@@ -37,6 +37,7 @@ extern "C" {
 		SM9_OBJ_SW_WRAP,
 		SM9_OBJ_SW_DATA,
 		SM9_OBJ_SW_CIPHER,
+		SM9_OBJ_SW_EX_R,
 
 		SM9_OBJ_HW_PARAM,
 		SM9_OBJ_HW_MSK,
@@ -84,6 +85,20 @@ extern "C" {
 	// decrypt
 	int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int userIDLen, 
 		void *cipher, void **plain, SM9_CIPHER_TYPE cipherType,
+		SM9_SCHEME_TYPE schemeID);
+
+
+	int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userIDLen,
+		void **RA,
+		SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_keyExchangeB2(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+		void **cipher, SM9_CIPHER_TYPE cipherType,
+		SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+		void **cipher, SM9_CIPHER_TYPE cipherType,
+		SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_keyExchangeB4(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
+		void **cipher, SM9_CIPHER_TYPE cipherType,
 		SM9_SCHEME_TYPE schemeID);
 
 #ifdef __cplusplus

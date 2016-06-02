@@ -29,6 +29,7 @@ int main()
 	void *msk = 0;
 	void *mpk = 0;
 	void *sk = 0;
+	void *skb = 0;
 	void *sgn = 0;
 	void *key = 0;
 	void *wrapkey = 0;
@@ -37,6 +38,8 @@ int main()
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
+
+	// sign verify start
 
 	//sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 	//data_len = 2048;
@@ -80,7 +83,9 @@ int main()
 	//sm9_proxylib_destroyObject(sk);
 	//sm9_proxylib_destroyObject(sgn);
 
-	// sign verify end
+	//// sign verify end
+
+	// crypto and wrap start
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
 	sm9_proxylib_calculateUserKeys(gParams,msk,"Bob",strlen("Bob"),&sk,SM9_SCHEME_SW);
@@ -128,6 +133,29 @@ int main()
 	sm9_proxylib_destroyObject(mpk);
 	sm9_proxylib_destroyObject(msk);
 	sm9_proxylib_destroyObject(sk);
+
+	//// crypto and wrap end
+
+	// key ex start
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
+	sm9_proxylib_calculateUserKeys(gParams,msk,"Alice",strlen("Alice"),&sk,SM9_SCHEME_SW);
+	sm9_proxylib_calculateUserKeys(gParams,msk,"Bob",strlen("Bob"),&skb,SM9_SCHEME_SW);
+
+	//sm9_proxylib_keyExchangeInitiator_step1(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+	//sm9_proxylib_keyExchangeResponder_step2(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+	//sm9_proxylib_keyExchangeInitiator_step3(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+	//sm9_proxylib_keyExchangeInitiator_step4(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+
+
+
+	//clear objects
+	sm9_proxylib_destroyObject(gParams);
+	sm9_proxylib_destroyObject(mpk);
+	sm9_proxylib_destroyObject(msk);
+	sm9_proxylib_destroyObject(sk);
+
+	//key ex end
 
 	return 0;
 }

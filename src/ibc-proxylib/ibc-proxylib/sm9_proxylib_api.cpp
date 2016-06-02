@@ -464,7 +464,42 @@ int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int u
 			}
 			else
 			{
-				delete plain;
+				delete pplain;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userIDLen,
+	void **RA,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyEXR_SW *pRA = new SM9ProxyEXR_SW;
+
+			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userID, userIDLen, *pRA) == TRUE) {
+				*RA = (void*) pRA;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pRA;
 			}
 
 			return error;

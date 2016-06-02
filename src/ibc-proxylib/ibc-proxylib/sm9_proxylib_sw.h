@@ -121,6 +121,21 @@ public:
 		char *buffer, int maxBuffer);
 };
 
+class SM9ProxyEXR_SW: public SM9Object {
+public:
+	ECn R;
+
+	SM9ProxyEXR_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_EX_R;}
+
+	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
+		char *buffer, int maxBuffer);
+};
+
+
+
+
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk);
@@ -133,5 +148,7 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 
 BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *message, int messageLen, SM9ProxyCipher_SW &cipher, SM9_CIPHER_TYPE cipherType);
 BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyCipher_SW &cipher, SM9ProxyDATA_SW &plain, SM9_CIPHER_TYPE cipherType);
+
+BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userID, int userIDLen, SM9ProxyEXR_SW &RA);
 
 #endif // __PROXYLIB_PRE_SW_H__

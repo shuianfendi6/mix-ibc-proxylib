@@ -1159,8 +1159,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	ZZn2 X;
 	ZZn12 w_;
 
-	BOOL ret = FALSE;
-
 #ifdef AFFINE
 	ecurve(params.a,params.b,params.q,MR_AFFINE);
 #endif
@@ -1189,19 +1187,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	klen = K1_len + K2_len;
 
 	ID = from_binary(userIDLen,userID);
-
-	Big ID_union_hid;
-
-	pos += to_binary(ID,1024,buffer+pos);
-
-	pos += to_binary(hid,1024,buffer+pos);
-
-	ID_union_hid = from_binary(pos, buffer);
-
-	char n_str[1024];
-	int n_len = 1024;
-
-	n_len = to_binary(params.N,n_len, n_str);
 
 	pos = 0;
 
@@ -1318,6 +1303,75 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	return FALSE;
 }
+
+BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userID, int userIDLen, SM9ProxyEXR_SW &exr)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x02;
+
+	Big ID;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	ID = from_binary(userIDLen,userID);
+
+	Big ID_union_hid;
+	char buffer[1024];
+	int pos = 0;
+
+	pos += to_binary(ID,1024,buffer+pos);
+
+	pos += to_binary(hid,1024,buffer+pos);
+
+	ID_union_hid = from_binary(pos, buffer);
+
+	char n_str[1024];
+	int n_len = 1024;
+
+	n_len = to_binary(params.N,n_len, n_str);
+
+	char h1_str[1024] = {0};
+	int h1_len = 1024;
+
+	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+	Big h1 = from_binary(h1_len,h1_str);
+
+	ECn Q = h1*params.P1;
+
+	Q += mpk.Ppube;
+
+	cout <<"Q:"<<Q<<endl;
+
+	Big r;
+
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_EX) 
+	r = "5879 DD1D51E175946F23B1B41E93BA31C584AE59A426EC1046A4D03B06C8";
+#else
+	while(0 == (r=rand(params.N)))
+	{
+
+	};
+#endif
+
+	ECn R = r*Q;
+
+	exr.R = R;
+
+	cout <<"R:"<<R<<endl;
+
+	return TRUE;
+}
+
 
 int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
 	char *buffer, int maxBuffer) { 
@@ -2251,6 +2305,94 @@ BOOL SM9ProxyCipher_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int b
 			buffer += len;
 
 			this->C2 = charToBig(buffer, &len);
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			return TRUE;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		// Serialize to hexadecimal in ASCII 
+		// TBD
+		return FALSE;
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+int SM9ProxyEXR_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+{
+	int totSize = 0;
+	int size = 0;
+
+	char bufferLocal[1024] = {0};
+	int bufferLocalLen = 1024;
+
+	if (buffer == NULL)
+	{
+		buffer = bufferLocal;
+		maxBuffer = bufferLocalLen;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->R, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			return totSize;
+		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		{
+			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+
+			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+
+			return maxBuffer;
+		}
+		break;
+	}
+
+	// Invalid serialization mode
+	return 0;
+}
+
+BOOL SM9ProxyEXR_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSize)
+{
+	// Make sure we've been given a real buffer
+	if (buffer == NULL) {
+		return 0;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
+		{
+			int len;
+
+			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			if (len <= 0) return FALSE;
+			buffer += len;
+
+			this->R = charToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
