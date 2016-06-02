@@ -19,6 +19,8 @@ extern Benchmark gBenchmark;
 #endif
 extern Miracl precisionBits;
 
+#include "sm4.h"
+
 SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
 {
 	miracl *mip=&precisionBits;
@@ -884,7 +886,7 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	char key_wrap_data[0x100];
 
-	opf_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
 	Big K = from_binary(key_wrap_len/8, key_wrap_data);
 
@@ -941,7 +943,7 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 	char key_wrap_data[0x100];
 	int key_wrap_len = 0x0100;
 
-	opf_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
 	Big K_ = from_binary(key_wrap_len/8, key_wrap_data);
 
@@ -1068,7 +1070,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		
 	kdata= new char[klen];
 
-	opf_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
 
 	Big K1;
 	Big K2;
@@ -1091,12 +1093,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		}
 
 		C2 = from_binary(messageLen,buffer);
-
-		char C3_str[32] = {0};
-
-		SM9_MAC(kdata + mlen/8,K2_len/8,buffer,messageLen,C3_str);
-
-		C3 = from_binary(32,C3_str);
 	}
 	else
 	{
@@ -1106,8 +1102,31 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
 
+		sm4_context ctx;
 
+		sm4_setkey_enc(&ctx,(unsigned char *)kdata + K1_len/8);
+
+		int blockLen = 128/8;
+
+		int plainLen = (messageLen + blockLen)/(blockLen) * blockLen;
+		char * plain = new char[(messageLen+(128/8))];
+		char pad = plainLen - messageLen;
+
+		memcpy(plain,message,messageLen);
+		memset(plain + messageLen,pad,pad);
+
+		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain,(unsigned char *)buffer);
+
+		C2 = from_binary(plainLen,buffer);
+
+		delete plain;
 	}
+
+	char C3_str[32] = {0};
+
+	SM9_MAC(kdata + mlen/8,K2_len/8,buffer,messageLen,C3_str);
+
+	C3 = from_binary(32,C3_str);
 
 	if (kdata)
 	{
