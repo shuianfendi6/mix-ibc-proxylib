@@ -1477,9 +1477,9 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	pos += to_binaryZZn12(g2,2048,buffer+pos);
 	pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	char * key_str = new char[0x80];
+	char * key_str = new char[key_len];
 
-	tcm_kdf((unsigned char *)key_str, 0x80,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
 
 
 	delete key_str;
