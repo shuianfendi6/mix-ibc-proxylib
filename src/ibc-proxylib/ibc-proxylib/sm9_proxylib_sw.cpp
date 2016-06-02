@@ -884,7 +884,7 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	char key_wrap_data[0x100];
 
-	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	opf_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
 	Big K = from_binary(key_wrap_len/8, key_wrap_data);
 
@@ -941,7 +941,7 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 	char key_wrap_data[0x100];
 	int key_wrap_len = 0x0100;
 
-	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	opf_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
 	Big K_ = from_binary(key_wrap_len/8, key_wrap_data);
 
@@ -1068,7 +1068,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		
 	kdata= new char[klen];
 
-	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
+	opf_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
 
 	Big K1;
 	Big K2;
