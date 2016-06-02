@@ -36,6 +36,27 @@ public:
 		char *buffer, int maxBuffer) {
 			return FALSE;
 	}
+
+	virtual BOOL operator==(SM9Object &second) {
+		BOOL flag = FALSE;
+		SM9_SERIALIZE_MODE mode = SM9_SERIALIZE_BINARY;
+		int maxBuffer = 1024;
+		char buffer_one[1024] = {0};
+		char buffer_second[1024] = {0};
+		int buffer_one_len = 0;
+		int buffer_second_len = 0;
+
+		buffer_one_len = this->trySerialize(mode, buffer_one, maxBuffer);
+		buffer_second_len = second.trySerialize(mode, buffer_second, maxBuffer);
+
+		if (buffer_one_len == buffer_second_len && 0 == memcmp(buffer_one,buffer_second,buffer_one_len))
+		{
+			flag = TRUE;
+		}
+
+		return flag;
+
+	}
 };
 
 // Utility Routines

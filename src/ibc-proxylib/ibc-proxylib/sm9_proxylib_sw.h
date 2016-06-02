@@ -30,21 +30,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-	virtual int maxPlaintextSize() {
-		Big temp;
-		X.get(temp);
-		return bits(temp);
-	}
-
-	BOOL operator==(SM9CurveParams_SW &second) {
-		return ((this->bits_local == second.bits_local) && 
-			(this->q == second.q) &&
-			(this->N == second.N) &&
-			(this->P1 == second.P1) &&
-			(this->P2 == second.P2) &&
-			(this->k == second.k)
-			);
-	}
 };
 
 class SM9ProxyMPK_SW: public SM9Object {
@@ -53,19 +38,11 @@ public:
 	ECn  Ppube;
 
 	SM9ProxyMPK_SW() { schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_MPK;}
-	SM9ProxyMPK_SW(ECn2 &Pp2, ECn &Pp1) { this->schemeType = SM9_SCHEME_SW;
-	this->Ppubs = Pp2; this->Ppube = Pp1; }
-	void set(ECn2 &Pp2, ECn &Pp1) { this->Ppube = Pp1; this->Ppubs = Pp2; }
-
+	
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyMPK_SW &second) {
-		return ((this->Ppubs == second.Ppubs) && 
-			(this->Ppube == second.Ppube));
-	}
 };
 
 class SM9ProxyMSK_SW: public SM9Object {
@@ -73,18 +50,11 @@ public:
 	Big master;
 
 	SM9ProxyMSK_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_MSK;}
-	SM9ProxyMSK_SW(Big &sk) { this->schemeType = SM9_SCHEME_SW; 
-	this->set(sk); }
-	void set(Big &sk) { this->master = sk; }
 
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyMSK_SW &second) {
-		return ((this->master == second.master));
-	}
 };
 
 class SM9ProxySK_SW: public SM9Object {
@@ -99,13 +69,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxySK_SW &second) {
-		return ((this->ds_hid01 == second.ds_hid01) && 
-			(this->de_hid02 == second.de_hid02) && 
-			(this->de_hid03 == second.de_hid03)
-			);
-	}
 };
 
 class SM9ProxySGN_SW: public SM9Object {
@@ -119,12 +82,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxySGN_SW &second) {
-		return ((this->h == second.h) && 
-			(this->S == second.S)
-			);
-	}
 };
 
 class SM9ProxyWRAP_SW: public SM9Object {
@@ -137,11 +94,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyWRAP_SW &second) {
-		return ((this->C == second.C)
-			);
-	}
 };
 
 class SM9ProxyDATA_SW: public SM9Object {
@@ -154,11 +106,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyDATA_SW &second) {
-		return ((this->data == second.data)
-			);
-	}
 };
 
 class SM9ProxyCipher_SW: public SM9Object {
@@ -172,13 +119,6 @@ public:
 		char *buffer, int maxBuffer);
 	virtual BOOL deserialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);
-
-	BOOL operator==(SM9ProxyCipher_SW &second) {
-		return ((this->C1 == second.C1)&&
-			(this->C2 == second.C2)&&
-			(this->C3 == second.C3)
-			);
-	}
 };
 
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
