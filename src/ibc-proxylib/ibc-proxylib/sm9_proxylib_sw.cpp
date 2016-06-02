@@ -1231,24 +1231,33 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	Big u;
 	Big M;
 
+	K1 = from_binary(K1_len/8, kdata);
+	K2 = from_binary(K2_len/8,kdata + K1_len/8);
+
+	cout <<"K1:"<<K1<<endl;
+	cout <<"K2:"<<K2<<endl;
+
+	char U_str[32] = {0};
+
+	pos = 0;
+	pos = to_binary(cipher.C2,1024,buffer+pos);
+
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		K1 = from_binary(K1_len/8, kdata);
-		K2 = from_binary(K2_len/8,kdata + K1_len/8);
-
-		cout <<"K1:"<<K1<<endl;
-		cout <<"K2:"<<K2<<endl;
-
-		char U_str[32] = {0};
-
-		pos = 0;
-		pos = to_binary(cipher.C2,1024,buffer+pos);
-
 		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,K1_len/8,U_str);
+	}
+	else
+	{
+		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,pos,U_str);
+	}
 
-		u = from_binary(32,U_str);
+	u = from_binary(32,U_str);
 
-		if(0 == u-cipher.C3)
+	cout <<"u:"<<u<<endl;
+
+	if(0 == u-cipher.C3)
+	{
+		if(SM9_CIPHER_KDF_BASE == cipherType)
 		{
 			char * M_ = new char[K1_len/8];
 
@@ -1261,42 +1270,34 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 			delete M_;
 		}
-		
+		else
+		{
+			K1 = from_binary(K1_len/8, kdata);
+			K2 = from_binary(K2_len/8,kdata + K1_len/8);
+
+			cout <<"K1:"<<K1<<endl;
+			cout <<"K2:"<<K2<<endl;
+
+			sm4_context ctx;
+
+			sm4_setkey_dec(&ctx,(unsigned char *)kdata);
+
+			int blockLen = 128/8;
+
+			pos = 0;
+
+			pos = to_binary(cipher.C2,1024,buffer+pos);
+
+			char * plain = new char[pos];
+
+			sm4_crypt_ecb(&ctx,0,pos,(unsigned char *)buffer,(unsigned char *)plain);
+
+			M = from_binary(pos-plain[pos-1],plain);
+
+			delete plain;
+		}
 	}
-	else
-	{
-		K1 = from_binary(K1_len/8, kdata);
-		K2 = from_binary(K2_len/8,kdata + K1_len/8);
-
-		cout <<"K1:"<<K1<<endl;
-		cout <<"K2:"<<K2<<endl;
-
-		sm4_context ctx;
-
-		/*sm4_setkey_enc(&ctx,(unsigned char *)kdata);
-
-		int blockLen = 128/8;
-
-		int plainLen = (messageLen + blockLen)/(blockLen) * blockLen;
-		char * plain = new char[(messageLen+(128/8))];
-		char pad = plainLen - messageLen;
-
-		memcpy(plain,message,messageLen);
-		memset(plain + messageLen,pad,pad);
-
-		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain,(unsigned char *)buffer);
-
-		C2 = from_binary(plainLen,buffer);
-
-		char C3_str[32] = {0};
-
-		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,plainLen,C3_str);
-
-		C3 = from_binary(32,C3_str);
-
-		delete plain;*/
-	}
-
+	
 	if (kdata)
 	{
 		delete kdata;
