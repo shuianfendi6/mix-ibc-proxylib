@@ -35,55 +35,59 @@ int main()
 	void *wrapkey = 0;
 	void *cipher = 0;
 	void *plain=0;
+	void *RA = 0;
+	void *RB = 0;
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
-
+#if 0
 	// sign verify start
 
-	//sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-	//data_len = 2048;
-	//sm9_proxylib_getSerializeObjectSize(gParams, SM9_SERIALIZE_BINARY, &data_len);
-	//sm9_proxylib_serializeObject(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	//sm9_proxylib_destroyObject(gParams);
-	//sm9_proxylib_deserializeObject(data_value, data_len, &gParams,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(gParams, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(gParams,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(gParams);
+	sm9_proxylib_deserializeObject(data_value, data_len, &gParams,SM9_SERIALIZE_BINARY);
 
-	//sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
-	//data_len = 2048;
-	//sm9_proxylib_getSerializeObjectSize(mpk, SM9_SERIALIZE_BINARY, &data_len);
-	//sm9_proxylib_serializeObject(mpk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	//sm9_proxylib_destroyObject(mpk);
-	//sm9_proxylib_deserializeObject(data_value, data_len, &mpk,SM9_SERIALIZE_BINARY);
-	//data_len = 2048;
-	//sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &data_len);
-	//sm9_proxylib_serializeObject(msk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	//sm9_proxylib_destroyObject(msk);
-	//sm9_proxylib_deserializeObject(data_value, data_len, &msk,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(mpk, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(mpk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(mpk);
+	sm9_proxylib_deserializeObject(data_value, data_len, &mpk,SM9_SERIALIZE_BINARY);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(msk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(msk);
+	sm9_proxylib_deserializeObject(data_value, data_len, &msk,SM9_SERIALIZE_BINARY);
 
-	//sm9_proxylib_calculateUserKeys(gParams,msk,"Alice",strlen("Alice"),&sk,SM9_SCHEME_SW);
-	//data_len = 2048;
-	//sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_BINARY, &data_len);
-	//sm9_proxylib_serializeObject(sk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	//sm9_proxylib_destroyObject(sk);
-	//sm9_proxylib_deserializeObject(data_value, data_len, &sk,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_calculateUserKeys(gParams,msk,"Alice",strlen("Alice"),&sk,SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(sk,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(sk);
+	sm9_proxylib_deserializeObject(data_value, data_len, &sk,SM9_SERIALIZE_BINARY);
 
-	//sm9_proxylib_sign(gParams,mpk,sk,message,messageLen,&sgn,SM9_SCHEME_SW);
-	//data_len = 2048;
-	//sm9_proxylib_getSerializeObjectSize(sgn, SM9_SERIALIZE_BINARY, &data_len);
-	//sm9_proxylib_serializeObject(sgn,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	//sm9_proxylib_destroyObject(sgn);
-	//sm9_proxylib_deserializeObject(data_value, data_len, &sgn,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_sign(gParams,mpk,sk,message,messageLen,&sgn,SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(sgn, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(sgn,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(sgn);
+	sm9_proxylib_deserializeObject(data_value, data_len, &sgn,SM9_SERIALIZE_BINARY);
 
-	//sm9_proxylib_verify(gParams,mpk,"Alice",strlen("Alice"),message,messageLen,sgn,SM9_SCHEME_SW);
-	//
-	//// clear objects
-	//sm9_proxylib_destroyObject(gParams);
-	//sm9_proxylib_destroyObject(mpk);
-	//sm9_proxylib_destroyObject(msk);
-	//sm9_proxylib_destroyObject(sk);
-	//sm9_proxylib_destroyObject(sgn);
+	sm9_proxylib_verify(gParams,mpk,"Alice",strlen("Alice"),message,messageLen,sgn,SM9_SCHEME_SW);
+	
+	// clear objects
+	sm9_proxylib_destroyObject(gParams);
+	sm9_proxylib_destroyObject(mpk);
+	sm9_proxylib_destroyObject(msk);
+	sm9_proxylib_destroyObject(sk);
+	sm9_proxylib_destroyObject(sgn);
 
-	//// sign verify end
+	// sign verify end
+
+#elif 0
 
 	// crypto and wrap start
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
@@ -136,13 +140,15 @@ int main()
 
 	//// crypto and wrap end
 
+#elif 1
+
 	// key ex start
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
 	sm9_proxylib_calculateUserKeys(gParams,msk,"Alice",strlen("Alice"),&sk,SM9_SCHEME_SW);
 	sm9_proxylib_calculateUserKeys(gParams,msk,"Bob",strlen("Bob"),&skb,SM9_SCHEME_SW);
 
-	//sm9_proxylib_keyExchangeInitiator_step1(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+	sm9_proxylib_keyExchangeA1(gParams,mpk,"Bob",strlen("Bob"),&RA,SM9_SCHEME_SW);
 	//sm9_proxylib_keyExchangeResponder_step2(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
 	//sm9_proxylib_keyExchangeInitiator_step3(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
 	//sm9_proxylib_keyExchangeInitiator_step4(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
@@ -154,6 +160,10 @@ int main()
 	sm9_proxylib_destroyObject(mpk);
 	sm9_proxylib_destroyObject(msk);
 	sm9_proxylib_destroyObject(sk);
+
+#else
+	
+#endif
 
 	//key ex end
 
