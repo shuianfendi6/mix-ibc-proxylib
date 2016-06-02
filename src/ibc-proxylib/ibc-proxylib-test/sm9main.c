@@ -149,6 +149,18 @@ int main()
 	sm9_proxylib_calculateUserKeys(gParams,msk,"Bob",strlen("Bob"),&skb,SM9_SCHEME_SW);
 
 	sm9_proxylib_keyExchangeA1(gParams,mpk,"Bob",strlen("Bob"),&RA,SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(RA, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(RA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(RA);
+	RA = NULL;
+	sm9_proxylib_deserializeObject(data_value, data_len, &RA,SM9_SERIALIZE_BINARY);
+
+	sm9_proxylib_keyExchangeB2(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,SM9_SCHEME_SW);
+
+
+
+
 	//sm9_proxylib_keyExchangeResponder_step2(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
 	//sm9_proxylib_keyExchangeInitiator_step3(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
 	//sm9_proxylib_keyExchangeInitiator_step4(gParams,mpk,"Bob",strlen("Bob"),NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
