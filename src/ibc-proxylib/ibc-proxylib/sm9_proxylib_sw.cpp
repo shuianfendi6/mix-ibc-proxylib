@@ -1104,7 +1104,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 		sm4_context ctx;
 
-		sm4_setkey_enc(&ctx,(unsigned char *)kdata + K1_len/8);
+		sm4_setkey_enc(&ctx,(unsigned char *)kdata);
 
 		int blockLen = 128/8;
 
