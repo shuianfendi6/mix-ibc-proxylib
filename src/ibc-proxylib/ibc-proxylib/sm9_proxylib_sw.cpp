@@ -953,7 +953,7 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 }
 
 
-BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *message, int messageLen, SM9ProxyCipher_SW &cipher)
+BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *message, int messageLen, SM9ProxyCipher_SW &cipher, SM9_CIPHER_TYPE cipherType)
 {
 	miracl *mip=&precisionBits;
 
@@ -1001,8 +1001,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	Big h1 = from_binary(h1_len,h1_str);
 
-	int key_wrap_len = 0x0100;
-
 	ECn QB = h1 * params.P1;
 
 	QB += mpk.Ppube;
@@ -1012,6 +1010,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	Big r;
 
 #if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_WRAP) 
+	r = "AAC0541779C8FC45E3E2CB25C12B5D2576B2129AE8BB5EE2CBE5EC9E785C";
 	r = "AAC0541779C8FC45E3E2CB25C12B5D2576B2129AE8BB5EE2CBE5EC9E785C";
 #else
 	while(0 == (r=rand(params.N)))
@@ -1032,14 +1031,26 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	ZZn12 w = pow(g,r);
 
+	int K1_len = 0x80;
+	int K2_len = 0x0100;
+	int mlen = messageLen * 8;
 
+	int klen = 0;
+	
+	if(SM9_CIPHER_KDF_BASE == cipherType)
+	{
+		klen = mlen + K2_len;
+	}
+	else
+	{
+		klen = K1_len + K2_len;
+	}
 
-	/*
 	pos = 0;
 
 	Big cx,cy;
 
-	C.get(cx,cy);
+	C1.get(cx,cy);
 
 	pos += to_binary(cx,1024,buffer + pos);
 
@@ -1053,21 +1064,66 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	cout <<"value_union:"<<value_union<<endl;
 
-	char key_wrap_data[0x100];
+	char * kdata = NULL;
+		
+	kdata= new char[klen];
 
-	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
 
-	Big K = from_binary(key_wrap_len/8, key_wrap_data);
+	Big K1;
+	Big K2;
+	Big C2;
+	Big C3;
+	
+	if(SM9_CIPHER_KDF_BASE == cipherType)
+	{
+		K1 = from_binary(mlen/8, kdata);
+		K2 = from_binary(K2_len/8,kdata + mlen/8);
 
-	cout <<"K:"<<K<<endl;
+		cout <<"K1:"<<K1<<endl;
+		cout <<"K2:"<<K2<<endl;
 
-	key.data = K;
-	wrapkey.C = C;*/
+		Big M = from_binary(messageLen,message);
+
+		for(pos = 0; pos < messageLen; pos++)
+		{
+			buffer[pos] = message[pos] ^ kdata[pos];
+		}
+
+		C2 = from_binary(messageLen,buffer);
+
+		char C3_str[32] = {0};
+
+		SM9_MAC(kdata + mlen/8,K2_len/8,buffer,messageLen,C3_str);
+
+		C3 = from_binary(32,C3_str);
+
+		cipher.C1 = C1;
+		cipher.C2 = C2;
+		cipher.C3 = C3;
+
+		cout <<"C1:"<<C1<<endl;
+		cout <<"C2:"<<C2<<endl;
+		cout <<"C3:"<<C3<<endl;
+	}
+	else
+	{
+		K1 = from_binary(K1_len/8, kdata);
+		K2 = from_binary(K2_len/8,kdata + K1_len/8);
+
+		cout <<"K1:"<<K1<<endl;
+		cout <<"K2:"<<K2<<endl;
+	}
+
+	if (kdata)
+	{
+		delete kdata;
+	}
 
 	return TRUE;
 }
 
-BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyCipher_SW &cipher, SM9ProxyDATA_SW &plain)
+BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyCipher_SW &cipher, SM9ProxyDATA_SW &plain, SM9_CIPHER_TYPE cipherType)
 {
 	return TRUE;
 }
@@ -1941,7 +1997,7 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->C1, buffer, maxBuffer - totSize);
+			size = ECnTochar(this->C1, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1995,7 +2051,7 @@ BOOL SM9ProxyCipher_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int b
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->C1 = charToBig(buffer, &len);
+			this->C1 = charToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 

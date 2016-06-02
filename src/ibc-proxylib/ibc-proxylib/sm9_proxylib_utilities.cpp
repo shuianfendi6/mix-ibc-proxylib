@@ -128,7 +128,7 @@ ECn hash_and_map(char *ID)
 }
 
 
-int SM9_HV(unsigned int n,unsigned char * src, unsigned char * digest)
+int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32])
 {
 	return tcm_sch_hash(n,src,digest);
 }
@@ -263,10 +263,23 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 }
 
 
-Big SM9_H3()
+int SM9_MAC(char * pK, int iKLen, char * pZ,int iZLen, char pMac[32])
 {
+	char * buffer = new char[iKLen + iZLen];
+
+	memcpy(buffer,pZ,iZLen);
+	memcpy(buffer+iZLen,pK,iKLen);
+
+	SM9_HV(iKLen + iZLen,(unsigned char *)buffer,(unsigned char *)pMac);
+
+	if(buffer)
+	{
+		delete buffer;
+	}
+
 	return 0;
 }
+
 
 #define PROJECTIVE
 

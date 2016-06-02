@@ -60,6 +60,8 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
 
 int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);
 int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len);
+int SM9_MAC(char * pK, int iKLen, char * pZ,int iZLen, char pMac[32]);
+int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32]);
 
 extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
 extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);

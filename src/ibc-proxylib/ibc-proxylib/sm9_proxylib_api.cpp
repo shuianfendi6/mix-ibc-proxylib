@@ -406,7 +406,7 @@ int sm9_proxylib_unwrap(void *params, void *mpk, void *sk,  char * userID, int u
 
 // encrypt
 int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
-	void **cipher,
+	void **cipher, SM9_CIPHER_TYPE cipherType,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -419,7 +419,7 @@ int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, 
 
 			SM9ProxyCipher_SW *pcipher = new SM9ProxyCipher_SW;
 
-			if (sm9_sw_encrypt(*pparams, *pmpk, userID, userIDLen, message, messageLen, *pcipher) == TRUE) {
+			if (sm9_sw_encrypt(*pparams, *pmpk, userID, userIDLen, message, messageLen, *pcipher, cipherType) == TRUE) {
 				*cipher = (void*) pcipher;
 				error = SM9_ERROR_NONE;
 			}
@@ -443,7 +443,7 @@ int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, 
 
 // decrypt
 int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int userIDLen, 
-	void *cipher, void **plain,
+	void *cipher, void **plain, SM9_CIPHER_TYPE cipherType,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -458,7 +458,7 @@ int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int u
 
 			SM9ProxyDATA_SW *pplain = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_decrypt(*pparams, *pmpk, *psk, userID, userIDLen, *pcipher,*pplain) == TRUE) {
+			if (sm9_sw_decrypt(*pparams, *pmpk, *psk, userID, userIDLen, *pcipher,*pplain, cipherType) == TRUE) {
 				*plain = (void*) pplain;
 				error = SM9_ERROR_NONE;
 			}

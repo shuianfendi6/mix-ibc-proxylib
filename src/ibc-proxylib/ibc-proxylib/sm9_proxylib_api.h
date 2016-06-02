@@ -10,6 +10,11 @@ extern "C" {
 	} SM9_SCHEME_TYPE;
 
 	typedef enum {
+		SM9_CIPHER_KDF_BASE = 0,        // 基于KDF
+		SM9_CIPHER_KDF_UNION = 1,       // 结合KDF 
+	} SM9_CIPHER_TYPE;
+
+	typedef enum {
 		SM9_SERIALIZE_BINARY = 0,
 		SM9_SERIALIZE_HEXASCII = 1
 	} SM9_SERIALIZE_MODE;
@@ -74,11 +79,11 @@ extern "C" {
 
 	// encrypt
 	int sm9_proxylib_encrypt(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
-		void **cipher,
+		void **cipher, SM9_CIPHER_TYPE cipherType,
 		SM9_SCHEME_TYPE schemeID);
 	// decrypt
 	int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int userIDLen, 
-		void *cipher, void **plain,
+		void *cipher, void **plain, SM9_CIPHER_TYPE cipherType,
 		SM9_SCHEME_TYPE schemeID);
 
 #ifdef __cplusplus
