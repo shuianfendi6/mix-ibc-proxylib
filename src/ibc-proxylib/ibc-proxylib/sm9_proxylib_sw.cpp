@@ -1035,18 +1035,14 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	int K1_len = 0x80;
 	int K2_len = 0x0100;
-	int mlen = messageLen * 8;
-
 	int klen = 0;
 	
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		klen = mlen + K2_len;
+		K1_len = messageLen * 8;
 	}
-	else
-	{
-		klen = K1_len + K2_len;
-	}
+
+	klen = K1_len + K2_len;
 
 	pos = 0;
 
@@ -1079,8 +1075,8 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		K1 = from_binary(mlen/8, kdata);
-		K2 = from_binary(K2_len/8,kdata + mlen/8);
+		K1 = from_binary(K1_len/8, kdata);
+		K2 = from_binary(K2_len/8,kdata + K1_len/8);
 
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
@@ -1093,6 +1089,12 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		}
 
 		C2 = from_binary(messageLen,buffer);
+
+		char C3_str[32] = {0};
+
+		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,messageLen,C3_str);
+
+		C3 = from_binary(32,C3_str);
 	}
 	else
 	{
@@ -1119,14 +1121,14 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 		C2 = from_binary(plainLen,buffer);
 
+		char C3_str[32] = {0};
+
+		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,plainLen,C3_str);
+
+		C3 = from_binary(32,C3_str);
+
 		delete plain;
 	}
-
-	char C3_str[32] = {0};
-
-	SM9_MAC(kdata + mlen/8,K2_len/8,buffer,messageLen,C3_str);
-
-	C3 = from_binary(32,C3_str);
 
 	if (kdata)
 	{
