@@ -166,7 +166,7 @@ public:
 	ECn C1;
 	Big C2,C3;
 
-	SM9ProxyCipher_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_DATA;}
+	SM9ProxyCipher_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_CIPHER;}
 
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,
 		char *buffer, int maxBuffer);

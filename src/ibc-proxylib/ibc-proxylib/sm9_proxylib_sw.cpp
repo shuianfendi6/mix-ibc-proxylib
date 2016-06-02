@@ -1148,6 +1148,166 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, SM9ProxyCipher_SW &cipher, SM9ProxyDATA_SW &plain, SM9_CIPHER_TYPE cipherType)
 {
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x03;
+
+	Big ID;
+
+	ZZn12 g;
+	ZZn2 X;
+	ZZn12 w_;
+
+	BOOL ret = FALSE;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	set_frobenius_constant(X);
+
+	ecap(sk.de_hid03,cipher.C1,params.t,X,w_);
+
+	int K1_len = 0x80;
+	int K2_len = 0x0100;
+	int klen = 0;
+
+	char buffer[1024];
+	int pos = 0;
+
+	pos = to_binary(cipher.C2,1024,buffer+pos);
+
+	if(SM9_CIPHER_KDF_BASE == cipherType)
+	{
+		K1_len = pos * 8;
+	}
+
+	klen = K1_len + K2_len;
+
+	ID = from_binary(userIDLen,userID);
+
+	Big ID_union_hid;
+
+	pos += to_binary(ID,1024,buffer+pos);
+
+	pos += to_binary(hid,1024,buffer+pos);
+
+	ID_union_hid = from_binary(pos, buffer);
+
+	char n_str[1024];
+	int n_len = 1024;
+
+	n_len = to_binary(params.N,n_len, n_str);
+
+	pos = 0;
+
+	Big cx,cy;
+
+	cipher.C1.get(cx,cy);
+
+	pos += to_binary(cx,1024,buffer + pos);
+
+	pos += to_binary(cy,1024,buffer + pos);
+
+	pos += to_binaryZZn12(w_,1024,buffer + pos);
+
+	pos += to_binary(ID,1024,buffer + pos);
+
+	Big value_union = from_binary(pos,buffer);
+
+	cout <<"value_union:"<<value_union<<endl;
+
+	char * kdata = NULL;
+
+	kdata= new char[klen];
+
+	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
+
+	Big K1,K2;
+	Big u;
+
+	if(SM9_CIPHER_KDF_BASE == cipherType)
+	{
+		K1 = from_binary(K1_len/8, kdata);
+		K2 = from_binary(K2_len/8,kdata + K1_len/8);
+
+		cout <<"K1:"<<K1<<endl;
+		cout <<"K2:"<<K2<<endl;
+
+		char * M_ = new char[K1_len/8];
+
+		pos = 0;
+
+		pos = to_binary(cipher.C2,1024,buffer+pos);
+
+		for(pos = 0; pos < K1_len/8; pos++)
+		{
+			M_[pos] = buffer[pos] ^ kdata[pos];
+		}
+
+		char C3_str[32] = {0};
+		char U_str[32] = {0};
+
+		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,K1_len/8,U_str);
+
+		u = from_binary(32,U_str);
+
+		delete M_;
+	}
+	else
+	{
+		K1 = from_binary(K1_len/8, kdata);
+		K2 = from_binary(K2_len/8,kdata + K1_len/8);
+
+		cout <<"K1:"<<K1<<endl;
+		cout <<"K2:"<<K2<<endl;
+
+		sm4_context ctx;
+
+		/*sm4_setkey_enc(&ctx,(unsigned char *)kdata);
+
+		int blockLen = 128/8;
+
+		int plainLen = (messageLen + blockLen)/(blockLen) * blockLen;
+		char * plain = new char[(messageLen+(128/8))];
+		char pad = plainLen - messageLen;
+
+		memcpy(plain,message,messageLen);
+		memset(plain + messageLen,pad,pad);
+
+		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain,(unsigned char *)buffer);
+
+		C2 = from_binary(plainLen,buffer);
+
+		char C3_str[32] = {0};
+
+		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,plainLen,C3_str);
+
+		C3 = from_binary(32,C3_str);
+
+		delete plain;*/
+	}
+
+	if (kdata)
+	{
+		delete kdata;
+	}
+
+	if(0 == u-cipher.C3)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+
 	return TRUE;
 }
 
