@@ -153,6 +153,12 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 		}
 		break;
 
+	case SM9_OBJ_SW_EX_R:
+		{
+			cp = new SM9ProxyEXR_SW;
+		}
+		break;
+
 	default:
 		return error;
 		break;
@@ -495,6 +501,44 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userI
 
 			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userID, userIDLen, *pRA) == TRUE) {
 				*RA = (void*) pRA;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pRA;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userID, int userIDLen, char * userIDB, int userIDBLen, int key_len,
+	void *RA, void **RB,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyEXR_SW *pRA = (SM9ProxyEXR_SW*)RA;
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
+
+			SM9ProxyEXR_SW *pRB = new SM9ProxyEXR_SW;
+
+			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userID, userIDLen, userIDB, userIDBLen,key_len, *pRA, *pRB) == TRUE) {
+				*RB = (void*) pRB;
 				error = SM9_ERROR_NONE;
 			}
 			else
