@@ -955,6 +955,115 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 
 BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, int userIDLen, char *message, int messageLen, SM9ProxyCipher_SW &cipher)
 {
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x03;
+
+	Big ID;
+
+	ZZn12 g;
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	ID = from_binary(userIDLen,userID);
+
+	Big ID_union_hid;
+	char buffer[1024];
+	int pos = 0;
+
+	pos += to_binary(ID,1024,buffer+pos);
+
+	pos += to_binary(hid,1024,buffer+pos);
+
+	ID_union_hid = from_binary(pos, buffer);
+
+	Big t1 = 0;
+	//calc t1
+
+	char h1_str[1024] = {0};
+	int h1_len = 1024;
+
+	char n_str[1024];
+	int n_len = 1024;
+
+	n_len = to_binary(params.N,n_len, n_str);
+
+	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+
+	Big h1 = from_binary(h1_len,h1_str);
+
+	int key_wrap_len = 0x0100;
+
+	ECn QB = h1 * params.P1;
+
+	QB += mpk.Ppube;
+
+	cout <<"QB:"<<QB<<endl;
+
+	Big r;
+
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_WRAP) 
+	r = "AAC0541779C8FC45E3E2CB25C12B5D2576B2129AE8BB5EE2CBE5EC9E785C";
+#else
+	while(0 == (r=rand(params.N)))
+	{
+
+	};
+#endif
+
+	ECn C1= r*QB;
+
+	cout <<"r:"<<r<<endl;
+
+	cout <<"C1:"<<C1<<endl;
+
+	set_frobenius_constant(X);
+
+	ecap(params.P2,mpk.Ppube,params.t,X,g);
+
+	ZZn12 w = pow(g,r);
+
+
+
+	/*
+	pos = 0;
+
+	Big cx,cy;
+
+	C.get(cx,cy);
+
+	pos += to_binary(cx,1024,buffer + pos);
+
+	pos += to_binary(cy,1024,buffer + pos);
+
+	pos += to_binaryZZn12(w,1024,buffer + pos);
+
+	pos += to_binary(ID,1024,buffer + pos);
+
+	Big value_union = from_binary(pos,buffer);
+
+	cout <<"value_union:"<<value_union<<endl;
+
+	char key_wrap_data[0x100];
+
+	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+
+	Big K = from_binary(key_wrap_len/8, key_wrap_data);
+
+	cout <<"K:"<<K<<endl;
+
+	key.data = K;
+	wrapkey.C = C;*/
+
 	return TRUE;
 }
 
