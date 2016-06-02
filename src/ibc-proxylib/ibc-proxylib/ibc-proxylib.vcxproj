@@ -84,7 +84,6 @@
     <ClCompile Include="ecn2.cpp" />
     <ClCompile Include="FILE_LOG.c" />
     <ClCompile Include="flash.cpp" />
-    <ClCompile Include="opf_kdf.c" />
     <ClCompile Include="proxylib_utilities.cpp" />
     <ClCompile Include="sm3.c" />
     <ClCompile Include="sm4.c" />
@@ -105,7 +104,6 @@
     <ClInclude Include="ecn2.h" />
     <ClInclude Include="FILE_LOG.h" />
     <ClInclude Include="flash.h" />
-    <ClInclude Include="opf_kdf.h" />
     <ClInclude Include="sm3.h" />
     <ClInclude Include="sm4.h" />
     <ClInclude Include="sm9_proxylib.h" />
