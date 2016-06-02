@@ -1156,8 +1156,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	Big hid = 0x03;
 
 	Big ID;
-
-	ZZn12 g;
 	ZZn2 X;
 	ZZn12 w_;
 
@@ -1231,6 +1229,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	Big K1,K2;
 	Big u;
+	Big M;
 
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
@@ -1240,25 +1239,29 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
 
-		char * M_ = new char[K1_len/8];
+		char U_str[32] = {0};
 
 		pos = 0;
-
 		pos = to_binary(cipher.C2,1024,buffer+pos);
-
-		for(pos = 0; pos < K1_len/8; pos++)
-		{
-			M_[pos] = buffer[pos] ^ kdata[pos];
-		}
-
-		char C3_str[32] = {0};
-		char U_str[32] = {0};
 
 		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,K1_len/8,U_str);
 
 		u = from_binary(32,U_str);
 
-		delete M_;
+		if(0 == u-cipher.C3)
+		{
+			char * M_ = new char[K1_len/8];
+
+			for(pos = 0; pos < K1_len/8; pos++)
+			{
+				M_[pos] = buffer[pos] ^ kdata[pos];
+			}
+
+			M = from_binary(pos,M_);
+
+			delete M_;
+		}
+		
 	}
 	else
 	{
@@ -1299,6 +1302,10 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 		delete kdata;
 	}
 
+	plain.data = M;
+
+	cout <<"M:"<<M<<endl;
+
 	if(0 == u-cipher.C3)
 	{
 		return TRUE;
@@ -1308,7 +1315,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 		return FALSE;
 	}
 
-	return TRUE;
+	return FALSE;
 }
 
 int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
