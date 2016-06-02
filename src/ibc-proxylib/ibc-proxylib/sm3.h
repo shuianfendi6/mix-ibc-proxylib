@@ -1,62 +1,117 @@
+/**
+ * \file sm3.h
+ * thanks to Xyssl
+ * SM3 standards:http://www.oscca.gov.cn/News/201012/News_1199.htm
+ * author:goldboar
+ * email:goldboar@163.com
+ * 2011-10-26
+ */
+#ifndef XYSSL_SM3_H
+#define XYSSL_SM3_H
 
-// sm3.h
-#ifndef _SM3_H_
-#define _SM3_H_
 
+/**
+ * \brief          SM3 context structure
+ */
+typedef struct
+{
+    unsigned int total[2];     /*!< number of bytes processed  */
+    unsigned int state[8];     /*!< intermediate digest state  */
+    unsigned char buffer[64];   /*!< data block being processed */
 
-#define  SM3_DIGEST_LEN     32
+    unsigned char ipad[64];     /*!< HMAC: inner padding        */
+    unsigned char opad[64];     /*!< HMAC: outer padding        */
 
-typedef struct {
-	unsigned int total[2];
-	unsigned int state[8];
-	unsigned char buffer[64];
-} sch_context;
-
-struct SM3ContextStr {
-   sch_context context;
-};
-
+}
+sm3_context;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
- * 建立SM3 context
- * ctx SM3计算的上下文
+/**
+ * \brief          SM3 context setup
+ *
+ * \param ctx      context to be initialized
  */
-void tcm_sch_starts(sch_context *ctx );
+void sm3_starts( sm3_context *ctx );
 
-/*
- * 提供输入数据
- * ctx SM3计算的上下文
- * input 输入数据
- * length 输入数据长度
+/**
+ * \brief          SM3 process buffer
+ *
+ * \param ctx      SM3 context
+ * \param input    buffer holding the  data
+ * \param ilen     length of the input data
  */
-void tcm_sch_update( sch_context *ctx, unsigned char *input, unsigned int length);
+void sm3_update( sm3_context *ctx, unsigned char *input, int ilen );
 
-/*
- * 计算结果
- * ctx SM3计算的上下文
- * digest 输出的Hash值
+/**
+ * \brief          SM3 final digest
+ *
+ * \param ctx      SM3 context
  */
-void tcm_sch_finish( sch_context *ctx, unsigned char digest[32] );
+void sm3_finish( sm3_context *ctx, unsigned char output[32] );
 
-
-/* 
- * 直接根据输入计算结果
- * datalen_in 输入数据长度
- * pdata_in 输入数据
- * digest 输出的Hash值
+/**
+ * \brief          Output = SM3( input buffer )
+ *
+ * \param input    buffer holding the  data
+ * \param ilen     length of the input data
+ * \param output   SM3 checksum result
  */
-int tcm_sch_hash( unsigned int datalen_in, unsigned char *pdata_in, unsigned char digest[32]);
+void sm3( unsigned char *input, int ilen,
+           unsigned char output[32]);
 
+/**
+ * \brief          Output = SM3( file contents )
+ *
+ * \param path     input file name
+ * \param output   SM3 checksum result
+ *
+ * \return         0 if successful, 1 if fopen failed,
+ *                 or 2 if fread failed
+ */
+int sm3_file( char *path, unsigned char output[32] );
 
-int tcm_hmac(unsigned char *text, unsigned int text_len, unsigned char *key, unsigned int key_len, unsigned char digest[32]);
+/**
+ * \brief          SM3 HMAC context setup
+ *
+ * \param ctx      HMAC context to be initialized
+ * \param key      HMAC secret key
+ * \param keylen   length of the HMAC key
+ */
+void sm3_hmac_starts( sm3_context *ctx, unsigned char *key, int keylen);
 
-int tcm_kdf(/*out*/unsigned char *key, /*in*/int klen, /*in*/unsigned char *z, /*in*/ int zlen);
+/**
+ * \brief          SM3 HMAC process buffer
+ *
+ * \param ctx      HMAC context
+ * \param input    buffer holding the  data
+ * \param ilen     length of the input data
+ */
+void sm3_hmac_update( sm3_context *ctx, unsigned char *input, int ilen );
 
-void tcm_sch_finish_EndRaw( sch_context *ctx, unsigned char digest[32] ) ;
+/**
+ * \brief          SM3 HMAC final digest
+ *
+ * \param ctx      HMAC context
+ * \param output   SM3 HMAC checksum result
+ */
+void sm3_hmac_finish( sm3_context *ctx, unsigned char output[32] );
+
+/**
+ * \brief          Output = HMAC-SM3( hmac key, input buffer )
+ *
+ * \param key      HMAC secret key
+ * \param keylen   length of the HMAC key
+ * \param input    buffer holding the  data
+ * \param ilen     length of the input data
+ * \param output   HMAC-SM3 result
+ */
+void sm3_hmac( unsigned char *key, int keylen,
+                unsigned char *input, int ilen,
+                unsigned char output[32] );
+
 
 #ifdef __cplusplus
 }

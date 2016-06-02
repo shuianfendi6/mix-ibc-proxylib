@@ -1097,14 +1097,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 		SM9_MAC(kdata + mlen/8,K2_len/8,buffer,messageLen,C3_str);
 
 		C3 = from_binary(32,C3_str);
-
-		cipher.C1 = C1;
-		cipher.C2 = C2;
-		cipher.C3 = C3;
-
-		cout <<"C1:"<<C1<<endl;
-		cout <<"C2:"<<C2<<endl;
-		cout <<"C3:"<<C3<<endl;
 	}
 	else
 	{
@@ -1113,12 +1105,22 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
+
+
 	}
 
 	if (kdata)
 	{
 		delete kdata;
 	}
+
+	cipher.C1 = C1;
+	cipher.C2 = C2;
+	cipher.C3 = C3;
+
+	cout <<"C1:"<<C1<<endl;
+	cout <<"C2:"<<C2<<endl;
+	cout <<"C3:"<<C3<<endl;
 
 	return TRUE;
 }
