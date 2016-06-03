@@ -1308,7 +1308,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	return FALSE;
 }
 
-BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userIDA, int userIDALen, SM9ProxyEXR_SW &RA)
+BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userIDB, int userIDBLen, SM9ProxyEXR_SW &RA, SM9ProxyDATA_SW &rA)
 {
 	miracl *mip=&precisionBits;
 
@@ -1326,7 +1326,7 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	ID = from_binary(userIDALen,userIDA);
+	ID = from_binary(userIDBLen,userIDB);
 
 	Big ID_union_hid;
 	char buffer[1024];
@@ -1371,13 +1371,15 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 
 	RA.R = R;
 
+	rA.data = r;
+
 	cout <<"R:"<<R<<endl;
 
 	return TRUE;
 }
 
-BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
-	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB)
+BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB,  SM9ProxyDATA_SW &S2)
 {
 	miracl *mip=&precisionBits;
 
@@ -1529,6 +1531,203 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	SB.data = from_binary(32,digest);
 
 	cout <<"SB:"<<SB.data<<endl;
+
+	pos = 0;
+
+	pos += to_binaryZZn12(g2,2048,buffer+pos);
+
+	pos += to_binaryZZn12(g3,2048,buffer+pos);
+
+	ID = from_binary(userIDALen, userIDA);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	ID = from_binary(userIDBLen, userIDB);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	RA.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	RB.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	pos = 0;
+
+	pos += to_binary(0x83,2048,buffer+pos);
+	pos += to_binaryZZn12(g1,2048, buffer+pos);
+	memcpy(buffer+pos, digest, 32);
+	pos += 32;
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	S2.data = from_binary(32,digest);
+
+	cout <<"S2:"<<S2.data<<endl;
+
+	return TRUE;
+}
+
+BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, 
+	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB,SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	Big hid = 0x02;
+	Big ID;
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	set_frobenius_constant(X);
+
+	if (RB.R.iszero())
+	{
+		return FALSE;
+	}
+
+	ZZn12 g1,g2,g3;
+	Big x0,y0;
+
+	ecap(params.P2,mpk.Ppube,params.t,X,g1);
+
+	g1 = pow(g1,rA.data);
+
+	ecap(sk.de_hid02,RB.R,params.t,X,g2);
+
+	g3 = pow(g2,rA.data);
+
+	char buffer[2048];
+	int pos = 0;
+
+	char digest[32] = {0};
+
+	pos = 0;
+
+	pos += to_binaryZZn12(g2,2048,buffer+pos);
+
+	pos += to_binaryZZn12(g3,2048,buffer+pos);
+
+	ID = from_binary(userIDALen, userIDA);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	ID = from_binary(userIDBLen, userIDB);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	RA.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	RB.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	pos = 0;
+
+	pos += to_binary(0x82,2048,buffer+pos);
+	pos += to_binaryZZn12(g1,2048, buffer+pos);
+	memcpy(buffer+pos, digest, 32);
+	pos += 32;
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	Big S1 = from_binary(32,digest);
+
+	if(S1!=SB.data)
+	{
+		return FALSE;
+	}
+
+	pos = 0;
+
+	ID = from_binary(userIDALen, userIDA);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	ID = from_binary(userIDBLen, userIDB);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	RA.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	RB.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	pos += to_binaryZZn12(g1,2048,buffer+pos);
+	pos += to_binaryZZn12(g2,2048,buffer+pos);
+	pos += to_binaryZZn12(g3,2048,buffer+pos);
+
+	char * key_str = new char[key_len];
+
+	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
+
+	SKA.data = from_binary(key_len,key_str);
+
+	delete key_str;
+	
+	cout <<"SKA:"<<SKA.data<<endl;
+
+	pos = 0;
+
+	pos += to_binaryZZn12(g2,2048,buffer+pos);
+
+	pos += to_binaryZZn12(g3,2048,buffer+pos);
+
+	ID = from_binary(userIDALen, userIDA);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	ID = from_binary(userIDBLen, userIDB);
+
+	pos += to_binary(ID,2048,buffer+pos);
+
+	RA.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	RB.R.get(x0,y0);
+
+	pos += to_binary(x0,2048,buffer+pos);
+	pos += to_binary(y0,2048,buffer+pos);
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	pos = 0;
+
+	pos += to_binary(0x83,2048,buffer+pos);
+	pos += to_binaryZZn12(g1,2048, buffer+pos);
+	memcpy(buffer+pos, digest, 32);
+	pos += 32;
+
+	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+
+	SA.data = from_binary(32,digest);
 
 	return TRUE;
 }

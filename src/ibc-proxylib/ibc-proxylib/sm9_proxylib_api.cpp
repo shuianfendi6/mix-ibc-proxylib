@@ -186,6 +186,19 @@ int sm9_proxylib_destroyObject(void *params) {
 	return SM9_ERROR_NONE;
 }
 
+int sm9_proxylib_cmpObject(void *first, void *second)
+{
+	int error = SM9_ERROR_OTHER;
+	SM9Object *pfirst = (SM9Object*) first;
+	SM9Object *psecond = (SM9Object*) second;
+
+	if (TRUE == ((*pfirst)==(*psecond)))
+	{
+		error = SM9_ERROR_NONE;
+	}
+	
+	return error;
+}
 
 int sm9_proxylib_generateMasterKeys(void *params, void **mpk,void **msk, SM9_SCHEME_TYPE schemeID)
 {
@@ -486,8 +499,8 @@ int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int u
 	return error;
 }
 
-int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int userIDALen,
-	void **RA,
+int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDB, int userIDBLen,
+	void **RA,void **rA,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -498,14 +511,17 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int user
 			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
 			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
 			SM9ProxyEXR_SW *pRA = new SM9ProxyEXR_SW;
+			SM9ProxyDATA_SW *prA = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userIDA, userIDALen, *pRA) == TRUE) {
+			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userIDB, userIDBLen, *pRA, *prA) == TRUE) {
 				*RA = (void*) pRA;
+				*rA = (void*) prA;
 				error = SM9_ERROR_NONE;
 			}
 			else
 			{
 				delete pRA;
+				delete prA;
 			}
 
 			return error;
@@ -521,8 +537,8 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int user
 	return error;
 }
 
-int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-	void *RA, void **RB, void **SKB, void **SB,
+int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+	void *RA, void **RB, void **SKB, void **SB, void **S2,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -538,11 +554,13 @@ int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA
 			SM9ProxyEXR_SW *pRB = new SM9ProxyEXR_SW;
 			SM9ProxyDATA_SW *pSKB = new SM9ProxyDATA_SW;
 			SM9ProxyDATA_SW *pSB = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pS2 = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSKB, *pSB) == TRUE) {
+			if (sm9_sw_keyexchangeB2B4(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSKB, *pSB, *pS2) == TRUE) {
 				*RB = (void*) pRB;
 				*SKB = (void*) pSKB;
 				*SB = (void*) pSB;
+				*S2 = (void*) pS2;
 				error = SM9_ERROR_NONE;
 			}
 			else
@@ -550,6 +568,51 @@ int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA
 				delete pSKB;
 				delete pSB;
 				delete pRB;
+				delete pS2;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+	void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyEXR_SW *pRA = (SM9ProxyEXR_SW*)RA;
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
+			SM9ProxyEXR_SW *pRB = (SM9ProxyEXR_SW*)RB;
+			SM9ProxyDATA_SW *prA = (SM9ProxyDATA_SW*)rA;
+			SM9ProxyDATA_SW *pSB = (SM9ProxyDATA_SW*)SB;
+
+			SM9ProxyDATA_SW *pSKA = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pSA = new SM9ProxyDATA_SW;
+
+			if (sm9_sw_keyexchangeA3(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB,*pSB,*pSKA, *pSA, *prA) == TRUE) {
+				*SKA = (void*) pSKA;
+				*SA = (void*) pSA;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pSKA;
+				delete pSA;
 			}
 
 			return error;

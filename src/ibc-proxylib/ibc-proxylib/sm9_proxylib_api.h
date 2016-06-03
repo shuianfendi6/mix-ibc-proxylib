@@ -54,6 +54,7 @@ extern "C" {
 	int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 		SM9_SERIALIZE_MODE mode);
 	int sm9_proxylib_destroyObject(void *params);
+	int sm9_proxylib_cmpObject(void *first, void *second);
 
 	int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID);
 
@@ -87,19 +88,17 @@ extern "C" {
 		void *cipher, void **plain, SM9_CIPHER_TYPE cipherType,
 		SM9_SCHEME_TYPE schemeID);
 
+	// key exchange 
+	int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDB, int userIDBLen,
+		void **RA,void **rA,
+		SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+		void *RA, void **RB, void **SKB, void **SB, void **S2,
+		SM9_SCHEME_TYPE schemeID);
+	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+		void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA,
+		SM9_SCHEME_TYPE schemeID);
 
-	int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int userIDALen,
-		void **RA,
-		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-		void *RA, void **RB, void **SKB, void **SB,
-		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
-		void **cipher, SM9_CIPHER_TYPE cipherType,
-		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_keyExchangeB4(void *params, void *mpk, void *sk, char * userID, int userIDLen, char *message, int messageLen, 
-		void **cipher, SM9_CIPHER_TYPE cipherType,
-		SM9_SCHEME_TYPE schemeID);
 
 #ifdef __cplusplus
 }
