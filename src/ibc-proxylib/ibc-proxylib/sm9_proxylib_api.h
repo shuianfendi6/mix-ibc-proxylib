@@ -92,7 +92,7 @@ extern "C" {
 		void **RA,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-		void *RA, void **RB, void **SKB,
+		void *RA, void **RB, void **SKB, void **SB,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
 		void **cipher, SM9_CIPHER_TYPE cipherType,

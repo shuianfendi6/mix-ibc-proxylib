@@ -522,7 +522,7 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int user
 }
 
 int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-	void *RA, void **RB, void **SK,
+	void *RA, void **RB, void **SKB, void **SB,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -536,16 +536,19 @@ int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA
 			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
 
 			SM9ProxyEXR_SW *pRB = new SM9ProxyEXR_SW;
-			SM9ProxyDATA_SW *pSK = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pSKB = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pSB = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSK) == TRUE) {
+			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSKB, *pSB) == TRUE) {
 				*RB = (void*) pRB;
-				*SK = (void*) pSK;
+				*SKB = (void*) pSKB;
+				*SB = (void*) pSB;
 				error = SM9_ERROR_NONE;
 			}
 			else
 			{
-				delete pSK;
+				delete pSKB;
+				delete pSB;
 				delete pRB;
 			}
 
