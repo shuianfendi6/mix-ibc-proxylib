@@ -32,6 +32,7 @@ int main()
 	void *skb = 0;
 	void *sgn = 0;
 	void *key = 0;
+	void *key_ = 0;
 	void *wrapkey = 0;
 	void *cipher = 0;
 	void *plain=0;
@@ -112,10 +113,9 @@ int main()
 	sm9_proxylib_serializeObject(wrapkey,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 	sm9_proxylib_destroyObject(wrapkey);
 	sm9_proxylib_deserializeObject(data_value, data_len, &wrapkey,SM9_SERIALIZE_BINARY);
+	sm9_proxylib_unwrap(gParams,mpk,sk,"Bob",strlen("Bob"),wrapkey,&key_,SM9_SCHEME_SW);
 
-	sm9_proxylib_destroyObject(key);
-	
-	sm9_proxylib_unwrap(gParams,mpk,sk,"Bob",strlen("Bob"),wrapkey,&key,SM9_SCHEME_SW);
+	sm9_proxylib_cmpObject(key,key_);
 
 	message = "Chinese IBE standard";
 	messageLen = strlen("Chinese IBE standard");
@@ -137,6 +137,7 @@ int main()
 	sm9_proxylib_destroyObject(cipher);
 	sm9_proxylib_destroyObject(plain);
 	sm9_proxylib_destroyObject(key);
+	sm9_proxylib_destroyObject(key_);
 	sm9_proxylib_destroyObject(wrapkey);
 
 	//clear objects
