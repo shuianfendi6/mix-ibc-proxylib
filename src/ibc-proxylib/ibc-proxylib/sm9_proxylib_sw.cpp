@@ -762,9 +762,6 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x03;
-
-	Big ID;
-
 	ZZn12 g;
 	ZZn2 X;
 
@@ -774,9 +771,6 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 #ifdef PROJECTIVE
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
-
-	ID = from_binary(userIDLen,userID);
-
 
 	char buffer[1024];
 	int pos = 0;
@@ -850,7 +844,8 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	pos += to_binaryZZn12(w,1024,buffer + pos);
 
-	pos += to_binary(ID,1024,buffer + pos);
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 
 	char * key_wrap_data = new char[key_wrap_len];
 
@@ -890,10 +885,6 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 
 	pos = 0;
 
-	Big ID;
-
-	ID = from_binary(userIDLen,userID);
-
 	Big cx,cy;
 
 	wrapkey.C.get(cx,cy);
@@ -904,7 +895,8 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 
 	pos += to_binaryZZn12(w_,1024,buffer + pos);
 
-	pos += to_binary(ID,1024,buffer + pos);
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 
 	char key_wrap_data[0x100];
 	int key_wrap_len = 0x0100;
@@ -929,9 +921,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x03;
-
-	Big ID;
-
 	ZZn12 g;
 	ZZn2 X;
 
@@ -941,8 +930,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 #ifdef PROJECTIVE
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
-
-	ID = from_binary(userIDLen,userID);
 
 	char buffer[1024];
 	int pos = 0;
@@ -1018,7 +1005,8 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	pos += to_binaryZZn12(w,1024,buffer + pos);
 
-	pos += to_binary(ID,1024,buffer + pos);
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 
 	char * kdata = NULL;
 		
@@ -1112,8 +1100,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x03;
-
-	Big ID;
 	ZZn2 X;
 	ZZn12 w_;
 
@@ -1144,8 +1130,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	klen = K1_len + K2_len;
 
-	ID = from_binary(userIDLen,userID);
-
 	pos = 0;
 
 	Big cx,cy;
@@ -1158,7 +1142,8 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	pos += to_binaryZZn12(w_,1024,buffer + pos);
 
-	pos += to_binary(ID,1024,buffer + pos);
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 
 	char * kdata = NULL;
 
@@ -1501,7 +1486,6 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x02;
-	Big ID;
 	ZZn2 X;
 
 #ifdef AFFINE
@@ -1540,13 +1524,12 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
 
 	RA.R.get(x0,y0);
 
@@ -1578,13 +1561,11 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	pos = 0;
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
-
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
 	RA.R.get(x0,y0);
 
@@ -1616,13 +1597,11 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
-
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
 	RA.R.get(x0,y0);
 
