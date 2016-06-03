@@ -88,11 +88,11 @@ extern "C" {
 		SM9_SCHEME_TYPE schemeID);
 
 
-	int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userIDLen,
+	int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int userIDALen,
 		void **RA,
 		SM9_SCHEME_TYPE schemeID);
-	int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userID, int userIDLen, char * userIDB, int userIDBLen, int key_len,
-		void *RA, void **RB,
+	int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+		void *RA, void **RB, void **SKB,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, char * userID, int userIDLen, char *message, int messageLen, 
 		void **cipher, SM9_CIPHER_TYPE cipherType,

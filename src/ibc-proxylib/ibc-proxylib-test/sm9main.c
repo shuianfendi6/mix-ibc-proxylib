@@ -37,6 +37,7 @@ int main()
 	void *plain=0;
 	void *RA = 0;
 	void *RB = 0;
+	void *SKB = 0;
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
@@ -156,7 +157,17 @@ int main()
 	RA = NULL;
 	sm9_proxylib_deserializeObject(data_value, data_len, &RA,SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_keyExchangeB2(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,SM9_SCHEME_SW);
+	sm9_proxylib_keyExchangeB2(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,&SKB, SM9_SCHEME_SW);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(RB, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(RB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(RB);
+	sm9_proxylib_deserializeObject(data_value, data_len, &RB,SM9_SERIALIZE_BINARY);
+	data_len = 2048;
+	sm9_proxylib_getSerializeObjectSize(SKB, SM9_SERIALIZE_BINARY, &data_len);
+	sm9_proxylib_serializeObject(SKB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+	sm9_proxylib_destroyObject(SKB);
+	sm9_proxylib_deserializeObject(data_value, data_len, &SKB,SM9_SERIALIZE_BINARY);
 
 
 

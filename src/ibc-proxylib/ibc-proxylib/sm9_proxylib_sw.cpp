@@ -38,6 +38,8 @@ int to_binaryZZn12(const ZZn12 &w, int max, char buffer[384])
 	ZZn2 w11, w12, w21, w22,w31,w32;
 	ZZn w111,w112, w121,w122, w211,w212,w221,w222,w311,w312,w321,w322;
 
+	memset(buffer, 0, 384);
+
 	w.get(w1,w2,w3);
 
 	w1.get(w11,w12);
@@ -1306,7 +1308,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	return FALSE;
 }
 
-BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userID, int userIDLen, SM9ProxyEXR_SW &RA)
+BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userIDA, int userIDALen, SM9ProxyEXR_SW &RA)
 {
 	miracl *mip=&precisionBits;
 
@@ -1324,7 +1326,7 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	ID = from_binary(userIDLen,userID);
+	ID = from_binary(userIDALen,userIDA);
 
 	Big ID_union_hid;
 	char buffer[1024];
@@ -1374,7 +1376,8 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	return TRUE;
 }
 
-BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userID, int userIDLen, char * userIDB, int userIDBLen,int key_len,SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB)
+BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB)
 {
 	miracl *mip=&precisionBits;
 
@@ -1394,7 +1397,7 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	set_frobenius_constant(X);
 
-	ID = from_binary(userIDLen,userID);
+	ID = from_binary(userIDALen,userIDA);
 
 	Big ID_union_hid;
 	char buffer[2048];
@@ -1457,14 +1460,13 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	memset(buffer, 0, 2048);
 
-	ID = from_binary(userIDLen, userID);
+	ID = from_binary(userIDALen, userIDA);
 
 	pos += to_binary(ID,2048,buffer+pos);
 
 	ID = from_binary(userIDBLen, userIDB);
 
 	pos += to_binary(ID,2048,buffer+pos);
-
 
 	Big x0,y0;
 	RA.R.get(x0,y0);
@@ -1484,6 +1486,8 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	char * key_str = new char[key_len];
 
 	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
+
+	SKB.data = from_binary(key_len,key_str);
 
 	delete key_str;
 

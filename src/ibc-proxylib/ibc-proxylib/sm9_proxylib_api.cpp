@@ -486,7 +486,7 @@ int sm9_proxylib_decrypt(void *params,void *mpk, void *sk,  char * userID, int u
 	return error;
 }
 
-int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userIDLen,
+int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDA, int userIDALen,
 	void **RA,
 	SM9_SCHEME_TYPE schemeID)
 {
@@ -499,7 +499,7 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userI
 			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
 			SM9ProxyEXR_SW *pRA = new SM9ProxyEXR_SW;
 
-			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userID, userIDLen, *pRA) == TRUE) {
+			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userIDA, userIDALen, *pRA) == TRUE) {
 				*RA = (void*) pRA;
 				error = SM9_ERROR_NONE;
 			}
@@ -521,8 +521,8 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userID, int userI
 	return error;
 }
 
-int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userID, int userIDLen, char * userIDB, int userIDBLen, int key_len,
-	void *RA, void **RB,
+int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+	void *RA, void **RB, void **SK,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -536,14 +536,17 @@ int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userID,
 			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
 
 			SM9ProxyEXR_SW *pRB = new SM9ProxyEXR_SW;
+			SM9ProxyDATA_SW *pSK = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userID, userIDLen, userIDB, userIDBLen,key_len, *pRA, *pRB) == TRUE) {
+			if (sm9_sw_keyexchangeB2(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSK) == TRUE) {
 				*RB = (void*) pRB;
+				*SK = (void*) pSK;
 				error = SM9_ERROR_NONE;
 			}
 			else
 			{
-				delete pRA;
+				delete pSK;
+				delete pRB;
 			}
 
 			return error;
