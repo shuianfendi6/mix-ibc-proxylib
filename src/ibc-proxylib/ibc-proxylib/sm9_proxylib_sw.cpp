@@ -496,17 +496,13 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	{
 		Big t1,t2, hid01 = 0x01;
 
-		Big id = from_binary(userIDLen, userID);
-
-		Big id_union_hid;
-
 		char buffer[1024];
 		int pos = 0;
 
-		pos += to_binary(id,1024,buffer+pos);
+		memcpy(buffer+pos,userID,userIDLen);
+		pos += userIDLen;
 		pos += to_binary(hid01,1024,buffer+pos);
 
-		id_union_hid = from_binary(pos, buffer);
 
 		char h1_str[1024] = {0};
 		int h1_len = 1024;
@@ -530,18 +526,12 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	//cacl de_hid02
 	{
 		Big t1,t2, hid01 = 0x02;
-
-		Big id = from_binary(userIDLen, userID);
-
-		Big id_union_hid;
-
 		char buffer[1024];
 		int pos = 0;
 
-		pos += to_binary(id,1024,buffer+pos);
+		memcpy(buffer+pos,userID,userIDLen);
+		pos += userIDLen;
 		pos += to_binary(hid01,1024,buffer+pos);
-
-		id_union_hid = from_binary(pos, buffer);
 
 		char h1_str[1024] = {0};
 		int h1_len = 1024;
@@ -565,17 +555,12 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	{
 		Big t1,t2, hid01 = 0x03;
 
-		Big id = from_binary(userIDLen, userID);
-
-		Big id_union_hid;
-
 		char buffer[1024];
 		int pos = 0;
 
-		pos += to_binary(id,1024,buffer+pos);
+		memcpy(buffer+pos,userID,userIDLen);
+		pos += userIDLen;
 		pos += to_binary(hid01,1024,buffer+pos);
-
-		id_union_hid = from_binary(pos, buffer);
 
 		char h1_str[1024] = {0};
 		int h1_len = 1024;
@@ -696,17 +681,12 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	Big t1,t2, hid01 = 0x01;
 
-	Big id = from_binary(userIDLen, userID);
-
-	Big id_union_hid;
-
 	char buffer[1024];
 	int pos = 0;
 
-	pos += to_binary(id,1024,buffer+pos);
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 	pos += to_binary(hid01,1024,buffer+pos);
-
-	id_union_hid = from_binary(pos, buffer);
 
 	char h1_str[1024] = {0};
 	int h1_len = 1024;
@@ -797,15 +777,13 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	ID = from_binary(userIDLen,userID);
 
-	Big ID_union_hid;
+
 	char buffer[1024];
 	int pos = 0;
 
-	pos += to_binary(ID,1024,buffer+pos);
-
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 	pos += to_binary(hid,1024,buffer+pos);
-
-	ID_union_hid = from_binary(pos, buffer);
 
 	Big t1 = 0;
 	//calc t1
@@ -966,15 +944,12 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	ID = from_binary(userIDLen,userID);
 
-	Big ID_union_hid;
 	char buffer[1024];
 	int pos = 0;
 
-	pos += to_binary(ID,1024,buffer+pos);
-
+	memcpy(buffer+pos,userID,userIDLen);
+	pos += userIDLen;
 	pos += to_binary(hid,1024,buffer+pos);
-
-	ID_union_hid = from_binary(pos, buffer);
 
 	Big t1 = 0;
 	//calc t1
@@ -1279,8 +1254,6 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 
 	Big hid = 0x02;
 
-	Big ID;
-
 #ifdef AFFINE
 	ecurve(params.a,params.b,params.q,MR_AFFINE);
 #endif
@@ -1288,17 +1261,12 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	ID = from_binary(userIDBLen,userIDB);
-
-	Big ID_union_hid;
 	char buffer[1024];
 	int pos = 0;
 
-	pos += to_binary(ID,1024,buffer+pos);
-
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 	pos += to_binary(hid,1024,buffer+pos);
-
-	ID_union_hid = from_binary(pos, buffer);
 
 	char n_str[1024];
 	int n_len = 1024;
@@ -1349,7 +1317,6 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x02;
-	Big ID;
 	ZZn2 X;
 
 #ifdef AFFINE
@@ -1361,17 +1328,12 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	set_frobenius_constant(X);
 
-	ID = from_binary(userIDALen,userIDA);
-
-	Big ID_union_hid;
 	char buffer[2048];
 	int pos = 0;
 
-	pos += to_binary(ID,1024,buffer+pos);
-
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 	pos += to_binary(hid,1024,buffer+pos);
-
-	ID_union_hid = from_binary(pos, buffer);
 
 	char n_str[1024];
 	int n_len = 1024;
@@ -1422,13 +1384,11 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	pos = 0;
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
-
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
 	Big x0,y0;
 	RA.R.get(x0,y0);
@@ -1461,13 +1421,11 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
-
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
 	RA.R.get(x0,y0);
 
@@ -1500,13 +1458,11 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	ID = from_binary(userIDALen, userIDA);
+	memcpy(buffer+pos,userIDA,userIDALen);
+	pos += userIDALen;
 
-	pos += to_binary(ID,2048,buffer+pos);
-
-	ID = from_binary(userIDBLen, userIDB);
-
-	pos += to_binary(ID,2048,buffer+pos);
+	memcpy(buffer+pos,userIDB,userIDBLen);
+	pos += userIDBLen;
 
 	RA.R.get(x0,y0);
 
