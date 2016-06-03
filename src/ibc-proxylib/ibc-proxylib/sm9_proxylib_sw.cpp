@@ -1455,6 +1455,8 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	pos = 0;
 
+	memset(buffer, 0, 2048);
+
 	ID = from_binary(userIDLen, userID);
 
 	pos += to_binary(ID,2048,buffer+pos);
