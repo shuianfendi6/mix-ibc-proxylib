@@ -20,7 +20,7 @@ using namespace std;
 
 using namespace std;
 
-Miracl precisionBits(256,0);
+Miracl precisionBits(32,0);
 
 #ifdef MR_COUNT_OPS
 extern "C"
@@ -144,7 +144,6 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 	unsigned char * HaItem = NULL;
 	Big Ha = 0;
 
-	Big Z = from_binary(iZLen,pZ);
 	Big n = from_binary(iNLen,pN);
 
 	// step 2
@@ -157,16 +156,21 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 	HaItem = new unsigned char[ihlen+32];
 
+	int bufferLen = 1+iZLen+4;
+	char * buffer = new char[1+iZLen+4];
+
 	for(int i = 0; i < ihlen/v + 1; i++)
 	{
-		char buffer[1024] = {0};
 		Big one = 0x01;
 		int pos = 0;
 		char ct_str[4] = {0};
 
+		memset(buffer,0,bufferLen);
+
 		pos += to_binary(one,1024,buffer + pos);
 
-		pos += to_binary(Z,1024,buffer + pos);
+		memcpy(buffer+pos,pZ,iZLen);
+		pos += iZLen;
 
 		for (int j = 0; j < 4; j++)
 		{
@@ -183,6 +187,8 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 		ct++;
 	}
+
+	delete buffer;
 
 	Ha = from_binary(ihlen/8,(char *)HaItem);
 
@@ -209,7 +215,6 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 	unsigned char * HaItem = NULL;
 	Big Ha = 0;
 
-	Big Z = from_binary(iZLen,pZ);
 	Big n = from_binary(iNLen,pN);
 
 	// step 2
@@ -222,16 +227,21 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 
 	HaItem = new unsigned char[ihlen+32];
 
+	int bufferLen = 1+iZLen+4;
+	char * buffer = new char[1+iZLen+4];
+
 	for(int i = 0; i < ihlen/v + 1; i++)
 	{
-		char buffer[1024] = {0};
 		Big two = 0x02;
 		int pos = 0;
 		char ct_str[4] = {0};
 
+		memset(buffer,0,bufferLen);
+
 		pos += to_binary(two,1024,buffer + pos);
 
-		pos += to_binary(Z,1024,buffer + pos);
+		memcpy(buffer+pos,pZ,iZLen);
+		pos += iZLen;
 
 		for (int j = 0; j < 4; j++)
 		{
@@ -242,12 +252,12 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 
 		pos += 4;
 
-		//pos += to_binary(ct,1024,buffer + pos);
-
 		SM9_HV(pos, (unsigned char *)buffer, HaItem+SM3_DIGEST_LEN*i);
 
 		ct++;
 	}
+
+	delete buffer;
 
 	Ha = from_binary(ihlen/8,(char *)HaItem);
 
