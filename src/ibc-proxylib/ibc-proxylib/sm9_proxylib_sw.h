@@ -1,7 +1,6 @@
 #ifndef __PROXYLIB_PRE_SW_H__
 #define __PROXYLIB_PRE_SW_H__
 
-
 class SM9CurveParams_SW :public SM9Object{
 public:
 
@@ -98,7 +97,7 @@ public:
 
 class SM9ProxyDATA_SW: public SM9Object {
 public:
-	Big data;
+	SM9Data data;
 
 	SM9ProxyDATA_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_DATA;}
 
@@ -111,7 +110,8 @@ public:
 class SM9ProxyCipher_SW: public SM9Object {
 public:
 	ECn C1;
-	Big C2,C3;
+	Big C3;
+	SM9Data C2;
 
 	SM9ProxyCipher_SW() { this->schemeType = SM9_SCHEME_SW; this->objectType = SM9_OBJ_SW_CIPHER;}
 

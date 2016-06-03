@@ -853,11 +853,13 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	Big K = from_binary(key_wrap_len, key_wrap_data);
 
+	key.data.SetValue(key_wrap_data,key_wrap_len);
+
 	delete key_wrap_data;
 
 	cout <<"K:"<<K<<endl;
 
-	key.data = K;
+	//key.data = K;
 	wrapkey.C = C;
 
 	return TRUE;
@@ -898,14 +900,16 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 	memcpy(buffer+pos,userID,userIDLen);
 	pos += userIDLen;
 
-	char key_wrap_data[0x100];
-	int key_wrap_len = 0x0100;
+	char key_wrap_data[0x100/8];
+	int key_wrap_len = 0x0100/8;
 
 	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
-	Big K_ = from_binary(key_wrap_len/8, key_wrap_data);
+	Big K_ = from_binary(key_wrap_len, key_wrap_data);
 
-	key.data = K_;
+	//key.data = K_;
+
+	key.data.SetValue(key_wrap_data,key_wrap_len);
 
 	cout <<"K_:"<<K_<<endl;
 
@@ -1016,7 +1020,6 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	Big K1;
 	Big K2;
-	Big C2;
 	Big C3;
 	
 	if(SM9_CIPHER_KDF_BASE == cipherType)
@@ -1034,7 +1037,8 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 			buffer[pos] = message[pos] ^ kdata[pos];
 		}
 
-		C2 = from_binary(messageLen,buffer);
+		cipher.C2.SetValue(buffer,messageLen);
+		//C2 = from_binary(messageLen,buffer);
 
 		char C3_str[32] = {0};
 
@@ -1065,7 +1069,8 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain,(unsigned char *)buffer);
 
-		C2 = from_binary(plainLen,buffer);
+		cipher.C2.SetValue(buffer,plainLen);
+		//C2 = from_binary(plainLen,buffer);
 
 		char C3_str[32] = {0};
 
@@ -1082,12 +1087,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	}
 
 	cipher.C1 = C1;
-	cipher.C2 = C2;
 	cipher.C3 = C3;
-
-	cout <<"C1:"<<C1<<endl;
-	cout <<"C2:"<<C2<<endl;
-	cout <<"C3:"<<C3<<endl;
 
 	return TRUE;
 }
@@ -1121,7 +1121,12 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	char buffer[1024];
 	int pos = 0;
 
-	pos = to_binary(cipher.C2,1024,buffer+pos);
+	int iLen = 1024;
+
+	/*pos += to_binary(cipher.C2,1024,buffer+pos);*/
+
+	cipher.C2.GetValue(buffer+pos,&iLen);
+	pos += cipher.C2.GetLength();
 
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
@@ -1157,7 +1162,11 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	char U_str[32] = {0};
 
 	pos = 0;
-	pos = to_binary(cipher.C2,1024,buffer+pos);
+
+	//pos += to_binary(cipher.C2,1024,buffer+pos);
+
+	cipher.C2.GetValue(buffer+pos,&iLen);
+	pos += cipher.C2.GetLength();
 
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
@@ -1197,15 +1206,21 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 			pos = 0;
 
-			pos = to_binary(cipher.C2,1024,buffer+pos);
+			//pos += to_binary(cipher.C2,1024,buffer+pos);
+			int iLen = 1024;
 
-			char * plain = new char[pos];
+			cipher.C2.GetValue(buffer+pos,&iLen);
+			pos += cipher.C2.GetLength();
 
-			sm4_crypt_ecb(&ctx,0,pos,(unsigned char *)buffer,(unsigned char *)plain);
+			char * pplain = new char[pos];
 
-			M = from_binary(pos-plain[pos-1],plain);
+			sm4_crypt_ecb(&ctx,0,pos,(unsigned char *)buffer,(unsigned char *)pplain);
 
-			delete plain;
+			M = from_binary(pos-pplain[pos-1],pplain);
+
+			plain.data.SetValue(pplain,pos-pplain[pos-1]);
+
+			delete pplain;
 		}
 	}
 	
@@ -1214,7 +1229,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 		delete kdata;
 	}
 
-	plain.data = M;
+	/*plain.data = M;*/
 
 	cout <<"M:"<<M<<endl;
 
@@ -1286,7 +1301,13 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 
 	RA.R = R;
 
-	rA.data = r;
+	//rA.data = r;
+	{
+		pos = 0;
+		pos += to_binary(r,1024,buffer);
+
+		rA.data.SetValue(buffer,pos);
+	}
 
 	cout <<"R:"<<R<<endl;
 
@@ -1394,7 +1415,8 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
 
-	SKB.data = from_binary(key_len,key_str);
+	//SKB.data = from_binary(key_len,key_str);
+	SKB.data.SetValue(key_str,key_len);
 
 	delete key_str;
 
@@ -1433,9 +1455,10 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
-	SB.data = from_binary(32,digest);
+	//SB.data = from_binary(32,digest);
+	SB.data.SetValue(digest,32);
 
-	cout <<"SB:"<<SB.data<<endl;
+	//cout <<"SB:"<<SB.data<<endl;
 
 	pos = 0;
 
@@ -1470,9 +1493,9 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
-	S2.data = from_binary(32,digest);
-
-	cout <<"S2:"<<S2.data<<endl;
+	//S2.data = from_binary(32,digest);
+	S2.data.SetValue(digest,32);
+	//cout <<"S2:"<<S2.data<<endl;
 
 	return TRUE;
 }
@@ -1507,14 +1530,23 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	ecap(params.P2,mpk.Ppube,params.t,X,g1);
 
-	g1 = pow(g1,rA.data);
+	char buffer[2048];
+	int pos = 0;
+
+	int iLen = 1024;
+
+	rA.data.GetValue(buffer, &iLen);
+
+	Big r = from_binary(iLen, buffer);
+
+	//g1 = pow(g1,rA.data);
+
+	g1 = pow(g1,r);
 
 	ecap(sk.de_hid02,RB.R,params.t,X,g2);
 
-	g3 = pow(g2,rA.data);
-
-	char buffer[2048];
-	int pos = 0;
+	//g3 = pow(g2,rA.data);
+	g3 = pow(g2,r);
 
 	char digest[32] = {0};
 
@@ -1553,8 +1585,10 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
 	Big S1 = from_binary(32,digest);
-
-	if(S1!=SB.data)
+	iLen = 1024;
+	SB.data.GetValue(buffer, &iLen);
+	//if(S1!=SB.data)
+	if (0 != memcmp(digest,buffer,32))
 	{
 		return FALSE;
 	}
@@ -1585,12 +1619,11 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
 
-	SKA.data = from_binary(key_len,key_str);
+	//SKA.data = from_binary(key_len,key_str);
+	SKA.data.SetValue(key_str,key_len);
 
 	delete key_str;
 	
-	cout <<"SKA:"<<SKA.data<<endl;
-
 	pos = 0;
 
 	pos += to_binaryZZn12(g2,2048,buffer+pos);
@@ -1624,7 +1657,8 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
-	SA.data = from_binary(32,digest);
+	//SA.data = from_binary(32,digest);
+	SA.data.SetValue(digest,32);
 
 	return TRUE;
 }
@@ -2409,10 +2443,19 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->data, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
+			//size = BigTochar(this->data, buffer, maxBuffer - totSize);
+			//if (size <= 0) return 0;
+			//totSize += size;
+			//buffer += size;
+
+			int iLen = 0;
+			iLen = this->data.GetLength();
+			*(int*)buffer = iLen;
+			totSize += 4;
+			buffer += 4;
+			this->data.GetValue(buffer,&iLen);
+			totSize += iLen;
+			buffer += iLen;
 
 			return totSize;
 		}
@@ -2453,9 +2496,16 @@ BOOL SM9ProxyDATA_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int buf
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->data = charToBig(buffer, &len);
+			//this->data = charToBig(buffer, &len);
+			//if (len <= 0) return FALSE;
+			//buffer += len;
+			
+			len = *(int*)buffer;
 			if (len <= 0) return FALSE;
+			buffer+=4;
+			this->data.SetValue(buffer,len);
 			buffer += len;
+
 
 			return TRUE;
 		}
@@ -2508,10 +2558,20 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->C2, buffer, maxBuffer - totSize);
-			if (size <= 0) return 0;
-			totSize += size;
-			buffer += size;
+			//size = BigTochar(this->C2, buffer, maxBuffer - totSize);
+			//if (size <= 0) return 0;
+			//totSize += size;
+			//buffer += size;
+
+			int iLen = 0;
+			iLen = this->C2.GetLength();
+			*(int*)buffer = iLen;
+			totSize += 4;
+			buffer += 4;
+			this->C2.GetValue(buffer,&iLen);
+			totSize += iLen;
+			buffer += iLen;
+
 
 			return totSize;
 		}
@@ -2560,8 +2620,14 @@ BOOL SM9ProxyCipher_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int b
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->C2 = charToBig(buffer, &len);
+			//this->C2 = charToBig(buffer, &len);
+			//if (len <= 0) return FALSE;
+			//buffer += len;
+
+			len = *(int*)buffer;
 			if (len <= 0) return FALSE;
+			buffer+=4;
+			this->C2.SetValue(buffer,len);
 			buffer += len;
 
 			return TRUE;

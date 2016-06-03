@@ -9,6 +9,65 @@
 #include "zzn12a.h"
 #include "sm3.h"
 #include "pairing_3.h"
+#include <stdio.h>
+#include <string.h>
+
+class SM9Data
+{
+public:
+	SM9Data(void)
+	{
+		m_pValue = 0;
+		m_iLen = 0;
+	}
+
+	~SM9Data(void)
+	{
+		delete [] m_pValue;
+		m_pValue = 0;
+	}
+
+	void SetValue(char * pValue, int iLen)
+	{
+		if (m_pValue)
+		{
+			delete [] m_pValue;
+			m_pValue = 0;
+		}
+
+		m_iLen = iLen;
+		m_pValue = new char[m_iLen];
+		memcpy(m_pValue, pValue, iLen);
+	}
+
+	void GetValue(char * pValue, int *piLen)
+	{
+		if (*piLen < m_iLen)
+		{
+			*piLen = m_iLen;
+		}
+		else
+		{
+			*piLen = m_iLen;
+			memcpy(pValue, m_pValue, m_iLen);
+		}
+	}
+
+	int GetSize()
+	{
+		return GetLength();
+	}
+
+	int GetLength()
+	{
+		return m_iLen;
+	}
+
+private:
+	char *m_pValue;						//:: 字段数据字节流指针
+	int m_iLen;							//:: 字段数据字节流长度	
+};
+
 
 class SM9Object {
 public:
