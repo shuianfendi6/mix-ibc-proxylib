@@ -828,7 +828,7 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	Big h1 = from_binary(h1_len,h1_str);
 
-	int key_wrap_len = 0x0100;
+	int key_wrap_len = 0x0100/8;
 
 	ECn QB = h1 * params.P1;
 
@@ -884,11 +884,13 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	cout <<"value_union:"<<value_union<<endl;
 
-	char key_wrap_data[0x100];
+	char * key_wrap_data = new char[key_wrap_len];
 
 	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
 
-	Big K = from_binary(key_wrap_len/8, key_wrap_data);
+	Big K = from_binary(key_wrap_len, key_wrap_data);
+
+	delete key_wrap_data;
 
 	cout <<"K:"<<K<<endl;
 
@@ -1208,9 +1210,9 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	char * kdata = NULL;
 
-	kdata= new char[klen];
+	kdata= new char[klen/8];
 
-	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)kdata,klen/8,(unsigned char *)buffer,pos);
 
 	Big K1,K2;
 	Big u;
@@ -1481,9 +1483,7 @@ BOOL sm9_sw_keyexchangeB2(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
 
-
 	delete key_str;
-
 
 	return TRUE;
 }
