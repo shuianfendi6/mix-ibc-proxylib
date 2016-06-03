@@ -44,7 +44,7 @@ int main()
 
 	void *SKA = 0;
 	void *SA = 0;
-	void **S2 = 0;
+	void *S2 = 0;
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
