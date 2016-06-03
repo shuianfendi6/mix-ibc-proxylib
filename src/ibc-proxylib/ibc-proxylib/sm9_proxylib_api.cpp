@@ -538,7 +538,7 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDB, int user
 }
 
 int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-	void *RA, void **RB, void **SKB, void **SB, void **S2,
+	void *RA, void **RB, void **SKB, void **SB, void **S2, SM9_KEY_EX_OPTION option,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -556,11 +556,20 @@ int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userI
 			SM9ProxyDATA_SW *pSB = new SM9ProxyDATA_SW;
 			SM9ProxyDATA_SW *pS2 = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeB2B4(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSKB, *pSB, *pS2) == TRUE) {
+			if (sm9_sw_keyexchangeB2B4(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB, *pSKB, *pSB, *pS2, option) == TRUE) {
 				*RB = (void*) pRB;
 				*SKB = (void*) pSKB;
-				*SB = (void*) pSB;
-				*S2 = (void*) pS2;
+				if (option == SM9_KEY_EX_OPTION_YES)
+				{
+					*SB = (void*) pSB;
+					*S2 = (void*) pS2;
+				}
+				else
+				{
+					delete pSB;
+					delete pS2;
+				}
+
 				error = SM9_ERROR_NONE;
 			}
 			else
@@ -585,7 +594,7 @@ int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userI
 }
 
 int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-	void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA,
+	void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA, SM9_KEY_EX_OPTION option,
 	SM9_SCHEME_TYPE schemeID)
 {
 	int error = SM9_ERROR_OTHER;
@@ -604,9 +613,17 @@ int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA,
 			SM9ProxyDATA_SW *pSKA = new SM9ProxyDATA_SW;
 			SM9ProxyDATA_SW *pSA = new SM9ProxyDATA_SW;
 
-			if (sm9_sw_keyexchangeA3(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB,*pSB,*pSKA, *pSA, *prA) == TRUE) {
+			if (sm9_sw_keyexchangeA3(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len, *pRA, *pRB,*pSB,*pSKA, *pSA, *prA, option) == TRUE) {
 				*SKA = (void*) pSKA;
-				*SA = (void*) pSA;
+				if (option == SM9_KEY_EX_OPTION_YES)
+				{
+					*SA = (void*) pSA;
+				}
+				else
+				{
+					delete pSA;
+				}
+				
 				error = SM9_ERROR_NONE;
 			}
 			else

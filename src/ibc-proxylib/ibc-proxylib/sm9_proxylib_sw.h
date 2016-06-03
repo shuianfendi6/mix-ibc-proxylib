@@ -151,8 +151,10 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char * userIDB, int userIDBLen, SM9ProxyEXR_SW &RA, SM9ProxyDATA_SW &rA);
 BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, 
-	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &S2);
+	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, 
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &S2, SM9_KEY_EX_OPTION option);
 BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, 
-	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA);
+	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, 
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA, SM9_KEY_EX_OPTION option);
 
 #endif // __PROXYLIB_PRE_SW_H__

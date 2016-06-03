@@ -46,6 +46,8 @@ int main()
 	void *SA = 0;
 	void *S2 = 0;
 
+	SM9_KEY_EX_OPTION option;
+
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
 #if 0
@@ -167,8 +169,14 @@ int main()
 	sm9_proxylib_serializeObject(rA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 	sm9_proxylib_destroyObject(rA);
 	sm9_proxylib_deserializeObject(data_value, data_len, &rA,SM9_SERIALIZE_BINARY);
+	
+#if 1
+	option =  SM9_KEY_EX_OPTION_NO;
+#else
+	option =  SM9_KEY_EX_OPTION_YES;
+#endif
 
-	sm9_proxylib_keyExchangeB2B4(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,&SKB,&SB,&S2,SM9_SCHEME_SW);
+	sm9_proxylib_keyExchangeB2B4(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,&SKB,&SB,&S2,option,SM9_SCHEME_SW);
 	data_len = 2048;
 	sm9_proxylib_getSerializeObjectSize(RB, SM9_SERIALIZE_BINARY, &data_len);
 	sm9_proxylib_serializeObject(RB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
@@ -179,42 +187,57 @@ int main()
 	sm9_proxylib_serializeObject(SKB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 	sm9_proxylib_destroyObject(SKB);
 	sm9_proxylib_deserializeObject(data_value, data_len, &SKB,SM9_SERIALIZE_BINARY);
-	data_len = 2048;
-	sm9_proxylib_getSerializeObjectSize(SB, SM9_SERIALIZE_BINARY, &data_len);
-	sm9_proxylib_serializeObject(SB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	sm9_proxylib_destroyObject(SB);
-	sm9_proxylib_deserializeObject(data_value, data_len, &SB,SM9_SERIALIZE_BINARY);
-	data_len = 2048;
-	sm9_proxylib_getSerializeObjectSize(S2, SM9_SERIALIZE_BINARY, &data_len);
-	sm9_proxylib_serializeObject(S2,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	sm9_proxylib_destroyObject(S2);
-	sm9_proxylib_deserializeObject(data_value, data_len, &S2,SM9_SERIALIZE_BINARY);
+	
+	if (SM9_KEY_EX_OPTION_YES == option)
+	{
+		data_len = 2048;
+		sm9_proxylib_getSerializeObjectSize(SB, SM9_SERIALIZE_BINARY, &data_len);
+		sm9_proxylib_serializeObject(SB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+		sm9_proxylib_destroyObject(SB);
+		sm9_proxylib_deserializeObject(data_value, data_len, &SB,SM9_SERIALIZE_BINARY);
+		data_len = 2048;
+		sm9_proxylib_getSerializeObjectSize(S2, SM9_SERIALIZE_BINARY, &data_len);
+		sm9_proxylib_serializeObject(S2,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+		sm9_proxylib_destroyObject(S2);
+		sm9_proxylib_deserializeObject(data_value, data_len, &S2,SM9_SERIALIZE_BINARY);
+	}
 
-	sm9_proxylib_keyExchangeA3(gParams,mpk,sk,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,RB,SB,&SKA,&SA,rA,SM9_SCHEME_SW);
+	sm9_proxylib_keyExchangeA3(gParams,mpk,sk,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,RB,SB,&SKA,&SA,rA,option,SM9_SCHEME_SW);
 	data_len = 2048;
 	sm9_proxylib_getSerializeObjectSize(SKA, SM9_SERIALIZE_BINARY, &data_len);
 	sm9_proxylib_serializeObject(SKA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 	sm9_proxylib_destroyObject(SKA);
 	sm9_proxylib_deserializeObject(data_value, data_len, &SKA,SM9_SERIALIZE_BINARY);
-	data_len = 2048;
-	sm9_proxylib_getSerializeObjectSize(SA, SM9_SERIALIZE_BINARY, &data_len);
-	sm9_proxylib_serializeObject(SA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
-	sm9_proxylib_destroyObject(SA);
-	sm9_proxylib_deserializeObject(data_value, data_len, &SA,SM9_SERIALIZE_BINARY);
+	if (SM9_KEY_EX_OPTION_YES == option)
+	{
+		data_len = 2048;
+		sm9_proxylib_getSerializeObjectSize(SA, SM9_SERIALIZE_BINARY, &data_len);
+		sm9_proxylib_serializeObject(SA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
+		sm9_proxylib_destroyObject(SA);
+		sm9_proxylib_deserializeObject(data_value, data_len, &SA,SM9_SERIALIZE_BINARY);
+	}
 
 	sm9_proxylib_cmpObject(SKA,SKB);
-	sm9_proxylib_cmpObject(SA,S2);
+
+	if (SM9_KEY_EX_OPTION_YES == option)
+	{
+		sm9_proxylib_cmpObject(SA,S2);
+	}
 
 	//clear objects
 	sm9_proxylib_destroyObject(SKA);
 	sm9_proxylib_destroyObject(SKB);
-	sm9_proxylib_destroyObject(SA);
-	sm9_proxylib_destroyObject(SB);
 	sm9_proxylib_destroyObject(rA);
 	sm9_proxylib_destroyObject(RA);
 	sm9_proxylib_destroyObject(RB);
-	sm9_proxylib_destroyObject(S2);
 
+	if (SM9_KEY_EX_OPTION_YES == option)
+	{
+		sm9_proxylib_destroyObject(SB);
+		sm9_proxylib_destroyObject(SA);
+		sm9_proxylib_destroyObject(S2);
+	}
+	
 	sm9_proxylib_destroyObject(gParams);
 	sm9_proxylib_destroyObject(mpk);
 	sm9_proxylib_destroyObject(msk);

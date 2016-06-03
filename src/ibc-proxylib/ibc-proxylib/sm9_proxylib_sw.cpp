@@ -1315,7 +1315,7 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 }
 
 BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
-	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB,  SM9ProxyDATA_SW &S2)
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB,  SM9ProxyDATA_SW &S2, SM9_KEY_EX_OPTION option)
 {
 	miracl *mip=&precisionBits;
 
@@ -1501,7 +1501,8 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 }
 
 BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, 
-	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB,SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA)
+	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, 
+	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB,SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA, SM9_KEY_EX_OPTION option)
 {
 	miracl *mip=&precisionBits;
 
@@ -1585,12 +1586,16 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
 	Big S1 = from_binary(32,digest);
-	iLen = 1024;
-	SB.data.GetValue(buffer, &iLen);
-	//if(S1!=SB.data)
-	if (0 != memcmp(digest,buffer,32))
+
+	if (option == SM9_KEY_EX_OPTION_YES)
 	{
-		return FALSE;
+		iLen = 1024;
+		SB.data.GetValue(buffer, &iLen);
+		//if(S1!=SB.data)
+		if (0 != memcmp(digest,buffer,32))
+		{
+			return FALSE;
+		}
 	}
 
 	pos = 0;
@@ -1626,39 +1631,42 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	
 	pos = 0;
 
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
+	if (option == SM9_KEY_EX_OPTION_YES)
+	{
+		pos += to_binaryZZn12(g2,2048,buffer+pos);
 
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+		pos += to_binaryZZn12(g3,2048,buffer+pos);
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+		memcpy(buffer+pos,userIDA,userIDALen);
+		pos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+		memcpy(buffer+pos,userIDB,userIDBLen);
+		pos += userIDBLen;
 
-	RA.R.get(x0,y0);
+		RA.R.get(x0,y0);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+		pos += to_binary(x0,2048,buffer+pos);
+		pos += to_binary(y0,2048,buffer+pos);
 
-	RB.R.get(x0,y0);
+		RB.R.get(x0,y0);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+		pos += to_binary(x0,2048,buffer+pos);
+		pos += to_binary(y0,2048,buffer+pos);
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+		SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
-	pos = 0;
+		pos = 0;
 
-	pos += to_binary(0x83,2048,buffer+pos);
-	pos += to_binaryZZn12(g1,2048, buffer+pos);
-	memcpy(buffer+pos, digest, 32);
-	pos += 32;
+		pos += to_binary(0x83,2048,buffer+pos);
+		pos += to_binaryZZn12(g1,2048, buffer+pos);
+		memcpy(buffer+pos, digest, 32);
+		pos += 32;
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+		SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
 
-	//SA.data = from_binary(32,digest);
-	SA.data.SetValue(digest,32);
+		//SA.data = from_binary(32,digest);
+		SA.data.SetValue(digest,32);
+	}
 
 	return TRUE;
 }

@@ -21,9 +21,13 @@ extern "C" {
 
 	typedef enum {
 		SM9_ERROR_NONE = 0,
-		SM9_ERROR_PLAINTEXT_TOO_LONG = 1,
-		SM9_ERROR_OTHER = 100,
+		SM9_ERROR_OTHER = -1,
 	} SM9_ERRORID;
+
+	typedef enum {
+		SM9_KEY_EX_OPTION_NO = 0,
+		SM9_KEY_EX_OPTION_YES,
+	} SM9_KEY_EX_OPTION;
 
 	typedef enum _SM9_OBJ_TYPE{
 		SM9_OBJ_NONE = 0,
@@ -93,10 +97,10 @@ extern "C" {
 		void **RA,void **rA,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchangeB2B4(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-		void *RA, void **RB, void **SKB, void **SB, void **S2,
+		void *RA, void **RB, void **SKB, void **SB, void **S2, SM9_KEY_EX_OPTION option,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchangeA3(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
-		void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA,
+		void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA, SM9_KEY_EX_OPTION option,
 		SM9_SCHEME_TYPE schemeID);
 
 
