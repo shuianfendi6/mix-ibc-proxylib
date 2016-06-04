@@ -733,8 +733,8 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	buffer.m_iPos += messageLen;
 	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	char h2_str[1024] = {0};
-	int h2_len = 1024;
+	char h2_str[32] = {0};
+	int h2_len = 32;
 
 	SM9AARData h2_data(32);
 
@@ -1113,7 +1113,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	int iLen = cipher.C2.GetLength();
 
-	/*pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);*/
 	buffer.m_iPos = 0;
 	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
 	buffer.m_iPos += cipher.C2.GetLength();
@@ -1150,7 +1149,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	char U_str[32] = {0};
 
-	//pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);
 	buffer.m_iPos = 0;
 	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
 	buffer.m_iPos += cipher.C2.GetLength();
@@ -1189,7 +1187,6 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 			int blockLen = 128/8;
 
-			//pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);
 			int iLen = cipher.C2.GetLength();
 
 			buffer.m_iPos = 0;
@@ -1380,14 +1377,12 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	char * key_str = new char[key_len];
-
-	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
+	SM9AARData key_str(key_len);
+	key_str.m_iPos = key_str.m_iMaxLen;
+	tcm_kdf((unsigned char *)key_str.m_pValue, key_str.m_iPos,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
 
 	//SKB.data = from_binary(key_len,key_str);
-	SKB.data.SetValue(key_str,key_len);
-
-	delete key_str;
+	SKB.data.SetValue(key_str.m_pValue,key_str.m_iPos);
 
 	char digest[32] = {0};
 
@@ -1502,7 +1497,7 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	SM9AARData buffer(32 * 2 * 2 + 12 * 32 * 3 + userIDALen + userIDBLen);
 
-	int iLen = 1024;
+	int iLen = rA.data.GetLength();
 
 	rA.data.GetValue(buffer.m_pValue, &iLen);
 
@@ -1557,7 +1552,7 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	if (option == SM9_KEY_EX_OPTION_YES)
 	{
-		iLen = 1024;
+		iLen = SB.data.GetLength();
 		SB.data.GetValue(buffer.m_pValue, &iLen);
 		//if(S1!=SB.data)
 		if (0 != memcmp(digest,buffer.m_pValue,32))
@@ -1588,15 +1583,12 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	char * key_str = new char[key_len];
+	SM9AARData key_str(key_len);
 
-	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
+	key_str.m_iPos = key_str.m_iMaxLen;
+	tcm_kdf((unsigned char *)key_str.m_pValue, key_str.m_iPos,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
+	SKA.data.SetValue(key_str.m_pValue,key_str.m_iPos);
 
-	//SKA.data = from_binary(key_len,key_str);
-	SKA.data.SetValue(key_str,key_len);
-
-	delete key_str;
-	
 	buffer.m_iPos = 0;
 
 	if (option == SM9_KEY_EX_OPTION_YES)
