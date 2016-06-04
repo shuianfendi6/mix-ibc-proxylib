@@ -32,13 +32,13 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
 }
 
 
-int to_binaryZZn12(const ZZn12 &w, int max, char buffer[384])
+int to_binaryZZn12(const ZZn12 &w, int max, char output[384])
 {
 	ZZn4 w1, w2, w3;
 	ZZn2 w11, w12, w21, w22,w31,w32;
 	ZZn w111,w112, w121,w122, w211,w212,w221,w222,w311,w312,w321,w322;
 
-	memset(buffer, 0, 384);
+	memset(output, 0, 384);
 
 	w.get(w1,w2,w3);
 
@@ -53,88 +53,88 @@ int to_binaryZZn12(const ZZn12 &w, int max, char buffer[384])
 	w22.get(w221,w222);
 	w32.get(w321,w322);
 
-	int pos = 0;
+	int pos_tmp = 0;
 	{
 		char w_item[32] = {0};
 
-		pos = 0;
+		pos_tmp = 0;
 
 		int w_item_len = 0;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w322,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w321,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w312,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w311,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w222,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w221,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w212,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w211,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w122,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w121,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w112,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 
 		w_item_len = 32;
 		w_item_len = to_binary(w111,w_item_len,w_item);
-		pos += 32 - w_item_len;
-		memcpy(buffer+pos, w_item, w_item_len);
-		pos += w_item_len;
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
 	}
 
-	return pos;
+	return pos_tmp;
 }
 
 static ECn 
@@ -1113,7 +1113,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	int iLen = cipher.C2.GetLength();
 
-	/*pos += to_binary(cipher.C2,1024,buffer+pos);*/
+	/*pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);*/
 	buffer.m_iPos = 0;
 	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
 	buffer.m_iPos += cipher.C2.GetLength();
@@ -1150,7 +1150,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	char U_str[32] = {0};
 
-	//pos += to_binary(cipher.C2,1024,buffer+pos);
+	//pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);
 	buffer.m_iPos = 0;
 	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
 	buffer.m_iPos += cipher.C2.GetLength();
@@ -1189,7 +1189,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 			int blockLen = 128/8;
 
-			//pos += to_binary(cipher.C2,1024,buffer+pos);
+			//pos += to_binary(cipher.C2,1024,buffer.m_pValue + buffer.m_iPos);
 			int iLen = cipher.C2.GetLength();
 
 			buffer.m_iPos = 0;
@@ -1307,24 +1307,20 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	set_frobenius_constant(X);
 
-	char buffer[2048];
-	int pos = 0;
+	SM9AARData buffer(32 * 2 * 2 + 12 * 32 * 3 + userIDALen + userIDBLen);
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
-	pos += to_binary(hid,1024,buffer+pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
+	buffer.m_iPos += to_binary(hid,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
-	char n_str[1024];
-	int n_len = 1024;
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
 
-	n_len = to_binary(params.N,n_len, n_str);
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	char h1_str[1024] = {0};
-	int h1_len = 1024;
+	SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
-
-	Big h1 = from_binary(h1_len,h1_str);
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
 	ECn Q = h1*params.P1;
 
@@ -1361,32 +1357,32 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	g3 = pow(g1,r);
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
 
-	Big x0,y0;
-	RA.R.get(x0,y0);
+	Big cx,cy;
+	RA.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	RB.R.get(x0,y0);
+	RB.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(g1,2048,buffer+pos);
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
 	char * key_str = new char[key_len];
 
-	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
 
 	//SKB.data = from_binary(key_len,key_str);
 	SKB.data.SetValue(key_str,key_len);
@@ -1395,76 +1391,76 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 
 	char digest[32] = {0};
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
 
-	RA.R.get(x0,y0);
+	RA.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	RB.R.get(x0,y0);
+	RB.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binary(0x82,2048,buffer+pos);
-	pos += to_binaryZZn12(g1,2048, buffer+pos);
-	memcpy(buffer+pos, digest, 32);
-	pos += 32;
+	buffer.m_iPos += to_binary(0x82,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+	memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+	buffer.m_iPos += 32;
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
 	//SB.data = from_binary(32,digest);
 	SB.data.SetValue(digest,32);
 
 	//cout <<"SB:"<<SB.data<<endl;
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
 
-	RA.R.get(x0,y0);
+	RA.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	RB.R.get(x0,y0);
+	RB.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binary(0x83,2048,buffer+pos);
-	pos += to_binaryZZn12(g1,2048, buffer+pos);
-	memcpy(buffer+pos, digest, 32);
-	pos += 32;
+	buffer.m_iPos += to_binary(0x83,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+	memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+	buffer.m_iPos += 32;
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
 	//S2.data = from_binary(32,digest);
 	S2.data.SetValue(digest,32);
@@ -1500,18 +1496,17 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	}
 
 	ZZn12 g1,g2,g3;
-	Big x0,y0;
+	Big cx,cy;
 
 	ecap(params.P2,mpk.Ppube,params.t,X,g1);
 
-	char buffer[2048];
-	int pos = 0;
+	SM9AARData buffer(32 * 2 * 2 + 12 * 32 * 3 + userIDALen + userIDBLen);
 
 	int iLen = 1024;
 
-	rA.data.GetValue(buffer, &iLen);
+	rA.data.GetValue(buffer.m_pValue, &iLen);
 
-	Big r = from_binary(iLen, buffer);
+	Big r = from_binary(iLen, buffer.m_pValue);
 
 	//g1 = pow(g1,rA.data);
 
@@ -1524,118 +1519,118 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 
 	char digest[32] = {0};
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
 
 
-	RA.R.get(x0,y0);
+	RA.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	RB.R.get(x0,y0);
+	RB.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	pos += to_binary(0x82,2048,buffer+pos);
-	pos += to_binaryZZn12(g1,2048, buffer+pos);
-	memcpy(buffer+pos, digest, 32);
-	pos += 32;
+	buffer.m_iPos += to_binary(0x82,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+	memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+	buffer.m_iPos += 32;
 
-	SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+	SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
 	Big S1 = from_binary(32,digest);
 
 	if (option == SM9_KEY_EX_OPTION_YES)
 	{
 		iLen = 1024;
-		SB.data.GetValue(buffer, &iLen);
+		SB.data.GetValue(buffer.m_pValue, &iLen);
 		//if(S1!=SB.data)
-		if (0 != memcmp(digest,buffer,32))
+		if (0 != memcmp(digest,buffer.m_pValue,32))
 		{
 			return FALSE;
 		}
 	}
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	memcpy(buffer+pos,userIDA,userIDALen);
-	pos += userIDALen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
 
-	memcpy(buffer+pos,userIDB,userIDBLen);
-	pos += userIDBLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
 
-	RA.R.get(x0,y0);
+	RA.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	RB.R.get(x0,y0);
+	RB.R.get(cx,cy);
 
-	pos += to_binary(x0,2048,buffer+pos);
-	pos += to_binary(y0,2048,buffer+pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(g1,2048,buffer+pos);
-	pos += to_binaryZZn12(g2,2048,buffer+pos);
-	pos += to_binaryZZn12(g3,2048,buffer+pos);
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
 	char * key_str = new char[key_len];
 
-	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)key_str, key_len,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
 
 	//SKA.data = from_binary(key_len,key_str);
 	SKA.data.SetValue(key_str,key_len);
 
 	delete key_str;
 	
-	pos = 0;
+	buffer.m_iPos = 0;
 
 	if (option == SM9_KEY_EX_OPTION_YES)
 	{
-		pos += to_binaryZZn12(g2,2048,buffer+pos);
+		buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-		pos += to_binaryZZn12(g3,2048,buffer+pos);
+		buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-		memcpy(buffer+pos,userIDA,userIDALen);
-		pos += userIDALen;
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+		buffer.m_iPos += userIDALen;
 
-		memcpy(buffer+pos,userIDB,userIDBLen);
-		pos += userIDBLen;
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+		buffer.m_iPos += userIDBLen;
 
-		RA.R.get(x0,y0);
+		RA.R.get(cx,cy);
 
-		pos += to_binary(x0,2048,buffer+pos);
-		pos += to_binary(y0,2048,buffer+pos);
+		buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-		RB.R.get(x0,y0);
+		RB.R.get(cx,cy);
 
-		pos += to_binary(x0,2048,buffer+pos);
-		pos += to_binary(y0,2048,buffer+pos);
+		buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-		SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
-		pos = 0;
+		buffer.m_iPos = 0;
 
-		pos += to_binary(0x83,2048,buffer+pos);
-		pos += to_binaryZZn12(g1,2048, buffer+pos);
-		memcpy(buffer+pos, digest, 32);
-		pos += 32;
+		buffer.m_iPos += to_binary(0x83,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+		memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+		buffer.m_iPos += 32;
 
-		SM9_HV(pos,(unsigned char*)buffer,(unsigned char *)digest);
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
 
 		//SA.data = from_binary(32,digest);
 		SA.data.SetValue(digest,32);
