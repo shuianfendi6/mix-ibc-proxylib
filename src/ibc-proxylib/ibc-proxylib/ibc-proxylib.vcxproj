@@ -96,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="big.h" />
-    <ClInclude Include="common.h" />
     <ClInclude Include="ebrick.h" />
     <ClInclude Include="ecn.h" />
     <ClInclude Include="ecn2.h" />
