@@ -43,6 +43,189 @@ extern "C"
 #endif
 
 
+SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	return (SM9_OBJ_TYPE)toint(charToBig(c,totLen));
+}
+
+
+int to_binaryZZn12(const ZZn12 &w, int max, char output[384])
+{
+	ZZn4 w1, w2, w3;
+	ZZn2 w11, w12, w21, w22,w31,w32;
+	ZZn w111,w112, w121,w122, w211,w212,w221,w222,w311,w312,w321,w322;
+
+	memset(output, 0, 384);
+
+	w.get(w1,w2,w3);
+
+	w1.get(w11,w12);
+	w2.get(w21,w22);
+	w3.get(w31,w32);
+
+	w11.get(w111,w112);
+	w21.get(w211,w212);
+	w31.get(w311,w312);
+	w12.get(w121,w122);
+	w22.get(w221,w222);
+	w32.get(w321,w322);
+
+	int pos_tmp = 0;
+	{
+		char w_item[32] = {0};
+
+		pos_tmp = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w322,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w321,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w312,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w311,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w222,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w221,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w212,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w211,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w122,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w121,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w112,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w111,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+	}
+
+	return pos_tmp;
+}
+
+int to_binaryBig(const Big &w, int max, char output[32])
+{
+	memset(output, 0, 32);
+
+	int pos_tmp = 0;
+	{
+		char w_item[32] = {0};
+
+		pos_tmp = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+	}
+
+	return pos_tmp;
+}
+
+
+int to_binaryChar(const char &w, int max, char output[1])
+{
+	memset(output, 0, 1);
+
+	int pos_tmp = 1;
+
+	output[0] = w;
+
+	return pos_tmp;
+}
+
+int to_binaryZZn2(const ZZn2 &w, int max, char output[64])
+{
+	ZZn w1,w2;
+
+	memset(output, 0, 64);
+
+	w.get(w1,w2);
+
+	int pos_tmp = 0;
+	{
+		char w_item[32] = {0};
+
+		pos_tmp = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w2,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w1,w_item_len,w_item);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+	}
+
+	return pos_tmp;
+}
+
+
 static Big H1(char *string)
 { // Hash a zero-terminated string to a number < modulus
 	Big h,p;

@@ -9,6 +9,7 @@
 #include "zzn12a.h"
 #include "sm3.h"
 #include "pairing_3.h"
+#include "zzn12a.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -174,6 +175,10 @@ int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32]);
 extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
 extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
 
+int to_binaryZZn2(const ZZn2 &w, int max, char output[64]);
+int to_binaryZZn12(const ZZn12 &w, int max, char output[384]);
+int to_binaryBig(const Big &w, int max, char output[32]);
+int to_binaryChar(const char &w, int max, char output[1]);
 
 #define PROJECTIVE
 #define HASH_LEN 20
