@@ -181,6 +181,5 @@ int to_binaryBig(const Big &w, int max, char output[32]);
 int to_binaryChar(const char &w, int max, char output[1]);
 
 #define PROJECTIVE
-#define HASH_LEN 20
 
 #endif // __SM9__PROXYLIB_H__
