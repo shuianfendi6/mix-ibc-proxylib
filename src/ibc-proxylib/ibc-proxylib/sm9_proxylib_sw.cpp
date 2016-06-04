@@ -5,18 +5,10 @@
 
 using namespace std;
 
-#ifdef BENCHMARKING
-#include "benchmark.h"
-#endif
 #include "sm9_proxylib_api.h"
 #include "sm9_proxylib.h"
 #include "sm9_proxylib_sw.h"
 
-#ifdef BENCHMARKING
-static struct timeval gTstart, gTend;
-static struct timezone gTz;
-extern Benchmark gBenchmark;
-#endif
 extern Miracl precisionBits;
 
 #include "sm4.h"
