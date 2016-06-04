@@ -562,7 +562,7 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 
 		sk.de_hid02 = t2 * params.P2;
 	}
-	
+
 	{
 		Big t1,t2, hid = 0x03;
 
@@ -749,7 +749,7 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	cout <<"h2-h:"<< h2-sgn.h <<endl;
 	cout <<"h-h2:"<< sgn.h-h2 <<endl;
-	
+
 	if (h2 == sgn.h)
 	{
 		return TRUE;
@@ -805,7 +805,7 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 	cout <<"QB:"<<QB<<endl;
 
 	Big r;
-	
+
 #if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_WRAP) 
 	r = "74015F8489C01EF4270456F9E6475BFB602BDE7F33FD482AB4E3684A6722";
 #else
@@ -987,7 +987,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	int K1_len = 0x80/8;
 	int K2_len = 0x0100/8;
 	int klen = 0;
-	
+
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
 		K1_len = messageLen;
@@ -1017,7 +1017,7 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	Big K1;
 	Big K2;
 	Big C3;
-	
+
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
 		K1 = from_binary(K1_len, kdata.m_pValue);
@@ -1202,7 +1202,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 			plain.data.SetValue(pplain.m_pValue,buffer.m_iPos-pplain.m_pValue[buffer.m_iPos-1]);
 		}
 	}
-	
+
 	/*plain.data = M;*/
 
 	cout <<"M:"<<M<<endl;
@@ -1631,112 +1631,112 @@ BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9Pro
 	return TRUE;
 }
 
-int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode,
-	char *buffer, int maxBuffer) { 
-		int totSize = 0;
-		int size = 0;
+int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer) 
+{ 
+	int totSize = 0;
+	int size = 0;
 
-		char bufferLocal[1024] = {0};
-		int bufferLocalLen = 1024;
+	char bufferLocal[1024] = {0};
+	int bufferLocalLen = 1024;
 
-		if (buffer == NULL)
+	if (buffer == NULL)
+	{
+		buffer = bufferLocal;
+		maxBuffer = bufferLocalLen;
+	}
+
+	// Set base-16 ASCII encoding
+	miracl *mip=&precisionBits;
+	mip->IOBASE = 16;
+
+	switch (mode) {
+	case SM9_SERIALIZE_BINARY:
 		{
-			buffer = bufferLocal;
-			maxBuffer = bufferLocalLen;
+			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->t, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->cid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->q, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->cf, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->N, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->k, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			ZZn2 a,b;
+
+			this->P2.get(a,b);
+
+			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			size = BigTochar(this->eid, buffer, maxBuffer - totSize);
+			if (size <= 0) return 0;
+			totSize += size;
+			buffer += size;
+
+			return totSize;
 		}
+		break;
+	case SM9_SERIALIZE_HEXASCII:
+		{
+			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
 
-		// Set base-16 ASCII encoding
-		miracl *mip=&precisionBits;
-		mip->IOBASE = 16;
+			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
 
-		switch (mode) {
-		case SM9_SERIALIZE_BINARY:
-			{
-				size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->t, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->cid, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->q, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->a, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->b, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->cf, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->N, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->k, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				ZZn2 a,b;
-
-				this->P2.get(a,b);
-
-				size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				size = BigTochar(this->eid, buffer, maxBuffer - totSize);
-				if (size <= 0) return 0;
-				totSize += size;
-				buffer += size;
-
-				return totSize;
-			}
-			break;
-		case SM9_SERIALIZE_HEXASCII:
-			{
-				bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
-
-				Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
-
-				return maxBuffer;
-			}
-			break;
+			return maxBuffer;
 		}
+		break;
+	}
 
-		// Invalid serialization mode
-		return 0;
+	// Invalid serialization mode
+	return 0;
 }
 
 BOOL
@@ -1845,9 +1845,9 @@ BOOL
 	return 0;
 }
 
-int
-	SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
+int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBuffer)
 {
+
 	int totSize = 0;
 	int size = 0;
 
@@ -2467,7 +2467,7 @@ BOOL SM9ProxyDATA_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int buf
 			//this->data = charToBig(buffer, &len);
 			//if (len <= 0) return FALSE;
 			//buffer += len;
-			
+
 			len = *(int*)buffer;
 			if (len <= 0) return FALSE;
 			buffer+=4;
