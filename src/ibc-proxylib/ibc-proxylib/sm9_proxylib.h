@@ -21,7 +21,7 @@ public:
 		m_iLen = 0;
 	}
 
-	~SM9Data(void)
+	virtual ~SM9Data(void)
 	{
 		delete [] m_pValue;
 		m_pValue = 0;
@@ -66,6 +66,29 @@ public:
 private:
 	char *m_pValue;						//:: 字段数据字节流指针
 	int m_iLen;							//:: 字段数据字节流长度	
+};
+
+#define DEFAULT_MAX_LEN 1024*1024
+
+class SM9AARData                        //:: 自动分配并释放内存
+{
+public:
+	SM9AARData(int maxLen = DEFAULT_MAX_LEN)
+	{
+		m_iPos = 0;
+		m_iMaxLen = maxLen;
+		m_pValue = new char[m_iMaxLen];
+	}
+
+	virtual ~SM9AARData(void)
+	{
+		delete [] m_pValue;
+		m_pValue = 0;
+	}
+
+	char *m_pValue;						//:: 字段数据字节流指针
+	int m_iMaxLen;                      //:: 字段数据字节流最大长度	
+	int m_iPos;							//:: 字段数据字节流当前长度
 };
 
 

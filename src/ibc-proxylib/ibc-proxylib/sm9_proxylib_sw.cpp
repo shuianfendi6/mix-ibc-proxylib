@@ -496,25 +496,20 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	{
 		Big t1,t2, hid01 = 0x01;
 
-		char buffer[1024];
-		int pos = 0;
+		SM9AARData buffer(userIDLen + 1);
 
-		memcpy(buffer+pos,userID,userIDLen);
-		pos += userIDLen;
-		pos += to_binary(hid01,1024,buffer+pos);
+		memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+		buffer.m_iPos += userIDLen;
+		buffer.m_iPos += to_binary(hid01,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
+		SM9AARData h1_data(32);
+		SM9AARData n_data(32);
 
-		char h1_str[1024] = {0};
-		int h1_len = 1024;
+		n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-		char n_str[1024];
-		int n_len = 1024;
+		SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-		n_len = to_binary(params.N,n_len, n_str);
-
-		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
-
-		Big h1 = from_binary(h1_len,h1_str);
+		Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
 		t1 = h1 + msk.master;
 
@@ -526,24 +521,21 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	//cacl de_hid02
 	{
 		Big t1,t2, hid01 = 0x02;
-		char buffer[1024];
-		int pos = 0;
 
-		memcpy(buffer+pos,userID,userIDLen);
-		pos += userIDLen;
-		pos += to_binary(hid01,1024,buffer+pos);
+		SM9AARData buffer(userIDLen + 1);
 
-		char h1_str[1024] = {0};
-		int h1_len = 1024;
+		memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+		buffer.m_iPos += userIDLen;
+		buffer.m_iPos += to_binary(hid01,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
-		char n_str[1024];
-		int n_len = 1024;
+		SM9AARData h1_data(32);
+		SM9AARData n_data(32);
 
-		n_len = to_binary(params.N,n_len, n_str);
+		n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+		SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-		Big h1 = from_binary(h1_len,h1_str);
+		Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
 		t1 = h1 + msk.master;
 
@@ -555,12 +547,11 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 	{
 		Big t1,t2, hid01 = 0x03;
 
-		char buffer[1024];
-		int pos = 0;
+		SM9AARData buffer(userIDLen + 1);
 
-		memcpy(buffer+pos,userID,userIDLen);
-		pos += userIDLen;
-		pos += to_binary(hid01,1024,buffer+pos);
+		memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+		buffer.m_iPos += userIDLen;
+		buffer.m_iPos += to_binary(hid01,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
 		char h1_str[1024] = {0};
 		int h1_len = 1024;
@@ -568,11 +559,14 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 		char n_str[1024];
 		int n_len = 1024;
 
-		n_len = to_binary(params.N,n_len, n_str);
+		SM9AARData h1_data(32);
+		SM9AARData n_data(32);
 
-		SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+		n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-		Big h1 = from_binary(h1_len,h1_str);
+		SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
+
+		Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
 		t1 = h1 + msk.master;
 
