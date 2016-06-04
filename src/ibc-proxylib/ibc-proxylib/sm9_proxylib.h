@@ -153,18 +153,18 @@ BOOL ecap(ECn2& P,ECn& Q,Big& x,ZZn2 &X,ZZn12& r);
 ECn map_to_point(char *ID);
 void strip(char *name);
 
-ECn charToECn (char *c, int *totLen);
-ZZn2 charToZZn2 (char *c, int *totLen);
+ECn charsToECn (char *c, int *totLen);
+ZZn2 charsToZZn2 (char *c, int *totLen);
 
-Big charToBig (char *c, int *totLen);
-int BigTochar (Big &x, char *c, int s);
+Big charsToBig (char *c, int *totLen);
+int BigTochars (Big &x, char *c, int s);
 
-int ECnTochar (ECn &e, char *c, int s);
-int ZZn2Tochar (ZZn2 &z, char *c, int s);
+int ECnTochars (ECn &e, char *c, int s);
+int ZZn2Tochars (ZZn2 &z, char *c, int s);
 
-ECn2 hash_and_map2(char *ID);
 void cofactor(ECn2& S,ZZn2 &F,Big& x);
 void set_frobenius_constant(ZZn2 &X);
+
 SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
 
 int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);

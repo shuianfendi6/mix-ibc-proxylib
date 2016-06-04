@@ -1353,52 +1353,52 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->t, buffer, maxBuffer - totSize);
+			size = BigTochars(this->t, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->cid, buffer, maxBuffer - totSize);
+			size = BigTochars(this->cid, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->q, buffer, maxBuffer - totSize);
+			size = BigTochars(this->q, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->a, buffer, maxBuffer - totSize);
+			size = BigTochars(this->a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->b, buffer, maxBuffer - totSize);
+			size = BigTochars(this->b, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->cf, buffer, maxBuffer - totSize);
+			size = BigTochars(this->cf, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->N, buffer, maxBuffer - totSize);
+			size = BigTochars(this->N, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->k, buffer, maxBuffer - totSize);
+			size = BigTochars(this->k, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->P1, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->P1, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1407,17 +1407,17 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 
 			this->P2.get(a,b);
 
-			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(b, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->eid, buffer, maxBuffer - totSize);
+			size = BigTochars(this->eid, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1458,39 +1458,39 @@ BOOL
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->t = charToBig(buffer, &len);
+			this->t = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->cid = charToBig(buffer, &len);
+			this->cid = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->q = charToBig(buffer, &len);
+			this->q = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->a = charToBig(buffer, &len);
+			this->a = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->b = charToBig(buffer, &len);
+			this->b = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->cf = charToBig(buffer, &len);
+			this->cf = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->N = charToBig(buffer, &len);
+			this->N = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->k = charToBig(buffer, &len);
+			this->k = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1502,23 +1502,23 @@ BOOL
 			ecurve(this->a,this->b,this->q,MR_PROJECTIVE);
 #endif
 
-			this->P1 = charToECn(buffer, &len);
+			this->P1 = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			ZZn2 a,b;
 
-			a = charToZZn2(buffer, &len);
+			a = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			b = charToZZn2(buffer, &len);
+			b = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			this->P2.set(a,b);
 
-			this->eid = charToBig(buffer, &len);
+			this->eid = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1567,14 +1567,14 @@ int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
 			// real value
 
-			size = ECnTochar(this->Ppube, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->Ppube, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1583,12 +1583,12 @@ int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 
 			this->Ppubs.get(a,b);
 
-			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(b, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1632,23 +1632,23 @@ BOOL
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			// real value
 
-			this->Ppube = charToECn(buffer, &len);
+			this->Ppube = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			ZZn2 a,b;
 
-			a = charToZZn2(buffer, &len);
+			a = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			b = charToZZn2(buffer, &len);
+			b = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1690,12 +1690,12 @@ int SM9ProxyMSK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->master, buffer, maxBuffer - totSize);
+			size = BigTochars(this->master, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1735,11 +1735,11 @@ BOOL SM9ProxyMSK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufS
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->master = charToBig(buffer, &len);
+			this->master = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1780,12 +1780,12 @@ int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBu
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->ds_hid01, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->ds_hid01, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1794,24 +1794,24 @@ int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBu
 
 			this->de_hid02.get(a,b);
 
-			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(b, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
 			this->de_hid03.get(a,b);
 
-			size = ZZn2Tochar(a, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(a, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ZZn2Tochar(b, buffer, maxBuffer - totSize);
+			size = ZZn2Tochars(b, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1852,31 +1852,31 @@ BOOL SM9ProxySK_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufSi
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->ds_hid01 = charToECn(buffer, &len);
+			this->ds_hid01 = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			ZZn2 a,b;
 
-			a = charToZZn2(buffer, &len);
+			a = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			b = charToZZn2(buffer, &len);
+			b = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
 			this->de_hid02.set(a,b);
 
-			a = charToZZn2(buffer, &len);
+			a = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			b = charToZZn2(buffer, &len);
+			b = charsToZZn2(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -1919,17 +1919,17 @@ int SM9ProxySGN_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->h, buffer, maxBuffer - totSize);
+			size = BigTochars(this->h, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->S, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->S, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1969,15 +1969,15 @@ BOOL SM9ProxySGN_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufS
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->h = charToBig(buffer, &len);
+			this->h = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->S = charToECn(buffer, &len);
+			this->S = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -2018,12 +2018,12 @@ int SM9ProxyWRAP_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->C, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->C, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -2063,11 +2063,11 @@ BOOL SM9ProxyWRAP_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int buf
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->C = charToECn(buffer, &len);
+			this->C = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
@@ -2106,12 +2106,12 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			//size = BigTochar(this->data, buffer, maxBuffer - totSize);
+			//size = BigTochars(this->data, buffer, maxBuffer - totSize);
 			//if (size <= 0) return 0;
 			//totSize += size;
 			//buffer += size;
@@ -2160,11 +2160,11 @@ BOOL SM9ProxyDATA_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int buf
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			//this->data = charToBig(buffer, &len);
+			//this->data = charsToBig(buffer, &len);
 			//if (len <= 0) return FALSE;
 			//buffer += len;
 
@@ -2211,22 +2211,22 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->C1, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->C1, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = BigTochar(this->C3, buffer, maxBuffer - totSize);
+			size = BigTochars(this->C3, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			//size = BigTochar(this->C2, buffer, maxBuffer - totSize);
+			//size = BigTochars(this->C2, buffer, maxBuffer - totSize);
 			//if (size <= 0) return 0;
 			//totSize += size;
 			//buffer += size;
@@ -2276,19 +2276,19 @@ BOOL SM9ProxyCipher_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int b
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->C1 = charToECn(buffer, &len);
+			this->C1 = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->C3 = charToBig(buffer, &len);
+			this->C3 = charsToBig(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			//this->C2 = charToBig(buffer, &len);
+			//this->C2 = charsToBig(buffer, &len);
 			//if (len <= 0) return FALSE;
 			//buffer += len;
 
@@ -2333,12 +2333,12 @@ int SM9ProxyEXR_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochar(Big(this->objectType), buffer, maxBuffer - totSize);
+			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
 
-			size = ECnTochar(this->R, buffer, maxBuffer - totSize);
+			size = ECnTochars(this->R, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -2378,11 +2378,11 @@ BOOL SM9ProxyEXR_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufS
 		{
 			int len;
 
-			this->objectType = (SM9_OBJ_TYPE)toint(charToBig(buffer, &len));
+			this->objectType = (SM9_OBJ_TYPE)toint(charsToBig(buffer, &len));
 			if (len <= 0) return FALSE;
 			buffer += len;
 
-			this->R = charToECn(buffer, &len);
+			this->R = charsToECn(buffer, &len);
 			if (len <= 0) return FALSE;
 			buffer += len;
 

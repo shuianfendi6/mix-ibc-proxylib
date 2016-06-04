@@ -50,11 +50,11 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
 
-	return (SM9_OBJ_TYPE)toint(charToBig(c,totLen));
+	return (SM9_OBJ_TYPE)toint(charsToBig(c,totLen));
 }
 
 
-ECn  charToECn (char *c, int *totLen)
+ECn charsToECn (char *c, int *totLen)
 {
 	ECn e;
 	Big x,y;
@@ -80,7 +80,7 @@ ECn  charToECn (char *c, int *totLen)
 	return e;
 }
 
-Big charToBig (char *c, int *totLen)
+Big charsToBig (char *c, int *totLen)
 {
 	Big a;
 	int len;
@@ -95,7 +95,7 @@ Big charToBig (char *c, int *totLen)
 	return a;
 }
 
-int BigTochar (Big &x, char *c, int s)
+int BigTochars (Big &x, char *c, int s)
 {
 	int len = 0;
 	int totlen = sizeof (int);
@@ -123,7 +123,7 @@ int BigTochar (Big &x, char *c, int s)
 	return totlen;
 }
 
-ZZn2 charToZZn2 (char *c, int *totLen)
+ZZn2 charsToZZn2 (char *c, int *totLen)
 {
 	ZZn2 z;
 	int len;
@@ -150,7 +150,7 @@ ZZn2 charToZZn2 (char *c, int *totLen)
 	return z;
 }
 
-int ECnTochar (ECn &e, char *c, int s)
+int ECnTochars (ECn &e, char *c, int s)
 {
 
 	Big x, y;
@@ -158,7 +158,7 @@ int ECnTochar (ECn &e, char *c, int s)
 	int len = 0;
 	int totlen = sizeof (int)*2;
 
-	//  cout << "Entering ECnTochar" << endl;
+	//  cout << "Entering ECnTochars" << endl;
 	//   format: 4 bytes length, followed by the big
 	if (s <= sizeof (int))
 		return -1;
@@ -196,7 +196,7 @@ int ECnTochar (ECn &e, char *c, int s)
 	return totlen;
 }
 
-int ZZn2Tochar (ZZn2 &z, char *c, int s)
+int ZZn2Tochars(ZZn2 &z, char *c, int s)
 {
 	int len = 0;
 	int totlen = 2*sizeof(int);
