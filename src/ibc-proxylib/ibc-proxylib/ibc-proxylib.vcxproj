@@ -82,9 +82,7 @@
     <ClCompile Include="big.cpp" />
     <ClCompile Include="ecn.cpp" />
     <ClCompile Include="ecn2.cpp" />
-    <ClCompile Include="FILE_LOG.c" />
     <ClCompile Include="flash.cpp" />
-    <ClCompile Include="proxylib_utilities.cpp" />
     <ClCompile Include="sm3.c" />
     <ClCompile Include="sm4.c" />
     <ClCompile Include="sm9_proxylib_api.cpp" />
@@ -102,7 +100,6 @@
     <ClInclude Include="ebrick.h" />
     <ClInclude Include="ecn.h" />
     <ClInclude Include="ecn2.h" />
-    <ClInclude Include="FILE_LOG.h" />
     <ClInclude Include="flash.h" />
     <ClInclude Include="sm3.h" />
     <ClInclude Include="sm4.h" />

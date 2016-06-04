@@ -54,6 +54,187 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
 }
 
 
+ECn  charToECn (char *c, int *totLen)
+{
+	ECn e;
+	Big x,y;
+	int len = 0;
+	char *orig = c;
+	//   format: 4 bytes length, followed by the big
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	x = from_binary (len, c);
+	c += len;
+	//  cout << "Len1 " << len << " x " << x;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	y = from_binary (len, c);
+	c += len;
+	//  cout << " Len2 " << len << " y " << y << "\n";
+
+	e.set (x, y);
+
+	*totLen = c - orig;
+	return e;
+}
+
+Big charToBig (char *c, int *totLen)
+{
+	Big a;
+	int len;
+	char *orig = c;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	a = from_binary (len, c);
+	c += len;
+
+	*totLen = c - orig;
+	return a;
+}
+
+int BigTochar (Big &x, char *c, int s)
+{
+	int len = 0;
+	int totlen = sizeof (int);
+
+	//   format: 4 bytes length, followed by the big
+	if (s <= sizeof (int))
+		return -1;
+	// Code assumes epoint contains either nulls or bigs > 0
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (x.iszero()) {
+		len = 0;
+	} else {
+		len = to_binary (x, s, c, FALSE);
+	}
+
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+	totlen += len;
+	s -= len;
+	c += len;
+	//  cout << "Len1 " << len << " x " << x;
+
+	return totlen;
+}
+
+ZZn2 charToZZn2 (char *c, int *totLen)
+{
+	ZZn2 z;
+	int len;
+	Big a,b;
+	char *orig = c;
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	a = from_binary (len, c);
+	c += len;
+	//  cout << "chartozzn2 a: (" << len << ") " 
+	//    << a << "\n";
+
+	memcpy (&len, c, sizeof (int));
+	c += sizeof (int);
+	b = from_binary (len, c);
+	//  cout << "chartozzn2 b: (" << len << ") " 
+	//   << b << "\n";
+	c += len;
+
+	z.set (a, b);
+
+	*totLen = c - orig;
+	return z;
+}
+
+int ECnTochar (ECn &e, char *c, int s)
+{
+
+	Big x, y;
+	e.get(x, y);
+	int len = 0;
+	int totlen = sizeof (int)*2;
+
+	//  cout << "Entering ECnTochar" << endl;
+	//   format: 4 bytes length, followed by the big
+	if (s <= sizeof (int))
+		return -1;
+	// Code assumes epoint contains either nulls or bigs > 0
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (x.iszero()) {
+		len = 0;
+	} else {  
+		len = to_binary (x, s, c, FALSE);
+	}
+	if (len < 0) {
+		return -1;
+	}
+
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+
+	totlen += len;
+	s -= len;
+	c += len;
+	//    cout << "Len1 " << len << " x " << x;
+
+
+	if (s <= sizeof (int))
+		return -1;
+	s -= sizeof (int);
+	c += sizeof (int);
+	len = to_binary (y, s, c, FALSE);
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
+	totlen += len;
+	//  cout << "Len2 " << len << " y " << y;
+
+	return totlen;
+}
+
+int ZZn2Tochar (ZZn2 &z, char *c, int s)
+{
+	int len = 0;
+	int totlen = 2*sizeof(int);
+	Big a,b;
+	z.get (a, b);
+
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (a.iszero()) {
+
+		len = 0;
+	} else {
+		len = to_binary(a, s, c, FALSE);
+	}
+	if (len < 0)
+		return -1;
+	*(c - sizeof(int));
+	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
+	totlen += len;
+	s -= len;
+	c += len;
+
+
+	s -= sizeof (int);
+	c += sizeof (int);
+	if (b.iszero()) {
+		len = 0;
+	} else {
+		len = to_binary(b, s, c, FALSE);
+	}
+	if (len < 0)
+		return -1;
+	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
+	totlen += len;
+
+	return totlen;
+}
+
 int to_binaryZZn12(const ZZn12 &w, int max, char output[384])
 {
 	ZZn4 w1, w2, w3;
@@ -224,92 +405,6 @@ int to_binaryZZn2(const ZZn2 &w, int max, char output[64])
 
 	return pos_tmp;
 }
-
-
-static Big H1(char *string)
-{ // Hash a zero-terminated string to a number < modulus
-	Big h,p;
-	char s[HASH_LEN];
-	int i,j; 
-	sha256 sh;
-
-	shs256_init(&sh);
-
-	for (i=0;;i++)
-	{
-		if (string[i]==0) break;
-		shs256_process(&sh,string[i]);
-	}
-	shs256_hash(&sh,s);
-	p=get_modulus();
-	h=1; j=0; i=1;
-	forever
-	{
-		h*=256; 
-		if (j==HASH_LEN)  {h+=i++; j=0;}
-		else         h+=s[j++];
-		if (h>=p) break;
-	}
-	h%=p;
-	return h;
-}
-
-static Big H2(ZZn12 x)
-{ // Compress and hash an Fp12 to a big number
-	sha256 sh;
-	ZZn4 u;
-	ZZn2 h,l;
-	Big a,hash,p,xx[4];
-	char s[HASH_LEN];
-	int i,j,m;
-
-	shs256_init(&sh);
-	x.get(u);  // compress to single ZZn4
-	u.get(l,h);
-	xx[0]=real(l); xx[1]=imaginary(l); xx[2]=real(h); xx[3]=imaginary(h);
-
-	for (i=0;i<4;i++)
-	{
-		a=xx[i];
-		while (a>0)
-		{
-			m=a%256;
-			shs256_process(&sh,m);
-			a/=256;
-		}
-	}
-	shs256_hash(&sh,s);
-	hash=from_binary(HASH_LEN,s);
-	return hash;
-}
-
-ECn2 hash_and_map2(char *ID)
-{
-	int i;
-	ECn2 S;
-	ZZn2 X;
-	Big x0=H1(ID);
-
-	forever
-	{
-		x0+=1;
-		X.set((ZZn)1,(ZZn)x0);
-		if (!S.set(X)) continue;
-		break;
-	}
-	return S;
-}     
-
-ECn hash_and_map(char *ID)
-{
-	ECn Q;
-	Big x0=H1(ID);
-
-	while (!Q.set(x0,x0)) x0+=1;
-
-	return Q;
-}
-
 
 int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32])
 {
