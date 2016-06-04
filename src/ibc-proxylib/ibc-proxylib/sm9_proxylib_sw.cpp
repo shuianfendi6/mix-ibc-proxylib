@@ -1238,7 +1238,7 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	SM9AARData buffer(userIDBLen + 1);
+	SM9AARData buffer(userIDBLen + 1>32?userIDBLen+1:32);
 
 	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
 	buffer.m_iPos += userIDBLen;
@@ -1276,10 +1276,10 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 
 	//rA.data = r;
 	{
-		pos = 0;
-		pos += to_binary(r,1024,buffer);
+		buffer.m_iPos = 0;
+		buffer.m_iPos += to_binary(r,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue);
 
-		rA.data.SetValue(buffer,pos);
+		rA.data.SetValue(buffer.m_pValue,buffer.m_iPos);
 	}
 
 	cout <<"R:"<<R<<endl;
