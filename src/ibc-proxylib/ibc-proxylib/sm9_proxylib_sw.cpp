@@ -778,29 +778,25 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	char buffer[1024];
-	int pos = 0;
+	SM9AARData buffer(userIDLen + 1 > 32 * 2 + 12 * 32 + userIDLen ? userIDLen + 1 : 32 * 2 + 12 * 32 + userIDLen);
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
-	pos += to_binary(hid,1024,buffer+pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
+	buffer.m_iPos += to_binary(hid,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
 	Big t1 = 0;
 	//calc t1
 
-	char h1_str[1024] = {0};
-	int h1_len = 1024;
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
 
-	char n_str[1024];
-	int n_len = 1024;
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	n_len = to_binary(params.N,n_len, n_str);
+	SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
-	Big h1 = from_binary(h1_len,h1_str);
-
-	int key_wrap_len = 0x0100/8;
+	SM9AARData key_wrap(0x0100/8); //
 
 	ECn QB = h1 * params.P1;
 
@@ -838,30 +834,25 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 
 	ZZn12 w = pow(g,r);
 
-	pos = 0;
-
 	Big cx,cy;
 
 	C.get(cx,cy);
 
-	pos += to_binary(cx,1024,buffer + pos);
+	buffer.m_iPos = 0;
 
-	pos += to_binary(cy,1024,buffer + pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(w,1024,buffer + pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
+	key_wrap.m_iPos = key_wrap.m_iMaxLen;
+	tcm_kdf((unsigned char *)key_wrap.m_pValue,key_wrap.m_iPos,(unsigned char *)buffer.m_pValue, buffer.m_iPos);
 
-	char * key_wrap_data = new char[key_wrap_len];
+	Big K = from_binary(key_wrap.m_iPos, key_wrap.m_pValue);
 
-	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
-
-	Big K = from_binary(key_wrap_len, key_wrap_data);
-
-	key.data.SetValue(key_wrap_data,key_wrap_len);
-
-	delete key_wrap_data;
+	key.data.SetValue(key_wrap.m_pValue, key_wrap.m_iPos);
 
 	cout <<"K:"<<K<<endl;
 
