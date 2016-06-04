@@ -553,12 +553,6 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 		buffer.m_iPos += userIDLen;
 		buffer.m_iPos += to_binary(hid01,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
-		char h1_str[1024] = {0};
-		int h1_len = 1024;
-
-		char n_str[1024];
-		int n_len = 1024;
-
 		SM9AARData h1_data(32);
 		SM9AARData n_data(32);
 
@@ -613,40 +607,30 @@ BOOL sm9_sw_sign(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message, 
 
 	ZZn12 w = pow(g,r);
 
-	int pos = 0;
+	SM9AARData buffer(messageLen + 12 * 32); // zzn12 == 12 * 32
 
-	pos = 0;
+	memcpy(buffer.m_pValue + buffer.m_iPos,message,messageLen);
+	buffer.m_iPos += messageLen;
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	char buffer[1024] = {0};
+	SM9AARData h2_data(32);
+	SM9AARData n_data(32);
 
-	Big M;
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	M = from_binary(messageLen, message);
+	SM9_H2(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h2_data.m_pValue, &h2_data.m_iPos);
 
-	pos += to_binary(M,1024,buffer + pos);
-	pos += to_binaryZZn12(w,1024,buffer + pos);
+	Big h = from_binary(h2_data.m_iPos, h2_data.m_pValue);
 
-	char h2_str[1024] = {0};
-	int h2_len = 1024;
-
-	char n_str[1024];
-	int n_len = 1024;
-
-	n_len = to_binary(params.N,n_len, n_str);
-
-	SM9_H2(buffer, pos,n_str,n_len, h2_str,&h2_len);
-
-	Big h = from_binary(h2_len,h2_str);
-
-	cout <<"h:"<<h<<endl;
+	//cout <<"h:"<<h<<endl;
 
 	Big l = (r-h + params.N)%params.N;
 
-	cout <<"l:"<<l<<endl;
+	//cout <<"l:"<<l<<endl;
 
 	ECn S = l * sk.ds_hid01;
 
-	cout <<"S:"<<S<<endl;
+	//cout <<"S:"<<S<<endl;
 
 	sgn.h = h;
 	sgn.S = S;
@@ -675,28 +659,23 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	Big t1,t2, hid01 = 0x01;
 
-	char buffer[1024];
-	int pos = 0;
+	SM9AARData buffer(userIDLen + 1 > messageLen + 12 * 32 ? userIDLen + 1: messageLen + 12 * 32);
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
-	pos += to_binary(hid01,1024,buffer+pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
+	buffer.m_iPos += to_binary(hid01,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
-	char h1_str[1024] = {0};
-	int h1_len = 1024;
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
 
-	char n_str[1024];
-	int n_len = 1024;
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	n_len = to_binary(params.N,n_len, n_str);
+	SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
-	Big h1 = from_binary(h1_len,h1_str);
-
-
-	cout <<"h1:"<<h1<<endl;
-	cout <<"g"<<g<<endl;
+	//cout <<"h1:"<<h1<<endl;
+	//cout <<"g"<<g<<endl;
 
 	ECn2 P = h1 * params.P2 + mpk.Ppubs;
 
@@ -712,25 +691,26 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	cout <<"u:"<<u<<endl;
 
-	ZZn12 w_ = u * tv;
+	ZZn12 w = u * tv;
 
-	cout <<"w_:"<<w_<<endl;
+	cout <<"w_:"<<w<<endl;
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
-	Big M;
-
-	M = from_binary(messageLen, message);
-
-	pos += to_binary(M,1024,buffer + pos);
-	pos += to_binaryZZn12(w_,1024,buffer + pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,message,messageLen);
+	buffer.m_iPos += messageLen;
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
 	char h2_str[1024] = {0};
 	int h2_len = 1024;
 
-	SM9_H2(buffer, pos,n_str,n_len, h2_str,&h2_len);
+	SM9AARData h2_data(32);
 
-	Big h2 = from_binary(h2_len,h2_str);
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
+
+	SM9_H2(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h2_data.m_pValue, &h2_data.m_iPos);
+
+	Big h2 = from_binary(h2_data.m_iPos, h2_data.m_pValue);
 
 	cout <<"h2:"<<h2<<endl;
 	cout <<"h:"<<sgn.h<<endl;
