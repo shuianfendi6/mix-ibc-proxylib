@@ -180,7 +180,7 @@ int sm9_proxylib_destroyObject(void *params) {
 	if (params)
 	{
 		SM9Object *cp = (SM9Object*) params;
-		free(cp);
+		delete(cp);
 	}
 
 	return SM9_ERROR_NONE;

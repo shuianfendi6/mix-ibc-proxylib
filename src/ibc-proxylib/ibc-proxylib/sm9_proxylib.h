@@ -97,6 +97,11 @@ public:
 	SM9_SCHEME_TYPE schemeType;
 	SM9_OBJ_TYPE    objectType;
 
+	virtual ~SM9Object(void)
+	{
+
+	}
+
 	virtual int getSerializedSize(SM9_SERIALIZE_MODE mode) {return trySerialize(mode,NULL, 0); } 
 
 	virtual int trySerialize(SM9_SERIALIZE_MODE mode,

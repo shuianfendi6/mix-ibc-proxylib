@@ -881,41 +881,39 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 
 	set_frobenius_constant(X);
 
-	ZZn12 w_;
-	int pos = 0;
-	char buffer[1024];
+	ZZn12 w;
 
-	ecap(sk.de_hid03, wrapkey.C,params.t,X,w_);
+	ecap(sk.de_hid03, wrapkey.C,params.t,X,w);
 
-	cout <<"w_:"<<w_<<endl;
-
-	pos = 0;
+	cout <<"w_:"<<w<<endl;
 
 	Big cx,cy;
 
 	wrapkey.C.get(cx,cy);
 
-	pos += to_binary(cx,1024,buffer + pos);
+	SM9AARData buffer(32 * 2 + 12 * 32 + userIDLen);
 
-	pos += to_binary(cy,1024,buffer + pos);
+	buffer.m_iPos = 0;
 
-	pos += to_binaryZZn12(w_,1024,buffer + pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
 
-	char key_wrap_data[0x100/8];
-	int key_wrap_len = 0x0100/8;
+	SM9AARData key_wrap(0x0100/8); //
 
-	tcm_kdf((unsigned char *)key_wrap_data,key_wrap_len,(unsigned char *)buffer,pos);
+	key_wrap.m_iPos = key_wrap.m_iMaxLen;
+	tcm_kdf((unsigned char *)key_wrap.m_pValue,key_wrap.m_iPos,(unsigned char *)buffer.m_pValue, buffer.m_iPos);
 
-	Big K_ = from_binary(key_wrap_len, key_wrap_data);
+	Big K = from_binary(key_wrap.m_iPos, key_wrap.m_pValue);
 
 	//key.data = K_;
 
-	key.data.SetValue(key_wrap_data,key_wrap_len);
+	key.data.SetValue(key_wrap.m_pValue, key_wrap.m_iPos);
 
-	cout <<"K_:"<<K_<<endl;
+	cout <<"K:"<<K<<endl;
 
 	return TRUE;
 }
