@@ -449,8 +449,6 @@ BOOL
 	return TRUE;
 }
 
-
-
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk)
 {
 	Big imsk;
@@ -459,6 +457,16 @@ BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9
 
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	set_frobenius_constant(X);
 
 #if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_SIGN) 
 	imsk="0130E78459D78545CB54C587E02CF480CE0B66340F319F348A1D5B1F2DC5F4";
@@ -491,6 +499,17 @@ BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk,
 
 	mip->IOBASE = 16;
 	mip->TWIST=MR_SEXTIC_M;
+
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	set_frobenius_constant(X);
 
 	//cacl ds_hid01
 	{
@@ -586,6 +605,13 @@ BOOL sm9_sw_sign(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message, 
 	ZZn12 g;
 	ZZn2 X;
 
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
 	set_frobenius_constant(X);
 
 	cout <<"X:"<<X<<endl;
@@ -649,8 +675,14 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	ZZn2 X;
 	ZZn12 g;
 
-	set_frobenius_constant(X);
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
 
+	set_frobenius_constant(X);
 	cout <<"X:"<<X<<endl;
 
 	ecap(mpk.Ppubs,params.P1, params.t, X, g);
@@ -847,13 +879,20 @@ BOOL sm9_sw_unwrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW
 	mip->TWIST=MR_SEXTIC_M;
 
 	Big hid = 0x03;
-
-	ZZn12 w_;
 	ZZn2 X;
-	int pos = 0;
-	char buffer[1024];
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
 
 	set_frobenius_constant(X);
+
+	ZZn12 w_;
+	int pos = 0;
+	char buffer[1024];
 
 	ecap(sk.de_hid03, wrapkey.C,params.t,X,w_);
 
