@@ -88,27 +88,26 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 	int error = SM9_ERROR_OTHER;
 	SM9Object *cp = NULL;
 
-	char bufferBin[1024];
-	int bufferBinLen = 1024;
+	SM9AARData bufferBin(bufferSize);
 
 	switch(mode)
 	{
 	case SM9_SERIALIZE_BINARY:
 		{
-			memcpy(bufferBin, buffer,bufferSize);
-			bufferBinLen = bufferSize;
+			memcpy(bufferBin.m_pValue, buffer,bufferSize);
+			bufferBin.m_iPos = bufferSize;
 		}
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			Hex2Bin(buffer,bufferSize,(unsigned char *)bufferBin,&bufferBinLen);
+			Hex2Bin(buffer,bufferSize,(unsigned char *)bufferBin.m_pValue,&bufferBin.m_iPos);
 		}
 		break;
 	}
 
 	int totLen = 0; 
 
-	SM9_OBJ_TYPE type = getSM9ObjectType(bufferBin,&totLen);
+	SM9_OBJ_TYPE type = getSM9ObjectType(bufferBin.m_pValue,&totLen);
 
 	switch(type)
 	{
@@ -164,7 +163,7 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 		break;
 	}
 
-	if (cp->deserialize(SM9_SERIALIZE_BINARY, bufferBin, bufferBinLen) == FALSE) {
+	if (cp->deserialize(SM9_SERIALIZE_BINARY, bufferBin.m_pValue, bufferBin.m_iPos) == FALSE) {
 		delete cp;
 		*params = NULL;
 	} else {
