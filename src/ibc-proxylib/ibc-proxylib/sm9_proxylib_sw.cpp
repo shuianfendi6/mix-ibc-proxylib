@@ -937,27 +937,23 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	char buffer[1024];
-	int pos = 0;
+	SM9AARData buffer(userIDLen + 1 > 32 * 2 + 12 * 32 + userIDLen ? userIDLen + 1 : 32 * 2 + 12 * 32 + userIDLen);
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
-	pos += to_binary(hid,1024,buffer+pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
+	buffer.m_iPos += to_binary(hid,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
 
 	Big t1 = 0;
 	//calc t1
 
-	char h1_str[1024] = {0};
-	int h1_len = 1024;
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
 
-	char n_str[1024];
-	int n_len = 1024;
+	n_data.m_iPos = to_binary(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	n_len = to_binary(params.N,n_len, n_str);
+	SM9_H1(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
 
-	SM9_H1(buffer, pos,n_str,n_len, h1_str,&h1_len);
-
-	Big h1 = from_binary(h1_len,h1_str);
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
 
 	ECn QB = h1 * params.P1;
 
@@ -988,37 +984,35 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 
 	ZZn12 w = pow(g,r);
 
-	int K1_len = 0x80;
-	int K2_len = 0x0100;
+	int K1_len = 0x80/8;
+	int K2_len = 0x0100/8;
 	int klen = 0;
 	
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		K1_len = messageLen * 8;
+		K1_len = messageLen;
 	}
 
 	klen = K1_len + K2_len;
-
-	pos = 0;
 
 	Big cx,cy;
 
 	C1.get(cx,cy);
 
-	pos += to_binary(cx,1024,buffer + pos);
+	buffer.m_iPos = 0;
 
-	pos += to_binary(cy,1024,buffer + pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binaryZZn12(w,1024,buffer + pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
+	SM9AARData kdata(klen);
 
-	char * kdata = NULL;
-		
-	kdata= new char[klen];
+	kdata.m_iPos = kdata.m_iMaxLen;
 
-	tcm_kdf((unsigned char *)kdata,klen,(unsigned char *)buffer,pos);
+	tcm_kdf((unsigned char *)kdata.m_pValue,kdata.m_iPos,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
 
 	Big K1;
 	Big K2;
@@ -1026,66 +1020,59 @@ BOOL sm9_sw_encrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID
 	
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		K1 = from_binary(K1_len/8, kdata);
-		K2 = from_binary(K2_len/8,kdata + K1_len/8);
+		K1 = from_binary(K1_len, kdata.m_pValue);
+		K2 = from_binary(K2_len,kdata.m_pValue + K1_len);
 
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
 
 		Big M = from_binary(messageLen,message);
 
-		for(pos = 0; pos < messageLen; pos++)
+		for(buffer.m_iPos = 0; buffer.m_iPos < messageLen; buffer.m_iPos++)
 		{
-			buffer[pos] = message[pos] ^ kdata[pos];
+			buffer.m_pValue[buffer.m_iPos] = message[buffer.m_iPos] ^ kdata.m_pValue[buffer.m_iPos];
 		}
 
-		cipher.C2.SetValue(buffer,messageLen);
+		cipher.C2.SetValue(buffer.m_pValue,buffer.m_iPos);
 		//C2 = from_binary(messageLen,buffer);
 
 		char C3_str[32] = {0};
 
-		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,messageLen,C3_str);
+		SM9_MAC(kdata.m_pValue + K1_len,K2_len,buffer.m_pValue,buffer.m_iPos,C3_str);
 
 		C3 = from_binary(32,C3_str);
 	}
 	else
 	{
-		K1 = from_binary(K1_len/8, kdata);
-		K2 = from_binary(K2_len/8,kdata + K1_len/8);
+		K1 = from_binary(K1_len, kdata.m_pValue);
+		K2 = from_binary(K2_len,kdata.m_pValue + K1_len);
 
 		cout <<"K1:"<<K1<<endl;
 		cout <<"K2:"<<K2<<endl;
 
 		sm4_context ctx;
 
-		sm4_setkey_enc(&ctx,(unsigned char *)kdata);
+		sm4_setkey_enc(&ctx,(unsigned char *)kdata.m_pValue);
 
 		int blockLen = 128/8;
 
 		int plainLen = (messageLen + blockLen)/(blockLen) * blockLen;
-		char * plain = new char[(messageLen+(128/8))];
+		SM9AARData plain (messageLen+blockLen);
 		char pad = plainLen - messageLen;
 
-		memcpy(plain,message,messageLen);
-		memset(plain + messageLen,pad,pad);
+		memcpy(plain.m_pValue,message,messageLen);
+		memset(plain.m_pValue + messageLen,pad,pad);
 
-		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain,(unsigned char *)buffer);
+		sm4_crypt_ecb(&ctx,0,plainLen,(unsigned char *)plain.m_pValue,(unsigned char *)buffer.m_pValue);
 
-		cipher.C2.SetValue(buffer,plainLen);
+		cipher.C2.SetValue(buffer.m_pValue,plainLen);
 		//C2 = from_binary(plainLen,buffer);
 
 		char C3_str[32] = {0};
 
-		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,plainLen,C3_str);
+		SM9_MAC(kdata.m_pValue + K1_len,K2_len,buffer.m_pValue,plainLen,C3_str);
 
 		C3 = from_binary(32,C3_str);
-
-		delete plain;
-	}
-
-	if (kdata)
-	{
-		delete kdata;
 	}
 
 	cipher.C1 = C1;
@@ -1103,7 +1090,7 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	Big hid = 0x03;
 	ZZn2 X;
-	ZZn12 w_;
+	ZZn12 w;
 
 #ifdef AFFINE
 	ecurve(params.a,params.b,params.q,MR_AFFINE);
@@ -1114,69 +1101,67 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 
 	set_frobenius_constant(X);
 
-	ecap(sk.de_hid03,cipher.C1,params.t,X,w_);
+	ecap(sk.de_hid03,cipher.C1,params.t,X,w);
 
-	int K1_len = 0x80;
-	int K2_len = 0x0100;
+	cout <<"w:"<<w<<endl;
+
+	int K1_len = 0x80/8;
+	int K2_len = 0x0100/8;
 	int klen = 0;
 
-	char buffer[1024];
-	int pos = 0;
+	SM9AARData buffer(32 * 2 + 12 * 32 + userIDLen > cipher.C2.GetLength()? 32 * 2 + 12 * 32 + userIDLen : cipher.C2.GetLength());
 
-	int iLen = 1024;
+	int iLen = cipher.C2.GetLength();
 
 	/*pos += to_binary(cipher.C2,1024,buffer+pos);*/
-
-	cipher.C2.GetValue(buffer+pos,&iLen);
-	pos += cipher.C2.GetLength();
+	buffer.m_iPos = 0;
+	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
+	buffer.m_iPos += cipher.C2.GetLength();
 
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		K1_len = pos * 8;
+		K1_len = buffer.m_iPos;
 	}
 
 	klen = K1_len + K2_len;
 
-	pos = 0;
+	buffer.m_iPos = 0;
 
 	Big cx,cy;
 
+	buffer.m_iPos = 0;
+
 	cipher.C1.get(cx,cy);
 
-	pos += to_binary(cx,1024,buffer + pos);
+	buffer.m_iPos += to_binary(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binary(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
-	pos += to_binary(cy,1024,buffer + pos);
+	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
+	buffer.m_iPos += userIDLen;
 
-	pos += to_binaryZZn12(w_,1024,buffer + pos);
+	SM9AARData kdata(klen);
 
-	memcpy(buffer+pos,userID,userIDLen);
-	pos += userIDLen;
-
-	char * kdata = NULL;
-
-	kdata= new char[klen/8];
-
-	tcm_kdf((unsigned char *)kdata,klen/8,(unsigned char *)buffer,pos);
+	kdata.m_iPos = kdata.m_iMaxLen;
+	tcm_kdf((unsigned char *)kdata.m_pValue,kdata.m_iPos,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
 
 	Big u;
 	Big M;
 
 	char U_str[32] = {0};
 
-	pos = 0;
-
 	//pos += to_binary(cipher.C2,1024,buffer+pos);
-
-	cipher.C2.GetValue(buffer+pos,&iLen);
-	pos += cipher.C2.GetLength();
+	buffer.m_iPos = 0;
+	cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
+	buffer.m_iPos += cipher.C2.GetLength();
 
 	if(SM9_CIPHER_KDF_BASE == cipherType)
 	{
-		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,K1_len/8,U_str);
+		SM9_MAC(kdata.m_pValue + K1_len,K2_len,buffer.m_pValue,K1_len,U_str);
 	}
 	else
 	{
-		SM9_MAC(kdata + K1_len/8,K2_len/8,buffer,pos,U_str);
+		SM9_MAC(kdata.m_pValue + K1_len,K2_len,buffer.m_pValue,buffer.m_iPos,U_str);
 	}
 
 	u = from_binary(32,U_str);
@@ -1187,50 +1172,40 @@ BOOL sm9_sw_decrypt(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_S
 	{
 		if(SM9_CIPHER_KDF_BASE == cipherType)
 		{
-			char * M_ = new char[K1_len/8];
+			SM9AARData M_(K1_len);
 
-			for(pos = 0; pos < K1_len/8; pos++)
+			for(buffer.m_iPos = 0; buffer.m_iPos < K1_len; buffer.m_iPos++)
 			{
-				M_[pos] = buffer[pos] ^ kdata[pos];
+				M_.m_pValue[buffer.m_iPos] = buffer.m_pValue[buffer.m_iPos] ^ kdata.m_pValue[buffer.m_iPos];
 			}
 
-			M = from_binary(pos,M_);
-
-			delete M_;
+			M = from_binary(buffer.m_iPos,M_.m_pValue);
 		}
 		else
 		{
 			sm4_context ctx;
 
-			sm4_setkey_dec(&ctx,(unsigned char *)kdata);
+			sm4_setkey_dec(&ctx,(unsigned char *)kdata.m_pValue);
 
 			int blockLen = 128/8;
 
-			pos = 0;
-
 			//pos += to_binary(cipher.C2,1024,buffer+pos);
-			int iLen = 1024;
+			int iLen = cipher.C2.GetLength();
 
-			cipher.C2.GetValue(buffer+pos,&iLen);
-			pos += cipher.C2.GetLength();
+			buffer.m_iPos = 0;
+			cipher.C2.GetValue(buffer.m_pValue + buffer.m_iPos,&iLen);
+			buffer.m_iPos += cipher.C2.GetLength();
 
-			char * pplain = new char[pos];
+			SM9AARData pplain(buffer.m_iPos);
 
-			sm4_crypt_ecb(&ctx,0,pos,(unsigned char *)buffer,(unsigned char *)pplain);
+			sm4_crypt_ecb(&ctx,0,buffer.m_iPos,(unsigned char *)buffer.m_pValue,(unsigned char *)pplain.m_pValue);
 
-			M = from_binary(pos-pplain[pos-1],pplain);
+			M = from_binary(buffer.m_iPos-pplain.m_pValue[buffer.m_iPos-1],pplain.m_pValue);
 
-			plain.data.SetValue(pplain,pos-pplain[pos-1]);
-
-			delete pplain;
+			plain.data.SetValue(pplain.m_pValue,buffer.m_iPos-pplain.m_pValue[buffer.m_iPos-1]);
 		}
 	}
 	
-	if (kdata)
-	{
-		delete kdata;
-	}
-
 	/*plain.data = M;*/
 
 	cout <<"M:"<<M<<endl;
