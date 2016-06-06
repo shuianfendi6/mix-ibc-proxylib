@@ -14,8 +14,25 @@ using namespace std;
 
 #include "sm9_proxylib_api.h"
 #include "sm9_proxylib.h"
-#ifdef BENCHMARKING
-#include "benchmark.h"
+
+#ifndef GET_ULONG_BE
+#define GET_ULONG_BE(n,b,i)                             \
+{                                                       \
+	(n) = ( (unsigned int) (b)[(i)    ] << 24 )        \
+	| ( (unsigned int) (b)[(i) + 1] << 16 )        \
+	| ( (unsigned int) (b)[(i) + 2] <<  8 )        \
+	| ( (unsigned int) (b)[(i) + 3]       );       \
+}
+#endif
+
+#ifndef PUT_ULONG_BE
+#define PUT_ULONG_BE(n,b,i)                             \
+{                                                       \
+	(b)[(i)    ] = (unsigned char) ( (n) >> 24 );       \
+	(b)[(i) + 1] = (unsigned char) ( (n) >> 16 );       \
+	(b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
+	(b)[(i) + 3] = (unsigned char) ( (n)       );       \
+}
 #endif
 
 using namespace std;
@@ -437,7 +454,7 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 	int bufferLen = 1+iZLen+4;
 	char * buffer = new char[1+iZLen+4];
 
-	for(int i = 0; i < ihlen/v + 1; i++)
+	for(ct=1; ct <= ihlen/v + 1; ct++)
 	{
 		Big one = 0x01;
 		int pos = 0;
@@ -450,18 +467,18 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 		memcpy(buffer+pos,pZ,iZLen);
 		pos += iZLen;
 
-		for (int j = 0; j < 4; j++)
-		{
-			ct_str[j] = ((char*)&ct)[4- 1 - j];
-		}
+		PUT_ULONG_BE(ct,buffer+pos,0);
 
-		memcpy(buffer + pos,ct_str,4);
+		//for (int j = 0; j < 4; j++)
+		//{
+		//	ct_str[j] = ((char*)&ct)[4- 1 - j];
+		//}
+
+		//memcpy(buffer + pos,ct_str,4);
 
 		pos += 4;
 
-		//pos += to_binary(ct,1024,buffer + pos);
-
-		SM9_HV(pos, (unsigned char *)buffer, HaItem+SM3_DIGEST_LEN*i);
+		SM9_HV(pos, (unsigned char *)buffer, HaItem+SM3_DIGEST_LEN*(ct-1));
 
 		ct++;
 	}
@@ -483,6 +500,77 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 
 int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
+{
+	miracl *mip=&precisionBits;
+	mip->IOBASE=16;
+
+	// step 1
+	int ct=0x00000001;
+
+	unsigned char * HaItem = NULL;
+	Big Ha = 0;
+
+	Big n = from_binary(iNLen,pN);
+
+	// step 2
+	Big hlen=8*((5*((bits(n))) + 31)/32);
+	int v = 256;
+	//step 3
+	Big h2 = 0;
+
+	int ihlen = toint(hlen);
+
+	HaItem = new unsigned char[ihlen+32];
+
+	int bufferLen = 1+iZLen+4;
+	char * buffer = new char[1+iZLen+4];
+
+	for(ct=1; ct <= ihlen/v + 1; ct++)
+	{
+		Big two = 0x02;
+		int pos = 0;
+		char ct_str[4] = {0};
+
+		memset(buffer,0,bufferLen);
+
+		pos += to_binary(two,1024,buffer + pos);
+
+		memcpy(buffer+pos,pZ,iZLen);
+		pos += iZLen;
+
+		PUT_ULONG_BE(ct,buffer+pos,0);
+
+		//for (int j = 0; j < 4; j++)
+		//{
+		//	ct_str[j] = ((char*)&ct)[4- 1 - j];
+		//}
+
+		//memcpy(buffer + pos,ct_str,4);
+
+		pos += 4;
+
+		SM9_HV(pos, (unsigned char *)buffer, HaItem+SM3_DIGEST_LEN*(ct-1));
+
+		ct++;
+	}
+
+	delete buffer;
+
+	Ha = from_binary(ihlen/8,(char *)HaItem);
+
+	cout << "Ha:"<<Ha << endl;
+	h2 = pow(Ha,1,n-1) + 1;
+	cout << "h2:"<<h2 << endl;
+
+	delete HaItem;
+
+	*piH2Len = to_binary(h2,*piH2Len, pH2);
+
+	return 0;
+}
+
+
+int SM9_H2_V2(char * pM,int iMLen,char * pW,int iWLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 {
 	miracl *mip=&precisionBits;
 	mip->IOBASE=16;
@@ -549,7 +637,6 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 
 	return 0;
 }
-
 
 int SM9_MAC(char * pK, int iKLen, char * pZ,int iZLen, char pMac[32])
 {

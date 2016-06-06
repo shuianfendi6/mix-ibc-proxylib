@@ -167,9 +167,15 @@ void set_frobenius_constant(ZZn2 &X);
 
 SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
 
+// SM9_H1(id||hid, N) 长度固定 ID+1
 int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);
+// SM9_H2( M||w, N) 长度不固定 随M变化
 int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len);
+// SM9_H2_V2( M, w, N) 不需要拷贝 随M变化
+int SM9_H2_V2(char * pM,int iMLen,char * pW,int iWLen, char * pN, int iNLen,char *pH2,int *piH2Len);
+// SM9_MAC(K, C) 输入参数为密文，不需要拷贝
 int SM9_MAC(char * pK, int iKLen, char * pZ,int iZLen, char pMac[32]);
+// SM9_HV-----SM3------HASH  长度固定[2]ZZn12+[2]ZZn2+[2]ID
 int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32]);
 
 extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
