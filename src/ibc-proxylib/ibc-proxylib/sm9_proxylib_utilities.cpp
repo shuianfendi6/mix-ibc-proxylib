@@ -577,8 +577,11 @@ int SM9_H2_V2(char * pM,int iMLen,char * pW,int iWLen, char * pN, int iNLen,char
 
 	// step 1
 	int ct=0x00000001;
+	sch_context ctx;
 
 	unsigned char * HaItem = NULL;
+	unsigned char ct_str[4] = {0};
+	unsigned char two = 0x02;
 	Big Ha = 0;
 
 	Big n = from_binary(iNLen,pN);
@@ -593,37 +596,22 @@ int SM9_H2_V2(char * pM,int iMLen,char * pW,int iWLen, char * pN, int iNLen,char
 
 	HaItem = new unsigned char[ihlen+32];
 
-	int bufferLen = 1+iZLen+4;
-	char * buffer = new char[1+iZLen+4];
-
-	for(int i = 0; i < ihlen/v + 1; i++)
+	for(ct=1; ct <= ihlen/v + 1; ct++)
 	{
-		Big two = 0x02;
-		int pos = 0;
-		char ct_str[4] = {0};
+		memset(&ctx,0x00,sizeof(ctx));
+		
+		tcm_sch_starts(&ctx);
+		tcm_sch_update(&ctx, &two, 1);
+		tcm_sch_update(&ctx, (unsigned char*)pM, iMLen);
+		tcm_sch_update(&ctx, (unsigned char*)pW, iWLen);
+		
+		PUT_ULONG_BE(ct,ct_str,0);
 
-		memset(buffer,0,bufferLen);
-
-		pos += to_binary(two,1024,buffer + pos);
-
-		memcpy(buffer+pos,pZ,iZLen);
-		pos += iZLen;
-
-		for (int j = 0; j < 4; j++)
-		{
-			ct_str[j] = ((char*)&ct)[4- 1 - j];
-		}
-
-		memcpy(buffer + pos,ct_str,4);
-
-		pos += 4;
-
-		SM9_HV(pos, (unsigned char *)buffer, HaItem+SM3_DIGEST_LEN*i);
+		tcm_sch_update(&ctx, (unsigned char*)ct_str, sizeof(ct_str));
+		tcm_sch_finish(&ctx, HaItem+SM3_DIGEST_LEN*(ct-1));
 
 		ct++;
 	}
-
-	delete buffer;
 
 	Ha = from_binary(ihlen/8,(char *)HaItem);
 
