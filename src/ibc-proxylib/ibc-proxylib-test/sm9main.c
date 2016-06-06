@@ -97,7 +97,7 @@ int main()
 
 	// sign verify end
 
-#elif 1
+#elif 0
 
 	// crypto and wrap start
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
