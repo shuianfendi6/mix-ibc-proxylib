@@ -52,7 +52,7 @@ extern "C" {
 	}SM9_OBJ_TYPE;
 
 	// C-compatible wrapper routines.  See documentation for usage.
-	int sm9_proxylib_getSerializeObjectSize(void *params, SM9_SERIALIZE_MODE mode, int *serialSize);
+	int sm9_proxylib_getSerializeObjectSize(void *object, SM9_SERIALIZE_MODE mode, int *serialSize);
 	int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize, 
 		int bufferAvailSize, SM9_SERIALIZE_MODE mode);
 	int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,

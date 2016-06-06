@@ -47,10 +47,10 @@ int sm9_proxylib_generateParams(void **params, SM9_SCHEME_TYPE schemeID)
 	return error;
 }
 
-int sm9_proxylib_getSerializeObjectSize(void *params, SM9_SERIALIZE_MODE mode, int *serialSize)
+int sm9_proxylib_getSerializeObjectSize(void *object, SM9_SERIALIZE_MODE mode, int *serialSize)
 {
 	int error = SM9_ERROR_OTHER;
-	SM9Object *cp = (SM9Object*) params;
+	SM9Object *cp = (SM9Object*) object;
 
 	if (serialSize)
 	{
