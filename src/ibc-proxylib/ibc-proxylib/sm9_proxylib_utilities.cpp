@@ -70,186 +70,143 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen)
 	return (SM9_OBJ_TYPE)toint(charsToBig(c,totLen));
 }
 
+Big charsToBig (char *c, int *totLen)
+{
+	Big a;
+	int length = 0;
+
+	*totLen=0;
+
+	GET_ULONG_BE(length,c+*totLen,0);
+	*totLen+=4;
+	a=from_binary(length,c+*totLen);
+	*totLen+=length;
+
+	return a;
+}
 
 ECn charsToECn (char *c, int *totLen)
 {
 	ECn e;
 	Big x,y;
-	int len = 0;
-	char *orig = c;
-	//   format: 4 bytes length, followed by the big
+	int length = 0;
 
-	memcpy (&len, c, sizeof (int));
-	c += sizeof (int);
-	x = from_binary (len, c);
-	c += len;
-	//  cout << "Len1 " << len << " x " << x;
+	*totLen=0;
 
-	memcpy (&len, c, sizeof (int));
-	c += sizeof (int);
-	y = from_binary (len, c);
-	c += len;
-	//  cout << " Len2 " << len << " y " << y << "\n";
+	GET_ULONG_BE(length,c+*totLen,0);
+	*totLen+=4;
+	x=from_binary(length,c+*totLen);
+	*totLen+=length;
 
-	e.set (x, y);
+	GET_ULONG_BE(length,c+*totLen,0);
+	*totLen+=4;
+	y=from_binary(length,c+*totLen);
+	*totLen+=length;
 
-	*totLen = c - orig;
+	e.set(x,y);
+
 	return e;
-}
-
-Big charsToBig (char *c, int *totLen)
-{
-	Big a;
-	int len;
-	char *orig = c;
-
-	memcpy (&len, c, sizeof (int));
-	c += sizeof (int);
-	a = from_binary (len, c);
-	c += len;
-
-	*totLen = c - orig;
-	return a;
-}
-
-int BigTochars (Big &x, char *c, int s)
-{
-	int len = 0;
-	int totlen = sizeof (int);
-
-	//   format: 4 bytes length, followed by the big
-	if (s <= sizeof (int))
-		return -1;
-	// Code assumes epoint contains either nulls or bigs > 0
-	s -= sizeof (int);
-	c += sizeof (int);
-	if (x.iszero()) {
-		len = 0;
-	} else {
-		len = to_binary (x, s, c, FALSE);
-	}
-
-	if (len < 0)
-		return -1;
-	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
-	totlen += len;
-	s -= len;
-	c += len;
-	//  cout << "Len1 " << len << " x " << x;
-
-	return totlen;
 }
 
 ZZn2 charsToZZn2 (char *c, int *totLen)
 {
 	ZZn2 z;
-	int len;
 	Big a,b;
-	char *orig = c;
+	
+	int length = 0;
 
-	memcpy (&len, c, sizeof (int));
-	c += sizeof (int);
-	a = from_binary (len, c);
-	c += len;
-	//  cout << "chartozzn2 a: (" << len << ") " 
-	//    << a << "\n";
+	*totLen=0;
 
-	memcpy (&len, c, sizeof (int));
-	c += sizeof (int);
-	b = from_binary (len, c);
-	//  cout << "chartozzn2 b: (" << len << ") " 
-	//   << b << "\n";
-	c += len;
+	GET_ULONG_BE(length,c+*totLen,0);
+	*totLen+=4;
+	a=from_binary(length,c+*totLen);
+	*totLen+=length;
 
-	z.set (a, b);
+	GET_ULONG_BE(length,c+*totLen,0);
+	*totLen+=4;
+	b=from_binary(length,c+*totLen);
+	*totLen+=length;
 
-	*totLen = c - orig;
+	z.set(a,b);
+
 	return z;
+}
+
+int BigTochars (Big &x, char *c, int s)
+{
+	SM9AARData buffer(4+32);
+	int length = 0;
+
+	buffer.m_iPos += 4;
+	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
+	buffer.m_iPos += length;
+
+	if (0 == c || s < buffer.m_iPos)
+	{
+		return buffer.m_iPos;
+	}
+	else
+	{
+		memcpy(c,buffer.m_pValue,buffer.m_iPos);
+		return buffer.m_iPos;
+	}
 }
 
 int ECnTochars (ECn &e, char *c, int s)
 {
-
+	SM9AARData buffer(32*2 + 4*2);
+	int length = 0;
 	Big x, y;
 	e.get(x, y);
-	int len = 0;
-	int totlen = sizeof (int)*2;
 
-	//  cout << "Entering ECnTochars" << endl;
-	//   format: 4 bytes length, followed by the big
-	if (s <= sizeof (int))
-		return -1;
-	// Code assumes epoint contains either nulls or bigs > 0
-	s -= sizeof (int);
-	c += sizeof (int);
-	if (x.iszero()) {
-		len = 0;
-	} else {  
-		len = to_binary (x, s, c, FALSE);
+	buffer.m_iPos += 4;
+	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
+	buffer.m_iPos += length;
+
+	buffer.m_iPos += 4;
+	length = to_binary(y,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
+	buffer.m_iPos += length;
+
+	if (0 == c || s < buffer.m_iPos)
+	{
+		return buffer.m_iPos;
 	}
-	if (len < 0) {
-		return -1;
+	else
+	{
+		memcpy(c,buffer.m_pValue,buffer.m_iPos);
+		return buffer.m_iPos;
 	}
-
-	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
-
-	totlen += len;
-	s -= len;
-	c += len;
-	//    cout << "Len1 " << len << " x " << x;
-
-
-	if (s <= sizeof (int))
-		return -1;
-	s -= sizeof (int);
-	c += sizeof (int);
-	len = to_binary (y, s, c, FALSE);
-	if (len < 0)
-		return -1;
-	memcpy ((char *)(c - sizeof(int)), (void *)&len, sizeof (int));
-	totlen += len;
-	//  cout << "Len2 " << len << " y " << y;
-
-	return totlen;
 }
 
 int ZZn2Tochars(ZZn2 &z, char *c, int s)
 {
-	int len = 0;
-	int totlen = 2*sizeof(int);
+	SM9AARData buffer(32*2 + 4*2);
+	int length = 0;
 	Big a,b;
 	z.get (a, b);
 
-	s -= sizeof (int);
-	c += sizeof (int);
-	if (a.iszero()) {
+	buffer.m_iPos += 4;
+	length = to_binary(a,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
+	buffer.m_iPos += length;
 
-		len = 0;
-	} else {
-		len = to_binary(a, s, c, FALSE);
+	buffer.m_iPos += 4;
+	length = to_binary(b,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
+	buffer.m_iPos += length;
+
+	if (0 == c || s < buffer.m_iPos)
+	{
+		return buffer.m_iPos;
 	}
-	if (len < 0)
-		return -1;
-	*(c - sizeof(int));
-	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
-	totlen += len;
-	s -= len;
-	c += len;
-
-
-	s -= sizeof (int);
-	c += sizeof (int);
-	if (b.iszero()) {
-		len = 0;
-	} else {
-		len = to_binary(b, s, c, FALSE);
+	else
+	{
+		memcpy(c,buffer.m_pValue,buffer.m_iPos);
+		return buffer.m_iPos;
 	}
-	if (len < 0)
-		return -1;
-	memcpy ((char *)(c - sizeof (int)), (void *)&len, sizeof (int));
-	totlen += len;
-
-	return totlen;
 }
 
 int to_binaryZZn12(const ZZn12 &w, int max, char output[384])

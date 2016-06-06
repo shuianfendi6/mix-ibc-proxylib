@@ -71,8 +71,6 @@ int sm9_proxylib_serializeObject(void *params, char *buffer, int *bufferSize,
 	SM9Object *cp = (SM9Object*) params;
 
 	if (cp->getSerializedSize(mode) <= bufferAvailSize) {
-		(*(int *)buffer) = cp->objectType; 
-
 		*bufferSize = cp->serialize(mode, buffer,
 			bufferAvailSize);
 		if (*bufferSize > 0) {
