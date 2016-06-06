@@ -466,7 +466,7 @@ BOOL sm9_sw_wrap(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,char * userID, i
 	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
 #endif
 
-	SM9AARData buffer(userIDLen + 1 > 32 * 2 + 12 * 32 + userIDLen ? userIDLen + 1 : 32 * 2 + 12 * 32 + userIDLen);
+	SM9AARData buffer(32 * 2 + 12 * 32 + userIDLen);
 
 	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
 	buffer.m_iPos += userIDLen;
