@@ -169,6 +169,7 @@ SM9_OBJ_TYPE getSM9ObjectType(char *c, int *totLen);
 
 // SM9_H1(id||hid, N) 长度固定 ID+1
 int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);
+int SM9_H1_V2(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len);
 // SM9_H2( M||w, N) 长度不固定 随M变化
 int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len);
 // SM9_H2_V2( M, w, N) 不需要拷贝 随M变化
