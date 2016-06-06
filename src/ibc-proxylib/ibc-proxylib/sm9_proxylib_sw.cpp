@@ -382,7 +382,7 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	Big t1,t2;
 	char hid = 0x01;
 
-	SM9AARData buffer(userIDLen + 1 > messageLen + 12 * 32 ? userIDLen + 1: messageLen + 12 * 32);
+	SM9AARData buffer(userIDLen + 1 > 12 * 32 ? userIDLen + 1: 12 * 32);
 
 	memcpy(buffer.m_pValue + buffer.m_iPos,userID,userIDLen);
 	buffer.m_iPos += userIDLen;
@@ -419,9 +419,6 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 	cout <<"w_:"<<w<<endl;
 
 	buffer.m_iPos = 0;
-
-	memcpy(buffer.m_pValue + buffer.m_iPos,message,messageLen);
-	buffer.m_iPos += messageLen;
 	buffer.m_iPos += to_binaryZZn12(w,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
 
 	char h2_str[32] = {0};
@@ -431,7 +428,7 @@ BOOL sm9_sw_verify(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, char *message
 
 	n_data.m_iPos = to_binaryBig(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
 
-	SM9_H2(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h2_data.m_pValue, &h2_data.m_iPos);
+	SM9_H2_V2(message,messageLen, buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h2_data.m_pValue, &h2_data.m_iPos);
 
 	Big h2 = from_binary(h2_data.m_iPos, h2_data.m_pValue);
 
