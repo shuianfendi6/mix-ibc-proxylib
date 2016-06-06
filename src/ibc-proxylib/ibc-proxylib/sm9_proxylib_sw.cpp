@@ -15,6 +15,26 @@ extern Miracl precisionBits;
 
 static char * t_str = "600000000058F98A";
 
+#ifndef GET_ULONG_BE
+#define GET_ULONG_BE(n,b,i)                             \
+{                                                       \
+	(n) = ( (unsigned int) (b)[(i)    ] << 24 )        \
+	| ( (unsigned int) (b)[(i) + 1] << 16 )        \
+	| ( (unsigned int) (b)[(i) + 2] <<  8 )        \
+	| ( (unsigned int) (b)[(i) + 3]       );       \
+}
+#endif
+
+#ifndef PUT_ULONG_BE
+#define PUT_ULONG_BE(n,b,i)                             \
+{                                                       \
+	(b)[(i)    ] = (unsigned char) ( (n) >> 24 );       \
+	(b)[(i) + 1] = (unsigned char) ( (n) >> 16 );       \
+	(b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
+	(b)[(i) + 3] = (unsigned char) ( (n)       );       \
+}
+#endif
+
 BOOL 
 	sm9_sw_generate_params(SM9CurveParams_SW &params)
 {
@@ -1302,15 +1322,6 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1392,11 +1403,18 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -1516,15 +1534,6 @@ int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1563,11 +1572,18 @@ int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -1639,15 +1655,6 @@ int SM9ProxyMSK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1670,11 +1677,18 @@ int SM9ProxyMSK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -1729,15 +1743,6 @@ int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBu
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1787,11 +1792,18 @@ int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBu
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -1868,15 +1880,6 @@ int SM9ProxySGN_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1904,11 +1907,18 @@ int SM9ProxySGN_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -1967,15 +1977,6 @@ int SM9ProxyWRAP_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -1998,11 +1999,18 @@ int SM9ProxyWRAP_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -2055,15 +2063,6 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -2083,10 +2082,16 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 
 			int iLen = 0;
 			iLen = this->data.GetLength();
-			*(int*)buffer = iLen;
+			if (buffer && maxBuffer - totSize>=4)
+			{
+				PUT_ULONG_BE(iLen, buffer, 0);
+			}
 			totSize += 4;
 			buffer += 4;
-			this->data.GetValue(buffer,&iLen);
+			if (buffer && maxBuffer - totSize>=iLen)
+			{
+				this->data.GetValue(buffer,&iLen);
+			}
 			totSize += iLen;
 			buffer += iLen;
 
@@ -2095,11 +2100,18 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -2133,7 +2145,7 @@ BOOL SM9ProxyDATA_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int buf
 			//if (len <= 0) return FALSE;
 			//buffer += len;
 
-			len = *(int*)buffer;
+			GET_ULONG_BE(len,buffer,0);
 			if (len <= 0) return FALSE;
 			buffer+=4;
 			this->data.SetValue(buffer,len);
@@ -2159,15 +2171,6 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 {
 	int totSize = 0;
 	int size = 0;
-
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
 
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
@@ -2198,24 +2201,36 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 
 			int iLen = 0;
 			iLen = this->C2.GetLength();
-			*(int*)buffer = iLen;
+			if (buffer && maxBuffer - totSize>=4)
+			{
+				PUT_ULONG_BE(iLen, buffer, 0);
+			}
 			totSize += 4;
 			buffer += 4;
-			this->C2.GetValue(buffer,&iLen);
+			if (buffer && maxBuffer - totSize>=iLen)
+			{
+				this->C2.GetValue(buffer,&iLen);
+			}
 			totSize += iLen;
 			buffer += iLen;
-
 
 			return totSize;
 		}
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}
@@ -2257,7 +2272,7 @@ BOOL SM9ProxyCipher_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int b
 			//if (len <= 0) return FALSE;
 			//buffer += len;
 
-			len = *(int*)buffer;
+			GET_ULONG_BE(len,buffer,0);
 			if (len <= 0) return FALSE;
 			buffer+=4;
 			this->C2.SetValue(buffer,len);
@@ -2282,15 +2297,6 @@ int SM9ProxyEXR_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	int totSize = 0;
 	int size = 0;
 
-	char bufferLocal[1024] = {0};
-	int bufferLocalLen = 1024;
-
-	if (buffer == NULL)
-	{
-		buffer = bufferLocal;
-		maxBuffer = bufferLocalLen;
-	}
-
 	// Set base-16 ASCII encoding
 	miracl *mip=&precisionBits;
 	mip->IOBASE = 16;
@@ -2313,11 +2319,18 @@ int SM9ProxyEXR_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 		break;
 	case SM9_SERIALIZE_HEXASCII:
 		{
-			bufferLocalLen = this->trySerialize(SM9_SERIALIZE_BINARY,bufferLocal,maxBuffer);
+			int bin_len = this->trySerialize(SM9_SERIALIZE_BINARY,NULL,0);
 
-			Bin2Hex((unsigned char *)bufferLocal,bufferLocalLen,buffer,&maxBuffer);
+			SM9AARData serial(bin_len);
 
-			return maxBuffer;
+			if (maxBuffer>=bin_len * 2)
+			{
+				memset(buffer, 0, bin_len * 2);
+				serial.m_iPos = this->trySerialize(SM9_SERIALIZE_BINARY,serial.m_pValue,serial.m_iMaxLen);
+				Bin2Hex((unsigned char *)serial.m_pValue,serial.m_iPos,buffer,&maxBuffer);
+			}
+
+			return bin_len * 2;
 		}
 		break;
 	}

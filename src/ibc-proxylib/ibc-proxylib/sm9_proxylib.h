@@ -128,18 +128,26 @@ public:
 	virtual BOOL operator==(SM9Object &second) {
 		BOOL flag = FALSE;
 		SM9_SERIALIZE_MODE mode = SM9_SERIALIZE_BINARY;
-		int maxBuffer = 1024;
-		char buffer_one[1024] = {0};
-		char buffer_second[1024] = {0};
-		int buffer_one_len = 0;
-		int buffer_second_len = 0;
+		
+		int length_first = 0;
+		int length_second = 0;
 
-		buffer_one_len = this->trySerialize(mode, buffer_one, maxBuffer);
-		buffer_second_len = second.trySerialize(mode, buffer_second, maxBuffer);
+		length_first = this->trySerialize(mode, NULL, 0);
+		length_second = second.trySerialize(mode, NULL, 0);
 
-		if (buffer_one_len == buffer_second_len && 0 == memcmp(buffer_one,buffer_second,buffer_one_len))
+		if (length_first == length_second)
 		{
-			flag = TRUE;
+			SM9AARData buffer_first(length_first);
+			SM9AARData buffer_second(length_first);
+
+			buffer_first.m_iPos = this->trySerialize(mode, buffer_first.m_pValue, buffer_first.m_iMaxLen);
+			buffer_second.m_iPos = second.trySerialize(mode, buffer_second.m_pValue, buffer_second.m_iMaxLen);
+
+			if (0 == memcmp(buffer_first.m_pValue,buffer_second.m_pValue,buffer_first.m_iPos))
+			{
+				flag = TRUE;
+			}
+			
 		}
 
 		return flag;
