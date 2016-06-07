@@ -9,7 +9,7 @@
  */
 
 
-#ifdef __UNIX__
+#if defined(__UNIX__)
 
 #define MIRACL 32
 #define MR_BIG_ENDIAN    /* This may need to be changed        */
