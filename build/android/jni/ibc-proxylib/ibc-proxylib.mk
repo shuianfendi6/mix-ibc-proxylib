@@ -49,6 +49,7 @@ LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrsroot.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrstrong.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrxgcd.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrzzn2.c
+LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrzzn4.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrzzn2b.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrsha3.c
 LOCAL_SRC_FILES += $(LOCAL_PATH)/miracl-lib/mrshs.c
@@ -71,7 +72,6 @@ LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/zzn12a.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/zzn2.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/zzn4.cpp
 
-LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/sm9_proxylib_api.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/sm9_proxylib_hw.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/sm9_proxylib_sw.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/ibc-proxylib/sm9_proxylib_utilities.cpp
@@ -97,14 +97,16 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS) 
 
 LOCAL_C_INCLUDES := -I$(LOCAL_PATH)
-LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/ibc-proxylib/miracl-lib
-LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/ibc-proxylib/ibc-proxylib
+LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/miracl-lib
+LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/ibc-proxylib
 LOCAL_C_INCLUDES += -I/usr/include
 
 LOCAL_CPP_EXTENSION := .cxx .cpp .cc  
 
 LOCAL_MODULE    := lib-sm9-$(TARGET_ARCH_ABI)
 #LOCAL_MODULE    := lib-sm9
+
+LOCAL_SRC_FILES := $(LOCAL_PATH)/ibc-proxylib/sm9_proxylib_api.cpp
 
 LOCAL_STATIC_LIBRARIES := libibc-proxy
 

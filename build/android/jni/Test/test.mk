@@ -1,22 +1,23 @@
-LOCAL_PATH :=$(call my-dir)
+LOCAL_PATH :=$(call my-dir)/../../../../src/ibc-proxylib
 
 include $(CLEAR_VARS)
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../../src/O_All
+LOCAL_MODULE := Test
 
-LOCAL_SRC_FILES := main.c
+LOCAL_CPP_EXTENSION := .cxx .cpp .cc  
+
+LOCAL_C_INCLUDES := -I$(LOCAL_PATH)
+LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/miracl-lib
+LOCAL_C_INCLUDES += -I$(LOCAL_PATH)/ibc-proxylib
+LOCAL_C_INCLUDES += -I/usr/include
+
+LOCAL_SRC_FILES := $(LOCAL_PATH)/ibc-proxylib-test/sm9main.c
 #LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib
 
-ifeq ($(TARGET_ARCH), arm)
-LOCAL_CFLAGS += -I$(LOCAL_C_INCLUDES) -DPACKED="__attribute__((packed))"
-else
-LOCAL_CFLAGS += -I$(LOCAL_C_INCLUDES) -DPACKED=""
-endif
-
-LOCAL_MODULE := Test4O_All
+LOCAL_CFLAGS += -I$(LOCAL_C_INCLUDES) 
 
 #LOCAL_STATIC_LIBRARIES = libO_AllNSS
-LOCAL_SHARED_LIBRARIES = libO_All
+LOCAL_SHARED_LIBRARIES = lib-sm9-$(TARGET_ARCH_ABI)
 
 include $(BUILD_EXECUTABLE)
 #BUILD_EXECUTABLE BUILD_STATIC_LIBRARY BUILD_SHARED_LIBRARY
