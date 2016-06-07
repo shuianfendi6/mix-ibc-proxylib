@@ -1329,7 +1329,9 @@ int SM9CurveParams_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1541,7 +1543,9 @@ int SM9ProxyMPK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1662,7 +1666,9 @@ int SM9ProxyMSK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1750,7 +1756,9 @@ int SM9ProxySK_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxBu
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1887,7 +1895,9 @@ int SM9ProxySGN_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -1984,7 +1994,9 @@ int SM9ProxyWRAP_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -2070,7 +2082,9 @@ int SM9ProxyDATA_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int max
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -2179,7 +2193,9 @@ int SM9ProxyCipher_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int m
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
@@ -2304,7 +2320,9 @@ int SM9ProxyEXR_SW::trySerialize(SM9_SERIALIZE_MODE mode, char *buffer, int maxB
 	switch (mode) {
 	case SM9_SERIALIZE_BINARY:
 		{
-			size = BigTochars(Big(this->objectType), buffer, maxBuffer - totSize);
+			Big objectType(this->objectType);
+
+			size = BigTochars(objectType, buffer, maxBuffer - totSize);
 			if (size <= 0) return 0;
 			totSize += size;
 			buffer += size;
