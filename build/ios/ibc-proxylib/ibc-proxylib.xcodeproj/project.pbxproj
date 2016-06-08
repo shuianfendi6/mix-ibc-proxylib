@@ -1,0 +1,350 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7373272C1D06CE2700A7891D /* big.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327031D06CE2700A7891D /* big.cpp */; };
+		7373272D1D06CE2700A7891D /* ecn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327061D06CE2700A7891D /* ecn.cpp */; };
+		7373272E1D06CE2700A7891D /* ecn2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327081D06CE2700A7891D /* ecn2.cpp */; };
+		7373272F1D06CE2700A7891D /* flash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7373270A1D06CE2700A7891D /* flash.cpp */; };
+		737327351D06CE2700A7891D /* sm3.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327181D06CE2700A7891D /* sm3.c */; };
+		737327361D06CE2700A7891D /* sm4.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373271A1D06CE2700A7891D /* sm4.c */; };
+		737327371D06CE2700A7891D /* sm9_proxylib_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7373271C1D06CE2700A7891D /* sm9_proxylib_api.cpp */; };
+		737327381D06CE2700A7891D /* sm9_proxylib_hw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7373271E1D06CE2700A7891D /* sm9_proxylib_hw.cpp */; };
+		737327391D06CE2700A7891D /* sm9_proxylib_sw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327201D06CE2700A7891D /* sm9_proxylib_sw.cpp */; };
+		7373273A1D06CE2700A7891D /* sm9_proxylib_utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327221D06CE2700A7891D /* sm9_proxylib_utilities.cpp */; };
+		7373273B1D06CE2700A7891D /* zzn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327241D06CE2700A7891D /* zzn.cpp */; };
+		7373273C1D06CE2700A7891D /* zzn2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327261D06CE2700A7891D /* zzn2.cpp */; };
+		7373273D1D06CE2700A7891D /* zzn4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 737327281D06CE2700A7891D /* zzn4.cpp */; };
+		7373273E1D06CE2700A7891D /* zzn12a.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7373272A1D06CE2700A7891D /* zzn12a.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		737326F51D06CD7E00A7891D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		737326F71D06CD7E00A7891D /* libibc-proxylib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libibc-proxylib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		737327031D06CE2700A7891D /* big.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = big.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/big.cpp"; sourceTree = "<group>"; };
+		737327041D06CE2700A7891D /* big.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = big.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/big.h"; sourceTree = "<group>"; };
+		737327051D06CE2700A7891D /* ebrick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ebrick.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/ebrick.h"; sourceTree = "<group>"; };
+		737327061D06CE2700A7891D /* ecn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ecn.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/ecn.cpp"; sourceTree = "<group>"; };
+		737327071D06CE2700A7891D /* ecn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ecn.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/ecn.h"; sourceTree = "<group>"; };
+		737327081D06CE2700A7891D /* ecn2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ecn2.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/ecn2.cpp"; sourceTree = "<group>"; };
+		737327091D06CE2700A7891D /* ecn2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ecn2.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/ecn2.h"; sourceTree = "<group>"; };
+		7373270A1D06CE2700A7891D /* flash.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = flash.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/flash.cpp"; sourceTree = "<group>"; };
+		7373270B1D06CE2700A7891D /* flash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = flash.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/flash.h"; sourceTree = "<group>"; };
+		737327181D06CE2700A7891D /* sm3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sm3.c; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm3.c"; sourceTree = "<group>"; };
+		737327191D06CE2700A7891D /* sm3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm3.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm3.h"; sourceTree = "<group>"; };
+		7373271A1D06CE2700A7891D /* sm4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sm4.c; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm4.c"; sourceTree = "<group>"; };
+		7373271B1D06CE2700A7891D /* sm4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm4.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm4.h"; sourceTree = "<group>"; };
+		7373271C1D06CE2700A7891D /* sm9_proxylib_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sm9_proxylib_api.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_api.cpp"; sourceTree = "<group>"; };
+		7373271D1D06CE2700A7891D /* sm9_proxylib_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm9_proxylib_api.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_api.h"; sourceTree = "<group>"; };
+		7373271E1D06CE2700A7891D /* sm9_proxylib_hw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sm9_proxylib_hw.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_hw.cpp"; sourceTree = "<group>"; };
+		7373271F1D06CE2700A7891D /* sm9_proxylib_hw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm9_proxylib_hw.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_hw.h"; sourceTree = "<group>"; };
+		737327201D06CE2700A7891D /* sm9_proxylib_sw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sm9_proxylib_sw.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_sw.cpp"; sourceTree = "<group>"; };
+		737327211D06CE2700A7891D /* sm9_proxylib_sw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm9_proxylib_sw.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_sw.h"; sourceTree = "<group>"; };
+		737327221D06CE2700A7891D /* sm9_proxylib_utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sm9_proxylib_utilities.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib_utilities.cpp"; sourceTree = "<group>"; };
+		737327231D06CE2700A7891D /* sm9_proxylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sm9_proxylib.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/sm9_proxylib.h"; sourceTree = "<group>"; };
+		737327241D06CE2700A7891D /* zzn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zzn.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn.cpp"; sourceTree = "<group>"; };
+		737327251D06CE2700A7891D /* zzn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zzn.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn.h"; sourceTree = "<group>"; };
+		737327261D06CE2700A7891D /* zzn2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zzn2.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn2.cpp"; sourceTree = "<group>"; };
+		737327271D06CE2700A7891D /* zzn2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zzn2.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn2.h"; sourceTree = "<group>"; };
+		737327281D06CE2700A7891D /* zzn4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zzn4.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn4.cpp"; sourceTree = "<group>"; };
+		737327291D06CE2700A7891D /* zzn4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zzn4.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn4.h"; sourceTree = "<group>"; };
+		7373272A1D06CE2700A7891D /* zzn12a.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zzn12a.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn12a.cpp"; sourceTree = "<group>"; };
+		7373272B1D06CE2700A7891D /* zzn12a.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zzn12a.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/zzn12a.h"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		737326F41D06CD7E00A7891D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		737326EE1D06CD7E00A7891D = {
+			isa = PBXGroup;
+			children = (
+				737326F91D06CD7E00A7891D /* ibc-proxylib */,
+				737326F81D06CD7E00A7891D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		737326F81D06CD7E00A7891D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				737326F71D06CD7E00A7891D /* libibc-proxylib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		737326F91D06CD7E00A7891D /* ibc-proxylib */ = {
+			isa = PBXGroup;
+			children = (
+				737327031D06CE2700A7891D /* big.cpp */,
+				737327041D06CE2700A7891D /* big.h */,
+				737327051D06CE2700A7891D /* ebrick.h */,
+				737327061D06CE2700A7891D /* ecn.cpp */,
+				737327071D06CE2700A7891D /* ecn.h */,
+				737327081D06CE2700A7891D /* ecn2.cpp */,
+				737327091D06CE2700A7891D /* ecn2.h */,
+				7373270A1D06CE2700A7891D /* flash.cpp */,
+				7373270B1D06CE2700A7891D /* flash.h */,
+				737327181D06CE2700A7891D /* sm3.c */,
+				737327191D06CE2700A7891D /* sm3.h */,
+				7373271A1D06CE2700A7891D /* sm4.c */,
+				7373271B1D06CE2700A7891D /* sm4.h */,
+				7373271C1D06CE2700A7891D /* sm9_proxylib_api.cpp */,
+				7373271D1D06CE2700A7891D /* sm9_proxylib_api.h */,
+				7373271E1D06CE2700A7891D /* sm9_proxylib_hw.cpp */,
+				7373271F1D06CE2700A7891D /* sm9_proxylib_hw.h */,
+				737327201D06CE2700A7891D /* sm9_proxylib_sw.cpp */,
+				737327211D06CE2700A7891D /* sm9_proxylib_sw.h */,
+				737327221D06CE2700A7891D /* sm9_proxylib_utilities.cpp */,
+				737327231D06CE2700A7891D /* sm9_proxylib.h */,
+				737327241D06CE2700A7891D /* zzn.cpp */,
+				737327251D06CE2700A7891D /* zzn.h */,
+				737327261D06CE2700A7891D /* zzn2.cpp */,
+				737327271D06CE2700A7891D /* zzn2.h */,
+				737327281D06CE2700A7891D /* zzn4.cpp */,
+				737327291D06CE2700A7891D /* zzn4.h */,
+				7373272A1D06CE2700A7891D /* zzn12a.cpp */,
+				7373272B1D06CE2700A7891D /* zzn12a.h */,
+			);
+			path = "ibc-proxylib";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		737326F61D06CD7E00A7891D /* ibc-proxylib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 737327001D06CD7E00A7891D /* Build configuration list for PBXNativeTarget "ibc-proxylib" */;
+			buildPhases = (
+				737326F31D06CD7E00A7891D /* Sources */,
+				737326F41D06CD7E00A7891D /* Frameworks */,
+				737326F51D06CD7E00A7891D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ibc-proxylib";
+			productName = "ibc-proxylib";
+			productReference = 737326F71D06CD7E00A7891D /* libibc-proxylib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		737326EF1D06CD7E00A7891D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = YDX;
+				TargetAttributes = {
+					737326F61D06CD7E00A7891D = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 737326F21D06CD7E00A7891D /* Build configuration list for PBXProject "ibc-proxylib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 737326EE1D06CD7E00A7891D;
+			productRefGroup = 737326F81D06CD7E00A7891D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				737326F61D06CD7E00A7891D /* ibc-proxylib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		737326F31D06CD7E00A7891D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				737327361D06CE2700A7891D /* sm4.c in Sources */,
+				7373273C1D06CE2700A7891D /* zzn2.cpp in Sources */,
+				7373273E1D06CE2700A7891D /* zzn12a.cpp in Sources */,
+				737327351D06CE2700A7891D /* sm3.c in Sources */,
+				7373273A1D06CE2700A7891D /* sm9_proxylib_utilities.cpp in Sources */,
+				7373272F1D06CE2700A7891D /* flash.cpp in Sources */,
+				737327391D06CE2700A7891D /* sm9_proxylib_sw.cpp in Sources */,
+				7373273D1D06CE2700A7891D /* zzn4.cpp in Sources */,
+				7373273B1D06CE2700A7891D /* zzn.cpp in Sources */,
+				7373272D1D06CE2700A7891D /* ecn.cpp in Sources */,
+				737327381D06CE2700A7891D /* sm9_proxylib_hw.cpp in Sources */,
+				7373272C1D06CE2700A7891D /* big.cpp in Sources */,
+				7373272E1D06CE2700A7891D /* ecn2.cpp in Sources */,
+				737327371D06CE2700A7891D /* sm9_proxylib_api.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		737326FE1D06CD7E00A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MR_PAIRING_BN,
+					MR_NOASM,
+					__UNIX__,
+					MIX_BUILD_FOR_64,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../src/ibc-proxylib/miracl-lib",
+					"../../../src/ibc-proxylib/ibc-proxylib",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		737326FF1D06CD7E00A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MR_PAIRING_BN,
+					MR_NOASM,
+					__UNIX__,
+					MIX_BUILD_FOR_64,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../src/ibc-proxylib/miracl-lib",
+					"../../../src/ibc-proxylib/ibc-proxylib",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		737327011D06CD7E00A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		737327021D06CD7E00A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		737326F21D06CD7E00A7891D /* Build configuration list for PBXProject "ibc-proxylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				737326FE1D06CD7E00A7891D /* Debug */,
+				737326FF1D06CD7E00A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		737327001D06CD7E00A7891D /* Build configuration list for PBXNativeTarget "ibc-proxylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				737327011D06CD7E00A7891D /* Debug */,
+				737327021D06CD7E00A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 737326EF1D06CD7E00A7891D /* Project object */;
+}
