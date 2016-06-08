@@ -50,7 +50,7 @@ int main()
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
-#if 0
+#if 1
 	// sign verify start
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
