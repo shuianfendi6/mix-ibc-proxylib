@@ -1,0 +1,13 @@
+//
+// Prefix header for all source files
+//
+
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#endif
+
+
+
+#if defined(__aarch64__) || defined(__x86_64__)
+#define MIX_BUILD_FOR_64
+#endif
