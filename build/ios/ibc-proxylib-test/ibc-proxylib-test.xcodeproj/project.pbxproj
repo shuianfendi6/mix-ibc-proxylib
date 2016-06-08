@@ -17,8 +17,7 @@
 		737327E31D06DB8300A7891D /* sm9main.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327E21D06DB8300A7891D /* sm9main.c */; };
 		737327E41D06DCBD00A7891D /* libibc-proxylib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327871D06CF8500A7891D /* libibc-proxylib.a */; };
 		737327E51D06DCBD00A7891D /* libmiracl-lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7373277F1D06CF0F00A7891D /* libmiracl-lib.a */; };
-		737327E71D06DCDC00A7891D /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327E61D06DCDC00A7891D /* libc++.tbd */; };
-		737327E91D06DD0000A7891D /* libc++abi.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327E81D06DD0000A7891D /* libc++abi.tbd */; };
+		73CD75C51D07BA6B00342C4C /* libstdc++.6.0.9.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 73CD75C41D07BA6B00342C4C /* libstdc++.6.0.9.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +55,8 @@
 		737327E21D06DB8300A7891D /* sm9main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sm9main.c; path = "../../../../src/ibc-proxylib/ibc-proxylib-test/sm9main.c"; sourceTree = "<group>"; };
 		737327E61D06DCDC00A7891D /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		737327E81D06DD0000A7891D /* libc++abi.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++abi.tbd"; path = "usr/lib/libc++abi.tbd"; sourceTree = SDKROOT; };
+		73CD75C01D07BA4600342C4C /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		73CD75C41D07BA6B00342C4C /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,8 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				737327E91D06DD0000A7891D /* libc++abi.tbd in Frameworks */,
-				737327E71D06DCDC00A7891D /* libc++.tbd in Frameworks */,
+				73CD75C51D07BA6B00342C4C /* libstdc++.6.0.9.tbd in Frameworks */,
 				737327E41D06DCBD00A7891D /* libibc-proxylib.a in Frameworks */,
 				737327E51D06DCBD00A7891D /* libmiracl-lib.a in Frameworks */,
 			);
@@ -76,6 +76,8 @@
 		737327541D06CED800A7891D = {
 			isa = PBXGroup;
 			children = (
+				73CD75C41D07BA6B00342C4C /* libstdc++.6.0.9.tbd */,
+				73CD75C01D07BA4600342C4C /* libstdc++.tbd */,
 				737327E81D06DD0000A7891D /* libc++abi.tbd */,
 				737327E61D06DCDC00A7891D /* libc++.tbd */,
 				737327821D06CF8500A7891D /* ibc-proxylib.xcodeproj */,
