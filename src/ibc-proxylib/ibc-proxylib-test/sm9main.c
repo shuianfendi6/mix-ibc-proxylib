@@ -5,8 +5,11 @@
 #include "sm9_proxylib_api.h"
 
 #define NUMENCRYPTIONS 100
-
+#if defined(MAIN_RE_DEF)
+int main_test()
+#else
 int main()
+#endif
 {
 	char buffer[1000];
 
@@ -50,7 +53,7 @@ int main()
 
 	char * message = "Chinese IBS standard";
 	int messageLen = strlen("Chinese IBS standard");
-#if 1
+#if 0
 	// sign verify start
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
@@ -122,14 +125,14 @@ int main()
 	message = "Chinese IBE standard";
 	messageLen = strlen("Chinese IBE standard");
 
-	sm9_proxylib_encrypt(gParams,mpk,"Bob",strlen("Bob"),message,messageLen,&cipher,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW);
+	sm9_proxylib_encrypt(gParams,mpk,"Bob",strlen("Bob"),message,messageLen,&cipher,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW);
 	data_len = 2048;
 	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_BINARY, &data_len);
 	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
 	sm9_proxylib_destroyObject(cipher);
 	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_BINARY);
 
-	sm9_proxylib_decrypt(gParams,mpk,sk,"Bob",strlen("Bob"),cipher,&plain,SM9_CIPHER_KDF_BASE, SM9_SCHEME_SW);
+	sm9_proxylib_decrypt(gParams,mpk,sk,"Bob",strlen("Bob"),cipher,&plain,SM9_CIPHER_KDF_UNION, SM9_SCHEME_SW);
 	data_len = 2048;
 	sm9_proxylib_getSerializeObjectSize(plain, SM9_SERIALIZE_BINARY, &data_len);
 	sm9_proxylib_serializeObject(plain,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);

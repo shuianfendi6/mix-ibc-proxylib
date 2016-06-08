@@ -9,5 +9,5 @@
 
 
 #if defined(__aarch64__) || defined(__x86_64__)
-#define MIX_BUILD_FOR_64
+//#define MIX_BUILD_FOR_64
 #endif

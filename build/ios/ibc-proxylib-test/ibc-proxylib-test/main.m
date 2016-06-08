@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-#if 0
+#if 1
+
+int main_test();
 
 int main(int argc, char * argv[]) {
+    
+    main_test();
+    
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
     }
