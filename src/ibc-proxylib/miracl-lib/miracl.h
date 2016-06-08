@@ -307,6 +307,9 @@ struct bigtype
 typedef struct bigtype *big;
 typedef big zzn;
 
+#define flash oflash
+#define instr oinstr
+
 typedef big flash;
 
 #define MR_MSBIT ((mr_lentype)1<<(MR_IBITS-1))
