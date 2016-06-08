@@ -179,7 +179,7 @@ int main()
 	option =  SM9_KEY_EX_OPTION_YES;
 #endif
 
-	sm9_proxylib_keyExchangeB2B4(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,&SKB,&SB,&S2,option,SM9_SCHEME_SW);
+	sm9_proxylib_keyExchangeB2(gParams,mpk,skb,"Alice",strlen("Alice"),"Bob",strlen("Bob"), 0x80/8, RA,&RB,&SKB,&SB,&S2,option,SM9_SCHEME_SW);
 	data_len = 2048;
 	sm9_proxylib_getSerializeObjectSize(RB, SM9_SERIALIZE_BINARY, &data_len);
 	sm9_proxylib_serializeObject(RB,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
