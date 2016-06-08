@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		737327B71D06CFBA00A7891D /* mralloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373278B1D06CFBA00A7891D /* mralloc.c */; };
+		737327B81D06CFBA00A7891D /* mrarth0.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373278C1D06CFBA00A7891D /* mrarth0.c */; };
+		737327B91D06CFBA00A7891D /* mrarth1.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373278D1D06CFBA00A7891D /* mrarth1.c */; };
+		737327BA1D06CFBA00A7891D /* mrarth2.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373278E1D06CFBA00A7891D /* mrarth2.c */; };
+		737327BB1D06CFBA00A7891D /* mrarth3.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373278F1D06CFBA00A7891D /* mrarth3.c */; };
+		737327BC1D06CFBA00A7891D /* mrbits.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327901D06CFBA00A7891D /* mrbits.c */; };
+		737327BD1D06CFBA00A7891D /* mrbuild.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327911D06CFBA00A7891D /* mrbuild.c */; };
+		737327BE1D06CFBA00A7891D /* mrcore.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327921D06CFBA00A7891D /* mrcore.c */; };
+		737327BF1D06CFBA00A7891D /* mrcurve.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327931D06CFBA00A7891D /* mrcurve.c */; };
+		737327C01D06CFBA00A7891D /* mrdouble.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327941D06CFBA00A7891D /* mrdouble.c */; };
+		737327C11D06CFBA00A7891D /* mrebrick.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327951D06CFBA00A7891D /* mrebrick.c */; };
+		737327C21D06CFBA00A7891D /* mrec2m.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327961D06CFBA00A7891D /* mrec2m.c */; };
+		737327C31D06CFBA00A7891D /* mrecn2.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327971D06CFBA00A7891D /* mrecn2.c */; };
+		737327C41D06CFBA00A7891D /* mrfast.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327981D06CFBA00A7891D /* mrfast.c */; };
+		737327C51D06CFBA00A7891D /* mrflash.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327991D06CFBA00A7891D /* mrflash.c */; };
+		737327C61D06CFBA00A7891D /* mrflsh1.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279A1D06CFBA00A7891D /* mrflsh1.c */; };
+		737327C71D06CFBA00A7891D /* mrflsh2.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279B1D06CFBA00A7891D /* mrflsh2.c */; };
+		737327C81D06CFBA00A7891D /* mrflsh3.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279C1D06CFBA00A7891D /* mrflsh3.c */; };
+		737327C91D06CFBA00A7891D /* mrflsh4.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279D1D06CFBA00A7891D /* mrflsh4.c */; };
+		737327CA1D06CFBA00A7891D /* mrgcd.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279E1D06CFBA00A7891D /* mrgcd.c */; };
+		737327CB1D06CFBA00A7891D /* mrgf2m.c in Sources */ = {isa = PBXBuildFile; fileRef = 7373279F1D06CFBA00A7891D /* mrgf2m.c */; };
+		737327CC1D06CFBA00A7891D /* mrio1.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A01D06CFBA00A7891D /* mrio1.c */; };
+		737327CD1D06CFBA00A7891D /* mrio2.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A11D06CFBA00A7891D /* mrio2.c */; };
+		737327CE1D06CFBA00A7891D /* mrjack.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A21D06CFBA00A7891D /* mrjack.c */; };
+		737327CF1D06CFBA00A7891D /* mrlucas.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A31D06CFBA00A7891D /* mrlucas.c */; };
+		737327D01D06CFBA00A7891D /* mrmonty.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A41D06CFBA00A7891D /* mrmonty.c */; };
+		737327D11D06CFBA00A7891D /* mrpi.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A51D06CFBA00A7891D /* mrpi.c */; };
+		737327D21D06CFBA00A7891D /* mrpower.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A61D06CFBA00A7891D /* mrpower.c */; };
+		737327D31D06CFBA00A7891D /* mrprime.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A71D06CFBA00A7891D /* mrprime.c */; };
+		737327D41D06CFBA00A7891D /* mrrand.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A81D06CFBA00A7891D /* mrrand.c */; };
+		737327D51D06CFBA00A7891D /* mrround.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327A91D06CFBA00A7891D /* mrround.c */; };
+		737327D61D06CFBA00A7891D /* mrscrt.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AA1D06CFBA00A7891D /* mrscrt.c */; };
+		737327D71D06CFBA00A7891D /* mrsha3.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AB1D06CFBA00A7891D /* mrsha3.c */; };
+		737327D81D06CFBA00A7891D /* mrshs.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AC1D06CFBA00A7891D /* mrshs.c */; };
+		737327D91D06CFBA00A7891D /* mrshs256.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AD1D06CFBA00A7891D /* mrshs256.c */; };
+		737327DA1D06CFBA00A7891D /* mrshs512.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AE1D06CFBA00A7891D /* mrshs512.c */; };
+		737327DB1D06CFBA00A7891D /* mrsmall.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327AF1D06CFBA00A7891D /* mrsmall.c */; };
+		737327DC1D06CFBA00A7891D /* mrsroot.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B01D06CFBA00A7891D /* mrsroot.c */; };
+		737327DD1D06CFBA00A7891D /* mrstrong.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B11D06CFBA00A7891D /* mrstrong.c */; };
+		737327DE1D06CFBA00A7891D /* mrxgcd.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B21D06CFBA00A7891D /* mrxgcd.c */; };
+		737327DF1D06CFBA00A7891D /* mrzzn2.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B31D06CFBA00A7891D /* mrzzn2.c */; };
+		737327E01D06CFBA00A7891D /* mrzzn2b.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B41D06CFBA00A7891D /* mrzzn2b.c */; };
+		737327E11D06CFBA00A7891D /* mrzzn4.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327B51D06CFBA00A7891D /* mrzzn4.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		737327461D06CE9B00A7891D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		737327481D06CE9B00A7891D /* libmiracl-lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libmiracl-lib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		737327881D06CFBA00A7891D /* miracl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miracl.h; path = "../../../../src/ibc-proxylib/miracl-lib/miracl.h"; sourceTree = "<group>"; };
+		737327891D06CFBA00A7891D /* mirdef.h32 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mirdef.h32; path = "../../../../src/ibc-proxylib/miracl-lib/mirdef.h32"; sourceTree = "<group>"; };
+		7373278A1D06CFBA00A7891D /* mirdef.h64 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mirdef.h64; path = "../../../../src/ibc-proxylib/miracl-lib/mirdef.h64"; sourceTree = "<group>"; };
+		7373278B1D06CFBA00A7891D /* mralloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mralloc.c; path = "../../../../src/ibc-proxylib/miracl-lib/mralloc.c"; sourceTree = "<group>"; };
+		7373278C1D06CFBA00A7891D /* mrarth0.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrarth0.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrarth0.c"; sourceTree = "<group>"; };
+		7373278D1D06CFBA00A7891D /* mrarth1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrarth1.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrarth1.c"; sourceTree = "<group>"; };
+		7373278E1D06CFBA00A7891D /* mrarth2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrarth2.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrarth2.c"; sourceTree = "<group>"; };
+		7373278F1D06CFBA00A7891D /* mrarth3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrarth3.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrarth3.c"; sourceTree = "<group>"; };
+		737327901D06CFBA00A7891D /* mrbits.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrbits.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrbits.c"; sourceTree = "<group>"; };
+		737327911D06CFBA00A7891D /* mrbuild.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrbuild.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrbuild.c"; sourceTree = "<group>"; };
+		737327921D06CFBA00A7891D /* mrcore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrcore.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrcore.c"; sourceTree = "<group>"; };
+		737327931D06CFBA00A7891D /* mrcurve.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrcurve.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrcurve.c"; sourceTree = "<group>"; };
+		737327941D06CFBA00A7891D /* mrdouble.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrdouble.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrdouble.c"; sourceTree = "<group>"; };
+		737327951D06CFBA00A7891D /* mrebrick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrebrick.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrebrick.c"; sourceTree = "<group>"; };
+		737327961D06CFBA00A7891D /* mrec2m.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrec2m.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrec2m.c"; sourceTree = "<group>"; };
+		737327971D06CFBA00A7891D /* mrecn2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrecn2.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrecn2.c"; sourceTree = "<group>"; };
+		737327981D06CFBA00A7891D /* mrfast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrfast.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrfast.c"; sourceTree = "<group>"; };
+		737327991D06CFBA00A7891D /* mrflash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrflash.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrflash.c"; sourceTree = "<group>"; };
+		7373279A1D06CFBA00A7891D /* mrflsh1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrflsh1.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrflsh1.c"; sourceTree = "<group>"; };
+		7373279B1D06CFBA00A7891D /* mrflsh2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrflsh2.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrflsh2.c"; sourceTree = "<group>"; };
+		7373279C1D06CFBA00A7891D /* mrflsh3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrflsh3.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrflsh3.c"; sourceTree = "<group>"; };
+		7373279D1D06CFBA00A7891D /* mrflsh4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrflsh4.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrflsh4.c"; sourceTree = "<group>"; };
+		7373279E1D06CFBA00A7891D /* mrgcd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrgcd.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrgcd.c"; sourceTree = "<group>"; };
+		7373279F1D06CFBA00A7891D /* mrgf2m.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrgf2m.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrgf2m.c"; sourceTree = "<group>"; };
+		737327A01D06CFBA00A7891D /* mrio1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrio1.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrio1.c"; sourceTree = "<group>"; };
+		737327A11D06CFBA00A7891D /* mrio2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrio2.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrio2.c"; sourceTree = "<group>"; };
+		737327A21D06CFBA00A7891D /* mrjack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrjack.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrjack.c"; sourceTree = "<group>"; };
+		737327A31D06CFBA00A7891D /* mrlucas.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrlucas.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrlucas.c"; sourceTree = "<group>"; };
+		737327A41D06CFBA00A7891D /* mrmonty.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrmonty.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrmonty.c"; sourceTree = "<group>"; };
+		737327A51D06CFBA00A7891D /* mrpi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrpi.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrpi.c"; sourceTree = "<group>"; };
+		737327A61D06CFBA00A7891D /* mrpower.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrpower.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrpower.c"; sourceTree = "<group>"; };
+		737327A71D06CFBA00A7891D /* mrprime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrprime.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrprime.c"; sourceTree = "<group>"; };
+		737327A81D06CFBA00A7891D /* mrrand.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrrand.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrrand.c"; sourceTree = "<group>"; };
+		737327A91D06CFBA00A7891D /* mrround.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrround.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrround.c"; sourceTree = "<group>"; };
+		737327AA1D06CFBA00A7891D /* mrscrt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrscrt.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrscrt.c"; sourceTree = "<group>"; };
+		737327AB1D06CFBA00A7891D /* mrsha3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrsha3.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrsha3.c"; sourceTree = "<group>"; };
+		737327AC1D06CFBA00A7891D /* mrshs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrshs.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrshs.c"; sourceTree = "<group>"; };
+		737327AD1D06CFBA00A7891D /* mrshs256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrshs256.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrshs256.c"; sourceTree = "<group>"; };
+		737327AE1D06CFBA00A7891D /* mrshs512.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrshs512.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrshs512.c"; sourceTree = "<group>"; };
+		737327AF1D06CFBA00A7891D /* mrsmall.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrsmall.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrsmall.c"; sourceTree = "<group>"; };
+		737327B01D06CFBA00A7891D /* mrsroot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrsroot.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrsroot.c"; sourceTree = "<group>"; };
+		737327B11D06CFBA00A7891D /* mrstrong.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrstrong.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrstrong.c"; sourceTree = "<group>"; };
+		737327B21D06CFBA00A7891D /* mrxgcd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrxgcd.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrxgcd.c"; sourceTree = "<group>"; };
+		737327B31D06CFBA00A7891D /* mrzzn2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrzzn2.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrzzn2.c"; sourceTree = "<group>"; };
+		737327B41D06CFBA00A7891D /* mrzzn2b.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrzzn2b.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrzzn2b.c"; sourceTree = "<group>"; };
+		737327B51D06CFBA00A7891D /* mrzzn4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mrzzn4.c; path = "../../../../src/ibc-proxylib/miracl-lib/mrzzn4.c"; sourceTree = "<group>"; };
+		737327B61D06CFBA00A7891D /* pairing_3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pairing_3.h; path = "../../../../src/ibc-proxylib/miracl-lib/pairing_3.h"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		737327451D06CE9B00A7891D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7373273F1D06CE9B00A7891D = {
+			isa = PBXGroup;
+			children = (
+				7373274A1D06CE9B00A7891D /* miracl-lib */,
+				737327491D06CE9B00A7891D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		737327491D06CE9B00A7891D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				737327481D06CE9B00A7891D /* libmiracl-lib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7373274A1D06CE9B00A7891D /* miracl-lib */ = {
+			isa = PBXGroup;
+			children = (
+				737327881D06CFBA00A7891D /* miracl.h */,
+				737327891D06CFBA00A7891D /* mirdef.h32 */,
+				7373278A1D06CFBA00A7891D /* mirdef.h64 */,
+				7373278B1D06CFBA00A7891D /* mralloc.c */,
+				7373278C1D06CFBA00A7891D /* mrarth0.c */,
+				7373278D1D06CFBA00A7891D /* mrarth1.c */,
+				7373278E1D06CFBA00A7891D /* mrarth2.c */,
+				7373278F1D06CFBA00A7891D /* mrarth3.c */,
+				737327901D06CFBA00A7891D /* mrbits.c */,
+				737327911D06CFBA00A7891D /* mrbuild.c */,
+				737327921D06CFBA00A7891D /* mrcore.c */,
+				737327931D06CFBA00A7891D /* mrcurve.c */,
+				737327941D06CFBA00A7891D /* mrdouble.c */,
+				737327951D06CFBA00A7891D /* mrebrick.c */,
+				737327961D06CFBA00A7891D /* mrec2m.c */,
+				737327971D06CFBA00A7891D /* mrecn2.c */,
+				737327981D06CFBA00A7891D /* mrfast.c */,
+				737327991D06CFBA00A7891D /* mrflash.c */,
+				7373279A1D06CFBA00A7891D /* mrflsh1.c */,
+				7373279B1D06CFBA00A7891D /* mrflsh2.c */,
+				7373279C1D06CFBA00A7891D /* mrflsh3.c */,
+				7373279D1D06CFBA00A7891D /* mrflsh4.c */,
+				7373279E1D06CFBA00A7891D /* mrgcd.c */,
+				7373279F1D06CFBA00A7891D /* mrgf2m.c */,
+				737327A01D06CFBA00A7891D /* mrio1.c */,
+				737327A11D06CFBA00A7891D /* mrio2.c */,
+				737327A21D06CFBA00A7891D /* mrjack.c */,
+				737327A31D06CFBA00A7891D /* mrlucas.c */,
+				737327A41D06CFBA00A7891D /* mrmonty.c */,
+				737327A51D06CFBA00A7891D /* mrpi.c */,
+				737327A61D06CFBA00A7891D /* mrpower.c */,
+				737327A71D06CFBA00A7891D /* mrprime.c */,
+				737327A81D06CFBA00A7891D /* mrrand.c */,
+				737327A91D06CFBA00A7891D /* mrround.c */,
+				737327AA1D06CFBA00A7891D /* mrscrt.c */,
+				737327AB1D06CFBA00A7891D /* mrsha3.c */,
+				737327AC1D06CFBA00A7891D /* mrshs.c */,
+				737327AD1D06CFBA00A7891D /* mrshs256.c */,
+				737327AE1D06CFBA00A7891D /* mrshs512.c */,
+				737327AF1D06CFBA00A7891D /* mrsmall.c */,
+				737327B01D06CFBA00A7891D /* mrsroot.c */,
+				737327B11D06CFBA00A7891D /* mrstrong.c */,
+				737327B21D06CFBA00A7891D /* mrxgcd.c */,
+				737327B31D06CFBA00A7891D /* mrzzn2.c */,
+				737327B41D06CFBA00A7891D /* mrzzn2b.c */,
+				737327B51D06CFBA00A7891D /* mrzzn4.c */,
+				737327B61D06CFBA00A7891D /* pairing_3.h */,
+			);
+			path = "miracl-lib";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		737327471D06CE9B00A7891D /* miracl-lib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 737327511D06CE9B00A7891D /* Build configuration list for PBXNativeTarget "miracl-lib" */;
+			buildPhases = (
+				737327441D06CE9B00A7891D /* Sources */,
+				737327451D06CE9B00A7891D /* Frameworks */,
+				737327461D06CE9B00A7891D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "miracl-lib";
+			productName = "miracl-lib";
+			productReference = 737327481D06CE9B00A7891D /* libmiracl-lib.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		737327401D06CE9B00A7891D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = YDX;
+				TargetAttributes = {
+					737327471D06CE9B00A7891D = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 737327431D06CE9B00A7891D /* Build configuration list for PBXProject "miracl-lib" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7373273F1D06CE9B00A7891D;
+			productRefGroup = 737327491D06CE9B00A7891D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				737327471D06CE9B00A7891D /* miracl-lib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		737327441D06CE9B00A7891D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				737327D71D06CFBA00A7891D /* mrsha3.c in Sources */,
+				737327BC1D06CFBA00A7891D /* mrbits.c in Sources */,
+				737327BE1D06CFBA00A7891D /* mrcore.c in Sources */,
+				737327BF1D06CFBA00A7891D /* mrcurve.c in Sources */,
+				737327E11D06CFBA00A7891D /* mrzzn4.c in Sources */,
+				737327DA1D06CFBA00A7891D /* mrshs512.c in Sources */,
+				737327D11D06CFBA00A7891D /* mrpi.c in Sources */,
+				737327D31D06CFBA00A7891D /* mrprime.c in Sources */,
+				737327DD1D06CFBA00A7891D /* mrstrong.c in Sources */,
+				737327C91D06CFBA00A7891D /* mrflsh4.c in Sources */,
+				737327D91D06CFBA00A7891D /* mrshs256.c in Sources */,
+				737327C21D06CFBA00A7891D /* mrec2m.c in Sources */,
+				737327CA1D06CFBA00A7891D /* mrgcd.c in Sources */,
+				737327CD1D06CFBA00A7891D /* mrio2.c in Sources */,
+				737327CB1D06CFBA00A7891D /* mrgf2m.c in Sources */,
+				737327DE1D06CFBA00A7891D /* mrxgcd.c in Sources */,
+				737327C01D06CFBA00A7891D /* mrdouble.c in Sources */,
+				737327CE1D06CFBA00A7891D /* mrjack.c in Sources */,
+				737327E01D06CFBA00A7891D /* mrzzn2b.c in Sources */,
+				737327BB1D06CFBA00A7891D /* mrarth3.c in Sources */,
+				737327B81D06CFBA00A7891D /* mrarth0.c in Sources */,
+				737327C61D06CFBA00A7891D /* mrflsh1.c in Sources */,
+				737327D41D06CFBA00A7891D /* mrrand.c in Sources */,
+				737327D51D06CFBA00A7891D /* mrround.c in Sources */,
+				737327BD1D06CFBA00A7891D /* mrbuild.c in Sources */,
+				737327D01D06CFBA00A7891D /* mrmonty.c in Sources */,
+				737327DC1D06CFBA00A7891D /* mrsroot.c in Sources */,
+				737327C51D06CFBA00A7891D /* mrflash.c in Sources */,
+				737327D81D06CFBA00A7891D /* mrshs.c in Sources */,
+				737327D61D06CFBA00A7891D /* mrscrt.c in Sources */,
+				737327C11D06CFBA00A7891D /* mrebrick.c in Sources */,
+				737327D21D06CFBA00A7891D /* mrpower.c in Sources */,
+				737327C81D06CFBA00A7891D /* mrflsh3.c in Sources */,
+				737327DF1D06CFBA00A7891D /* mrzzn2.c in Sources */,
+				737327C71D06CFBA00A7891D /* mrflsh2.c in Sources */,
+				737327B71D06CFBA00A7891D /* mralloc.c in Sources */,
+				737327CF1D06CFBA00A7891D /* mrlucas.c in Sources */,
+				737327BA1D06CFBA00A7891D /* mrarth2.c in Sources */,
+				737327C31D06CFBA00A7891D /* mrecn2.c in Sources */,
+				737327DB1D06CFBA00A7891D /* mrsmall.c in Sources */,
+				737327C41D06CFBA00A7891D /* mrfast.c in Sources */,
+				737327CC1D06CFBA00A7891D /* mrio1.c in Sources */,
+				737327B91D06CFBA00A7891D /* mrarth1.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		7373274F1D06CE9B00A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MR_PAIRING_BN,
+					MR_NOASM,
+					__UNIX__,
+					MIX_BUILD_FOR_64,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		737327501D06CE9B00A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MR_PAIRING_BN,
+					MR_NOASM,
+					__UNIX__,
+					MIX_BUILD_FOR_64,
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		737327521D06CE9B00A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		737327531D06CE9B00A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		737327431D06CE9B00A7891D /* Build configuration list for PBXProject "miracl-lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7373274F1D06CE9B00A7891D /* Debug */,
+				737327501D06CE9B00A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		737327511D06CE9B00A7891D /* Build configuration list for PBXNativeTarget "miracl-lib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				737327521D06CE9B00A7891D /* Debug */,
+				737327531D06CE9B00A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 737327401D06CE9B00A7891D /* Project object */;
+}

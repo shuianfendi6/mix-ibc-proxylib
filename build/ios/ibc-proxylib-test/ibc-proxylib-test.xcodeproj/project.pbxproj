@@ -1,0 +1,402 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		737327621D06CED800A7891D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 737327611D06CED800A7891D /* main.m */; };
+		737327651D06CED800A7891D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 737327641D06CED800A7891D /* AppDelegate.m */; };
+		737327681D06CED800A7891D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 737327671D06CED800A7891D /* MasterViewController.m */; };
+		7373276B1D06CED800A7891D /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7373276A1D06CED800A7891D /* DetailViewController.m */; };
+		7373276E1D06CED800A7891D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7373276C1D06CED800A7891D /* Main.storyboard */; };
+		737327701D06CED800A7891D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7373276F1D06CED800A7891D /* Assets.xcassets */; };
+		737327731D06CED800A7891D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 737327711D06CED800A7891D /* LaunchScreen.storyboard */; };
+		737327E31D06DB8300A7891D /* sm9main.c in Sources */ = {isa = PBXBuildFile; fileRef = 737327E21D06DB8300A7891D /* sm9main.c */; };
+		737327E41D06DCBD00A7891D /* libibc-proxylib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327871D06CF8500A7891D /* libibc-proxylib.a */; };
+		737327E51D06DCBD00A7891D /* libmiracl-lib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7373277F1D06CF0F00A7891D /* libmiracl-lib.a */; };
+		737327E71D06DCDC00A7891D /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327E61D06DCDC00A7891D /* libc++.tbd */; };
+		737327E91D06DD0000A7891D /* libc++abi.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 737327E81D06DD0000A7891D /* libc++abi.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		7373277E1D06CF0F00A7891D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7373277A1D06CF0F00A7891D /* miracl-lib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 737327481D06CE9B00A7891D;
+			remoteInfo = "miracl-lib";
+		};
+		737327861D06CF8500A7891D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 737327821D06CF8500A7891D /* ibc-proxylib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 737326F71D06CD7E00A7891D;
+			remoteInfo = "ibc-proxylib";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		7373275D1D06CED800A7891D /* ibc-proxylib-test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ibc-proxylib-test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		737327611D06CED800A7891D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		737327631D06CED800A7891D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		737327641D06CED800A7891D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		737327661D06CED800A7891D /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		737327671D06CED800A7891D /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		737327691D06CED800A7891D /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		7373276A1D06CED800A7891D /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		7373276D1D06CED800A7891D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		7373276F1D06CED800A7891D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		737327721D06CED800A7891D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		737327741D06CED800A7891D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7373277A1D06CF0F00A7891D /* miracl-lib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "miracl-lib.xcodeproj"; path = "../miracl-lib/miracl-lib.xcodeproj"; sourceTree = "<group>"; };
+		737327821D06CF8500A7891D /* ibc-proxylib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ibc-proxylib.xcodeproj"; path = "../ibc-proxylib/ibc-proxylib.xcodeproj"; sourceTree = "<group>"; };
+		737327E21D06DB8300A7891D /* sm9main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sm9main.c; path = "../../../../src/ibc-proxylib/ibc-proxylib-test/sm9main.c"; sourceTree = "<group>"; };
+		737327E61D06DCDC00A7891D /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		737327E81D06DD0000A7891D /* libc++abi.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++abi.tbd"; path = "usr/lib/libc++abi.tbd"; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7373275A1D06CED800A7891D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				737327E91D06DD0000A7891D /* libc++abi.tbd in Frameworks */,
+				737327E71D06DCDC00A7891D /* libc++.tbd in Frameworks */,
+				737327E41D06DCBD00A7891D /* libibc-proxylib.a in Frameworks */,
+				737327E51D06DCBD00A7891D /* libmiracl-lib.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		737327541D06CED800A7891D = {
+			isa = PBXGroup;
+			children = (
+				737327E81D06DD0000A7891D /* libc++abi.tbd */,
+				737327E61D06DCDC00A7891D /* libc++.tbd */,
+				737327821D06CF8500A7891D /* ibc-proxylib.xcodeproj */,
+				7373277A1D06CF0F00A7891D /* miracl-lib.xcodeproj */,
+				7373275F1D06CED800A7891D /* ibc-proxylib-test */,
+				7373275E1D06CED800A7891D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7373275E1D06CED800A7891D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7373275D1D06CED800A7891D /* ibc-proxylib-test.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7373275F1D06CED800A7891D /* ibc-proxylib-test */ = {
+			isa = PBXGroup;
+			children = (
+				737327631D06CED800A7891D /* AppDelegate.h */,
+				737327641D06CED800A7891D /* AppDelegate.m */,
+				737327661D06CED800A7891D /* MasterViewController.h */,
+				737327671D06CED800A7891D /* MasterViewController.m */,
+				737327691D06CED800A7891D /* DetailViewController.h */,
+				7373276A1D06CED800A7891D /* DetailViewController.m */,
+				7373276C1D06CED800A7891D /* Main.storyboard */,
+				7373276F1D06CED800A7891D /* Assets.xcassets */,
+				737327711D06CED800A7891D /* LaunchScreen.storyboard */,
+				737327741D06CED800A7891D /* Info.plist */,
+				737327601D06CED800A7891D /* Supporting Files */,
+			);
+			path = "ibc-proxylib-test";
+			sourceTree = "<group>";
+		};
+		737327601D06CED800A7891D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				737327E21D06DB8300A7891D /* sm9main.c */,
+				737327611D06CED800A7891D /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7373277B1D06CF0F00A7891D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7373277F1D06CF0F00A7891D /* libmiracl-lib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		737327831D06CF8500A7891D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				737327871D06CF8500A7891D /* libibc-proxylib.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7373275C1D06CED800A7891D /* ibc-proxylib-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 737327771D06CED800A7891D /* Build configuration list for PBXNativeTarget "ibc-proxylib-test" */;
+			buildPhases = (
+				737327591D06CED800A7891D /* Sources */,
+				7373275A1D06CED800A7891D /* Frameworks */,
+				7373275B1D06CED800A7891D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ibc-proxylib-test";
+			productName = "ibc-proxylib-test";
+			productReference = 7373275D1D06CED800A7891D /* ibc-proxylib-test.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		737327551D06CED800A7891D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = YDX;
+				TargetAttributes = {
+					7373275C1D06CED800A7891D = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 737327581D06CED800A7891D /* Build configuration list for PBXProject "ibc-proxylib-test" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 737327541D06CED800A7891D;
+			productRefGroup = 7373275E1D06CED800A7891D /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 737327831D06CF8500A7891D /* Products */;
+					ProjectRef = 737327821D06CF8500A7891D /* ibc-proxylib.xcodeproj */;
+				},
+				{
+					ProductGroup = 7373277B1D06CF0F00A7891D /* Products */;
+					ProjectRef = 7373277A1D06CF0F00A7891D /* miracl-lib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				7373275C1D06CED800A7891D /* ibc-proxylib-test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		7373277F1D06CF0F00A7891D /* libmiracl-lib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libmiracl-lib.a";
+			remoteRef = 7373277E1D06CF0F00A7891D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		737327871D06CF8500A7891D /* libibc-proxylib.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libibc-proxylib.a";
+			remoteRef = 737327861D06CF8500A7891D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7373275B1D06CED800A7891D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				737327731D06CED800A7891D /* LaunchScreen.storyboard in Resources */,
+				737327701D06CED800A7891D /* Assets.xcassets in Resources */,
+				7373276E1D06CED800A7891D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		737327591D06CED800A7891D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				737327651D06CED800A7891D /* AppDelegate.m in Sources */,
+				737327E31D06DB8300A7891D /* sm9main.c in Sources */,
+				737327681D06CED800A7891D /* MasterViewController.m in Sources */,
+				737327621D06CED800A7891D /* main.m in Sources */,
+				7373276B1D06CED800A7891D /* DetailViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7373276C1D06CED800A7891D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				7373276D1D06CED800A7891D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		737327711D06CED800A7891D /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				737327721D06CED800A7891D /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		737327751D06CED800A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../src/ibc-proxylib/miracl-lib",
+					"../../../src/ibc-proxylib/ibc-proxylib",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		737327761D06CED800A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../../src/ibc-proxylib/miracl-lib",
+					"../../../src/ibc-proxylib/ibc-proxylib",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		737327781D06CED800A7891D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "ibc-proxylib-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.YDX.ibc-proxylib-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		737327791D06CED800A7891D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = "ibc-proxylib-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.YDX.ibc-proxylib-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		737327581D06CED800A7891D /* Build configuration list for PBXProject "ibc-proxylib-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				737327751D06CED800A7891D /* Debug */,
+				737327761D06CED800A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		737327771D06CED800A7891D /* Build configuration list for PBXNativeTarget "ibc-proxylib-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				737327781D06CED800A7891D /* Debug */,
+				737327791D06CED800A7891D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 737327551D06CED800A7891D /* Project object */;
+}
