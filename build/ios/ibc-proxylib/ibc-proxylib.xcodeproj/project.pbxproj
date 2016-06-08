@@ -36,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		73088F661D07B84A00D5B976 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		737326F71D06CD7E00A7891D /* libibc-proxylib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libibc-proxylib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		737327031D06CE2700A7891D /* big.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = big.cpp; path = "../../../../src/ibc-proxylib/ibc-proxylib/big.cpp"; sourceTree = "<group>"; };
 		737327041D06CE2700A7891D /* big.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = big.h; path = "../../../../src/ibc-proxylib/ibc-proxylib/big.h"; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 				737327291D06CE2700A7891D /* zzn4.h */,
 				7373272A1D06CE2700A7891D /* zzn12a.cpp */,
 				7373272B1D06CE2700A7891D /* zzn12a.h */,
+				73088F661D07B84A00D5B976 /* Prefix.pch */,
 			);
 			path = "ibc-proxylib";
 			sourceTree = "<group>";
@@ -238,7 +240,6 @@
 					MR_PAIRING_BN,
 					MR_NOASM,
 					__UNIX__,
-					MIX_BUILD_FOR_64,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -286,7 +287,6 @@
 					MR_PAIRING_BN,
 					MR_NOASM,
 					__UNIX__,
-					MIX_BUILD_FOR_64,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -308,6 +308,7 @@
 		737327011D06CD7E00A7891D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = "ibc-proxylib/Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -317,6 +318,7 @@
 		737327021D06CD7E00A7891D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = "ibc-proxylib/Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
