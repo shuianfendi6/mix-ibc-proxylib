@@ -138,7 +138,7 @@ int BigTochars (Big &x, char *c, int s)
 	int length = 0;
 
 	buffer.m_iPos += 4;
-	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
@@ -161,12 +161,12 @@ int ECnTochars (ECn &e, char *c, int s)
 	e.get(x, y);
 
 	buffer.m_iPos += 4;
-	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	length = to_binary(x,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
 	buffer.m_iPos += 4;
-	length = to_binary(y,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	length = to_binary(y,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
@@ -189,12 +189,12 @@ int ZZn2Tochars(ZZn2 &z, char *c, int s)
 	z.get (a, b);
 
 	buffer.m_iPos += 4;
-	length = to_binary(a,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	length = to_binary(a,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
 	buffer.m_iPos += 4;
-	length = to_binary(b,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+	length = to_binary(b,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
@@ -239,73 +239,73 @@ int to_binaryZZn12(const ZZn12 &w, int max, char output[384])
 		int w_item_len = 0;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w322,w_item_len,w_item);
+		w_item_len = to_binary(w322,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w321,w_item_len,w_item);
+		w_item_len = to_binary(w321,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w312,w_item_len,w_item);
+		w_item_len = to_binary(w312,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w311,w_item_len,w_item);
+		w_item_len = to_binary(w311,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w222,w_item_len,w_item);
+		w_item_len = to_binary(w222,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w221,w_item_len,w_item);
+		w_item_len = to_binary(w221,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w212,w_item_len,w_item);
+		w_item_len = to_binary(w212,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w211,w_item_len,w_item);
+		w_item_len = to_binary(w211,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w122,w_item_len,w_item);
+		w_item_len = to_binary(w122,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w121,w_item_len,w_item);
+		w_item_len = to_binary(w121,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w112,w_item_len,w_item);
+		w_item_len = to_binary(w112,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w111,w_item_len,w_item);
+		w_item_len = to_binary(w111,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
@@ -327,7 +327,7 @@ int to_binaryBig(const Big &w, int max, char output[32])
 		int w_item_len = 0;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w,w_item_len,w_item);
+		w_item_len = to_binary(w,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
@@ -365,13 +365,13 @@ int to_binaryZZn2(const ZZn2 &w, int max, char output[64])
 		int w_item_len = 0;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w2,w_item_len,w_item);
+		w_item_len = to_binary(w2,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
 
 		w_item_len = 32;
-		w_item_len = to_binary(w1,w_item_len,w_item);
+		w_item_len = to_binary(w1,w_item_len,w_item,FALSE);
 		pos_tmp += 32 - w_item_len;
 		memcpy(output + pos_tmp, w_item, w_item_len);
 		pos_tmp += w_item_len;
@@ -420,7 +420,7 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 		memset(buffer,0,bufferLen);
 
-		pos += to_binary(one,1024,buffer + pos);
+		pos += to_binary(one,1024,buffer + pos,FALSE);
 
 		memcpy(buffer+pos,pZ,iZLen);
 		pos += iZLen;
@@ -451,7 +451,7 @@ int SM9_H1(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 	delete HaItem;
 
-	*piH1Len = to_binary(h1,*piH1Len, pH1);
+	*piH1Len = to_binary(h1,*piH1Len, pH1,FALSE);
 
 	return 0;
 }
@@ -509,7 +509,7 @@ int SM9_H1_V2(char * pZ,int iZLen, char * pN, int iNLen,char *pH1,int *piH1Len)
 
 	delete HaItem;
 
-	*piH1Len = to_binary(h1,*piH1Len, pH1);
+	*piH1Len = to_binary(h1,*piH1Len, pH1,FALSE);
 
 	return 0;
 }
@@ -548,7 +548,7 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 
 		memset(buffer,0,bufferLen);
 
-		pos += to_binary(two,1024,buffer + pos);
+		pos += to_binary(two,1024,buffer + pos,FALSE);
 
 		memcpy(buffer+pos,pZ,iZLen);
 		pos += iZLen;
@@ -577,7 +577,7 @@ int SM9_H2(char * pZ,int iZLen, char * pN, int iNLen,char *pH2,int *piH2Len)
 
 	delete HaItem;
 
-	*piH2Len = to_binary(h2,*piH2Len, pH2);
+	*piH2Len = to_binary(h2,*piH2Len, pH2,FALSE);
 
 	return 0;
 }
@@ -631,7 +631,7 @@ int SM9_H2_V2(char * pM,int iMLen,char * pW,int iWLen, char * pN, int iNLen,char
 
 	delete HaItem;
 
-	*piH2Len = to_binary(h2,*piH2Len, pH2);
+	*piH2Len = to_binary(h2,*piH2Len, pH2,FALSE);
 
 	return 0;
 }
