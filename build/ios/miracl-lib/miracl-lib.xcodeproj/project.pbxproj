@@ -65,6 +65,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		73088F651D07B63D00D5B976 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		737327481D06CE9B00A7891D /* libmiracl-lib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libmiracl-lib.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		737327881D06CFBA00A7891D /* miracl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miracl.h; path = "../../../../src/ibc-proxylib/miracl-lib/miracl.h"; sourceTree = "<group>"; };
 		737327891D06CFBA00A7891D /* mirdef.h32 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mirdef.h32; path = "../../../../src/ibc-proxylib/miracl-lib/mirdef.h32"; sourceTree = "<group>"; };
@@ -192,6 +193,7 @@
 				737327B41D06CFBA00A7891D /* mrzzn2b.c */,
 				737327B51D06CFBA00A7891D /* mrzzn4.c */,
 				737327B61D06CFBA00A7891D /* pairing_3.h */,
+				73088F651D07B63D00D5B976 /* Prefix.pch */,
 			);
 			path = "miracl-lib";
 			sourceTree = "<group>";
@@ -332,7 +334,6 @@
 					MR_PAIRING_BN,
 					MR_NOASM,
 					__UNIX__,
-					MIX_BUILD_FOR_64,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -376,7 +377,6 @@
 					MR_PAIRING_BN,
 					MR_NOASM,
 					__UNIX__,
-					MIX_BUILD_FOR_64,
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -394,6 +394,7 @@
 		737327521D06CE9B00A7891D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = "miracl-lib/Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -403,6 +404,7 @@
 		737327531D06CE9B00A7891D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREFIX_HEADER = "miracl-lib/Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
