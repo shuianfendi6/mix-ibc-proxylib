@@ -21,6 +21,8 @@ extern "C" {
 
 	typedef enum {
 		SM9_ERROR_NONE = 0,
+		SM9_ERROR_BUFERR_LESS,
+		SM9_ERROR_DATA_ERR,
 		SM9_ERROR_OTHER = -1,
 	} SM9_ERRORID;
 
@@ -50,6 +52,31 @@ extern "C" {
 		SM9_OBJ_HW_PK,
 
 	}SM9_OBJ_TYPE;
+
+	// user functions(soft ware implement)
+
+	int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen);
+	int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLen, char *pSk, int *piSkLen);
+	int sm9_sign(char *pMpk, int iMpkLen, char *pSk, int iSkLen, char *pMessage, int iMessageLen, 
+		char *pSgn, int *piSgnLen);
+	int sm9_verify(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+		char *pSgn, int iSgnLen);
+	int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+		char *pCipher, int *piCipherLen, SM9_CIPHER_TYPE cipherType
+		);
+	int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen,  
+		char *pCipher, int iCipherLen, 
+		char *pMessage, int *piMessageLen,  SM9_CIPHER_TYPE cipherType
+		);
+	int sm9_wrap(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, 
+		char *pKey, int *piKeyLen, char *pWrapKey, int *piWrapKeyLen
+		);
+	int sm9_unwrap(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen, 
+		char *pWrapKey, int iWrapKeyLen, char *pKey, int *piKeyLen
+		);
+
+
+	// inner functions (soft and hard ware implement)
 
 	// C-compatible wrapper routines.  See documentation for usage.
 	int sm9_proxylib_getSerializeObjectSize(void *object, SM9_SERIALIZE_MODE mode, int *serialSize);

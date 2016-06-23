@@ -641,3 +641,546 @@ int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA,
 
 	return error;
 }
+
+
+int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *msk = 0;
+	void *mpk = 0;
+
+	int mpkLen = 0;
+	int mskLen = 0;
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(mpk, SM9_SERIALIZE_BINARY, &mpkLen);
+	sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &mskLen);
+
+	if (mskLen>*piMskLen || mpkLen>*piMpkLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piMskLen = mskLen;
+		*piMpkLen = mpkLen;
+	}
+	else
+	{
+		*piMskLen = mskLen;
+		*piMpkLen = mpkLen;
+		sm9_proxylib_serializeObject(mpk,pMpk, piMpkLen, *piMpkLen, SM9_SERIALIZE_BINARY);
+		sm9_proxylib_serializeObject(msk,pMsk, piMskLen, *piMskLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (msk)
+	{
+		sm9_proxylib_destroyObject(msk);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+
+	return error;
+}
+
+int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLen, char *pSk, int *piSkLen)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *msk = 0;
+	void *sk = 0;
+	int skLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMsk, iMskLen, &msk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_calculateUserKeys(gParams,msk,pUserID,iUserIDLen,&sk,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &skLen);
+	if (skLen>*piSkLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piSkLen = skLen;
+	}
+	else
+	{
+		*piSkLen = skLen;
+		sm9_proxylib_serializeObject(sk,pSk, piSkLen, *piSkLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (msk)
+	{
+		sm9_proxylib_destroyObject(msk);
+	}
+	if (sk)
+	{
+		sm9_proxylib_destroyObject(sk);
+	}
+
+	return error;
+}
+
+int sm9_sign(char *pMpk, int iMpkLen, char *pSk, int iSkLen, char *pMessage, int iMessageLen, 
+	char *pSgn, int *piSgnLen)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *sk = 0;
+	void *sgn = 0;
+	int sgnLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pSk, iSkLen, &sk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_sign(gParams,mpk,sk,pMessage,iMessageLen,&sgn,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(sgn, SM9_SERIALIZE_BINARY, &sgnLen);
+	if (sgnLen>*piSgnLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piSgnLen = sgnLen;
+	}
+	else
+	{
+		*piSgnLen = sgnLen;
+		sm9_proxylib_serializeObject(sgn,pSgn, piSgnLen, *piSgnLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (sk)
+	{
+		sm9_proxylib_destroyObject(sk);
+	}
+
+	return error;
+}
+
+int sm9_verify(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+	char *pSgn, int iSgnLen)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *sgn = 0;
+	int sgnLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pSgn, iSgnLen, &sgn, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_verify(gParams,mpk,pUserID,iUserIDLen,pMessage,iMessageLen,sgn,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+	else
+	{
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (sgn)
+	{
+		sm9_proxylib_destroyObject(sgn);
+	}
+
+	return error;
+}
+
+int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+	char *pCipher, int *piCipherLen, SM9_CIPHER_TYPE cipherType
+	)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *cipher = 0;
+	int cipherLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_encrypt(gParams,mpk,pUserID,iUserIDLen,pMessage,iMessageLen,&cipher,cipherType,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_BINARY, &cipherLen);
+	if (cipherLen>*piCipherLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piCipherLen = cipherLen;
+	}
+	else
+	{
+		*piCipherLen = cipherLen;
+		sm9_proxylib_serializeObject(cipher,pCipher, piCipherLen, *piCipherLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (cipher)
+	{
+		sm9_proxylib_destroyObject(cipher);
+	}
+
+	return error;
+}
+
+int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen,  
+	char *pCipher, int iCipherLen, 
+	char *pMessage, int *piMessageLen,  SM9_CIPHER_TYPE cipherType
+	)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *sk = 0;
+	void *cipher = 0;
+	void *plain = 0;
+	int plainLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pCipher, iCipherLen, &cipher, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pSk, iSkLen, &sk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_decrypt(gParams,mpk,sk, pUserID,iUserIDLen,cipher,&plain,cipherType, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_BINARY, &plainLen);
+	if (plainLen>*piMessageLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piMessageLen = plainLen;
+	}
+	else
+	{
+		*piMessageLen = plainLen;
+		sm9_proxylib_serializeObject(plain,pMessage, piMessageLen, *piMessageLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (sk)
+	{
+		sm9_proxylib_destroyObject(sk);
+	}
+	if (cipher)
+	{
+		sm9_proxylib_destroyObject(cipher);
+	}
+	if (plain)
+	{
+		sm9_proxylib_destroyObject(plain);
+	}
+
+	return error;
+}
+
+int sm9_wrap(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, 
+	char *pKey, int *piKeyLen, char *pWrapKey, int *piWrapKeyLen
+	)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *key = 0;
+	void *wrapkey = 0;
+
+	int keyLen = 0;
+	int wrapKeyLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_wrap(gParams,mpk,pUserID,iUserIDLen,NULL,0,&key,&wrapkey,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(key, SM9_SERIALIZE_BINARY, &keyLen);
+	sm9_proxylib_getSerializeObjectSize(wrapkey, SM9_SERIALIZE_BINARY, &wrapKeyLen);
+	if (keyLen>*piKeyLen || wrapKeyLen>*piWrapKeyLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piKeyLen = keyLen;
+		*piWrapKeyLen = wrapKeyLen;
+	}
+	else
+	{
+		*piKeyLen = keyLen;
+		*piWrapKeyLen = wrapKeyLen;
+		sm9_proxylib_serializeObject(key,pKey, piKeyLen, *piKeyLen, SM9_SERIALIZE_BINARY);
+		sm9_proxylib_serializeObject(wrapkey,pWrapKey, piWrapKeyLen, *piWrapKeyLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (key)
+	{
+		sm9_proxylib_destroyObject(key);
+	}
+	if (wrapkey)
+	{
+		sm9_proxylib_destroyObject(wrapkey);
+	}
+
+	return error;
+}
+
+int sm9_unwrap(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen, 
+	char *pWrapKey, int iWrapKeyLen, char *pKey, int *piKeyLen
+	)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *sk = 0;
+	void *key = 0;
+	void *wrapkey = 0;
+
+	int keyLen = 0;
+
+	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pWrapKey, iWrapKeyLen, &wrapkey, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_deserializeObject(pSk, iSkLen, &sk, SM9_SERIALIZE_BINARY);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_unwrap(gParams,mpk,sk,"Bob",strlen("Bob"),wrapkey,&key,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_getSerializeObjectSize(key, SM9_SERIALIZE_BINARY, &keyLen);
+	if (keyLen>*piKeyLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piKeyLen = keyLen;
+	}
+	else
+	{
+		*piKeyLen = keyLen;
+		sm9_proxylib_serializeObject(key,pKey, piKeyLen, *piKeyLen, SM9_SERIALIZE_BINARY);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (sk)
+	{
+		sm9_proxylib_destroyObject(sk);
+	}
+
+	if (wrapkey)
+	{
+		sm9_proxylib_destroyObject(wrapkey);
+	}
+
+	if (key)
+	{
+		sm9_proxylib_destroyObject(key);
+	}
+
+	return error;
+}
