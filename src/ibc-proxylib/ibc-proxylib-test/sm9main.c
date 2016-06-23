@@ -153,7 +153,7 @@ int main()
 
 	//// crypto and wrap end
 
-#elif 1
+#elif 0
 
 	// key ex start
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
@@ -173,7 +173,7 @@ int main()
 	sm9_proxylib_destroyObject(rA);
 	sm9_proxylib_deserializeObject(data_value, data_len, &rA,SM9_SERIALIZE_BINARY);
 	
-#if 1
+#if 0
 	option =  SM9_KEY_EX_OPTION_NO;
 #else
 	option =  SM9_KEY_EX_OPTION_YES;
@@ -247,7 +247,49 @@ int main()
 	sm9_proxylib_destroyObject(sk);
 	sm9_proxylib_destroyObject(skb);
 #else
-	
+	{
+		char mpk[256];
+		char msk[100];
+		char sk[512];
+		char sgn[128];
+		char cipher[256];
+		char key[100];
+		char key_[100];
+		char wrapkey[100];
+		char message[100] = "Test ibe";
+		char userID[32] = "Alice";
+		char plain[100];
+
+		int msklen = 100;
+		int mpklen = 256;
+		int sklen = 512;
+		int cipherlen = 256;
+		int sgnlen = 128;
+		int messagelen = 32;
+		int keylen = 100;
+		int wrapkeylen = 100;
+		int userIDLen = 100;
+		int plainlen = 100;
+		int ken_len = 100;
+		int error = 0;
+
+		error = sm9_generateMasterKeys(mpk, &mpklen,msk, &msklen);
+
+		error = sm9_calculateUserKeys(msk,msklen,userID,userIDLen,sk,&sklen);
+
+		error = sm9_sign(mpk,mpklen,sk,sklen,message,messagelen,sgn,&sgnlen);
+
+		error = sm9_verify(mpk,mpklen,userID,userIDLen,message,messagelen,sgn,sgnlen);
+
+
+		error = sm9_encrypt(mpk,mpklen,userID,userIDLen,message,messagelen,cipher,&cipherlen,SM9_CIPHER_KDF_UNION);
+		error = sm9_decrypt(mpk,mpklen,sk,sklen, userID,userIDLen,cipher,cipherlen,plain, &plainlen, SM9_CIPHER_KDF_UNION);
+
+		error = sm9_wrap(mpk,mpklen,userID,userIDLen,key,&keylen,wrapkey,&wrapkeylen);
+		error = sm9_unwrap(mpk,mpklen,sk,sklen, userID,userIDLen,wrapkey,wrapkeylen,key_, &ken_len);
+
+		return 0;
+	}
 #endif
 
 	//key ex end

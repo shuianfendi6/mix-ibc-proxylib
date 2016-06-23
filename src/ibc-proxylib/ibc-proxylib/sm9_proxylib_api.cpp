@@ -728,7 +728,7 @@ int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLe
 		goto err;
 	}
 
-	sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &skLen);
+	sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_BINARY, &skLen);
 	if (skLen>*piSkLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
@@ -989,7 +989,7 @@ int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID,
 		goto err;
 	}
 
-	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_BINARY, &plainLen);
+	sm9_proxylib_getSerializeObjectSize(plain, SM9_SERIALIZE_BINARY, &plainLen);
 	if (plainLen>*piMessageLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
@@ -1139,7 +1139,7 @@ int sm9_unwrap(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, 
 		goto err;
 	}
 
-	error = sm9_proxylib_unwrap(gParams,mpk,sk,"Bob",strlen("Bob"),wrapkey,&key,SM9_SCHEME_SW);
+	error = sm9_proxylib_unwrap(gParams,mpk,sk,pUserID,iUserIDLen,wrapkey,&key,SM9_SCHEME_SW);
 	if (error)
 	{
 		goto err;
