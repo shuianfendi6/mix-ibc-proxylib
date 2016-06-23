@@ -989,16 +989,24 @@ int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID,
 		goto err;
 	}
 
+	int header_len = (4+1+4);
+
 	sm9_proxylib_getSerializeObjectSize(plain, SM9_SERIALIZE_BINARY, &plainLen);
-	if (plainLen>*piMessageLen)
+	if (plainLen-header_len> *piMessageLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
-		*piMessageLen = plainLen;
+		*piMessageLen = plainLen-header_len;
 	}
 	else
 	{
-		*piMessageLen = plainLen;
-		sm9_proxylib_serializeObject(plain,pMessage, piMessageLen, *piMessageLen, SM9_SERIALIZE_BINARY);
+		*piMessageLen = plainLen-header_len;
+
+		SM9AARData buffer(plainLen);
+
+		sm9_proxylib_serializeObject(plain,buffer.m_pValue, &buffer.m_iPos, buffer.m_iMaxLen, SM9_SERIALIZE_BINARY);
+
+		memcpy(pMessage, buffer.m_pValue+header_len, buffer.m_iPos-header_len);
+
 		error = SM9_ERROR_NONE;
 	}
 
