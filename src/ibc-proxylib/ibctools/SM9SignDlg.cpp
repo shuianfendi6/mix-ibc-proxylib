@@ -70,7 +70,7 @@ void CSM9SignDlg::OnBnClicked2()
 	int data_len2 = 4096;
 
 	void *gParams = 0;
-	void *cipher = 0;
+	void *sgn = 0;
 
 
 	if(0 == g_mpk)
@@ -98,7 +98,7 @@ void CSM9SignDlg::OnBnClicked2()
 
 	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
 
-	if(0 == sm9_proxylib_sign(gParams,g_mpk,g_sk,data_value2,data_len2,&cipher,SM9_SCHEME_SW))
+	if(0 == sm9_proxylib_sign(gParams,g_mpk,g_sk,data_value2,data_len2,&sgn,SM9_SCHEME_SW))
 	{
 		MessageBox("Ç©Ãû³É¹¦£¡");
 	}
@@ -109,10 +109,10 @@ void CSM9SignDlg::OnBnClicked2()
 	}
 
 	data_len = 4096;
-	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_HEXASCII, &data_len);
-	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
-	sm9_proxylib_destroyObject(cipher);
-	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
+	sm9_proxylib_getSerializeObjectSize(sgn, SM9_SERIALIZE_HEXASCII, &data_len);
+	sm9_proxylib_serializeObject(sgn,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
+	sm9_proxylib_destroyObject(sgn);
+	sm9_proxylib_deserializeObject(data_value, data_len, &sgn,SM9_SERIALIZE_HEXASCII);
 
 	m_editOut.SetWindowText(data_value);
 }

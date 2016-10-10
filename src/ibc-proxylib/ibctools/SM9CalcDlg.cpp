@@ -76,7 +76,15 @@ void CSM9CalcDlg::OnBnClicked3()
 
 	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
 
-	sm9_proxylib_calculateUserKeys(gParams,g_msk,data_value2,data_len2,&sk,SM9_SCHEME_SW);
+	if(0 == sm9_proxylib_calculateUserKeys(gParams,g_msk,data_value2,data_len2,&sk,SM9_SCHEME_SW))
+	{
+		MessageBox("计算成功！");
+	}
+	else
+	{
+		MessageBox("计算失败！");
+		return;
+	}
 
 	data_len = 4096;
 	sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_HEXASCII, &data_len);
@@ -110,7 +118,15 @@ void CSM9CalcDlg::OnBnClicked2()
 		g_sk = 0;
 	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_sk,SM9_SERIALIZE_HEXASCII);
+	if( 0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_sk,SM9_SERIALIZE_HEXASCII))
+	{
+		MessageBox("设置用户私钥成功！");
+	}
+	else
+	{
+		MessageBox("用户私钥格式不正确，设置失败！");
+		return;
+	}
 
 	data_len = 4096;
 

@@ -60,7 +60,15 @@ void CSM9GenDlg::OnBnClickedOk()
 	sm9_proxylib_destroyObject(gParams);
 	sm9_proxylib_deserializeObject(data_value, data_len, &gParams,SM9_SERIALIZE_HEXASCII);
 
-	sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW);
+	if(0 == sm9_proxylib_generateMasterKeys(gParams, &mpk,&msk,SM9_SCHEME_SW))
+	{
+		MessageBox("生成主密钥成功！");
+	}
+	else
+	{
+		MessageBox("生成主密钥失败！");
+		return;
+	}
 	data_len = 4096;
 	sm9_proxylib_getSerializeObjectSize(mpk, SM9_SERIALIZE_HEXASCII, &data_len);
 	sm9_proxylib_serializeObject(mpk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
@@ -99,9 +107,15 @@ void CSM9GenDlg::OnBnClicked2()
 		g_msk = 0;
 	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_msk,SM9_SERIALIZE_HEXASCII);
-
-
+	if( 0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_msk,SM9_SERIALIZE_HEXASCII))
+	{
+		MessageBox("设置主私钥成功！");
+	}
+	else
+	{
+		MessageBox("主私钥格式不正确，设置失败！");
+		return;
+	}
 
 	data_len = 4096;
 
@@ -114,5 +128,13 @@ void CSM9GenDlg::OnBnClicked2()
 		g_mpk = 0;
 	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_mpk,SM9_SERIALIZE_HEXASCII);
+	if(0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_mpk,SM9_SERIALIZE_HEXASCII))
+	{
+		MessageBox("设置主公钥成功！");
+	}
+	else
+	{
+		MessageBox("主公钥格式不正确，设置失败！");
+		return;
+	}
 }

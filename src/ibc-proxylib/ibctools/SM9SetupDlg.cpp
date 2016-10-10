@@ -103,9 +103,15 @@ void CSM9SetupDlg::OnBnClicked2()
 		g_msk = 0;
 	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_msk,SM9_SERIALIZE_HEXASCII);
-
-
+	if( 0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_msk,SM9_SERIALIZE_HEXASCII))
+	{
+		MessageBox("设置主私钥成功！");
+	}
+	else
+	{
+		MessageBox("主私钥格式不正确，设置失败！");
+		return;
+	}
 
 	data_len = 4096;
 
@@ -118,5 +124,13 @@ void CSM9SetupDlg::OnBnClicked2()
 		g_mpk = 0;
 	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_mpk,SM9_SERIALIZE_HEXASCII);
+	if(0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_mpk,SM9_SERIALIZE_HEXASCII))
+	{
+		MessageBox("设置主公钥成功！");
+	}
+	else
+	{
+		MessageBox("主公钥格式不正确，设置失败！");
+		return;
+	}
 }
