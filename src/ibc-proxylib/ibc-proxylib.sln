@@ -11,6 +11,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ibc-proxylib-test", "ibc-pr
 		{023785B0-126F-4EED-8FE0-10F676FEAF9B} = {023785B0-126F-4EED-8FE0-10F676FEAF9B}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ibctools", "ibctools\ibctools.vcxproj", "{A5E6888D-6EEB-48C1-ABAE-040E3DF9F999}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4553C038-DC5E-4D14-8A27-E8BACCCE76A8} = {4553C038-DC5E-4D14-8A27-E8BACCCE76A8}
+		{023785B0-126F-4EED-8FE0-10F676FEAF9B} = {023785B0-126F-4EED-8FE0-10F676FEAF9B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -29,6 +35,10 @@ Global
 		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Debug|Win32.Build.0 = Debug|Win32
 		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Release|Win32.ActiveCfg = Release|Win32
 		{EDF9A161-5759-4324-A20E-6CA8D274BCFF}.Release|Win32.Build.0 = Release|Win32
+		{A5E6888D-6EEB-48C1-ABAE-040E3DF9F999}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A5E6888D-6EEB-48C1-ABAE-040E3DF9F999}.Debug|Win32.Build.0 = Debug|Win32
+		{A5E6888D-6EEB-48C1-ABAE-040E3DF9F999}.Release|Win32.ActiveCfg = Release|Win32
+		{A5E6888D-6EEB-48C1-ABAE-040E3DF9F999}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
