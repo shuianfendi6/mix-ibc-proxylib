@@ -99,6 +99,7 @@ int sm9_proxylib_deserializeObject(char *buffer, int bufferSize, void **params,
 	case SM9_SERIALIZE_HEXASCII:
 		{
 			Hex2Bin(buffer,bufferSize,(unsigned char *)bufferBin.m_pValue,&bufferBin.m_iPos);
+			Hex2Bin(buffer,bufferSize,(unsigned char *)bufferBin.m_pValue,&bufferBin.m_iPos);
 		}
 		break;
 	}
