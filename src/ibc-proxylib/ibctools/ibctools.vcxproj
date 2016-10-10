@@ -92,6 +92,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>miracl-lib.lib;ibc-proxylib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/force:multiple %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
