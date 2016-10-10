@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CSM9SignDlg dialog
@@ -18,4 +19,9 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnEnChangeEdit2();
+	CEdit m_editIn;
+	CEdit m_editOut;
+	afx_msg void OnBnClicked2();
 };

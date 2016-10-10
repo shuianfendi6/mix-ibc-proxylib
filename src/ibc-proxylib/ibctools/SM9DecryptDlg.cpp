@@ -62,6 +62,18 @@ void CSM9DecryptDlg::OnBnClicked2()
 	void *cipher = 0;
 	void *plain = 0;
 
+	if(0 == g_mpk)
+	{
+		MessageBox("未设置主公钥！");
+		return;
+	}
+
+	if(0 == g_sk)
+	{
+		MessageBox("未设置用户私钥！");
+		return;
+	}
+
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	data_len = 4096;
@@ -71,7 +83,15 @@ void CSM9DecryptDlg::OnBnClicked2()
 
 	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
 
-	sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW);
+	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW))
+	{
+		MessageBox("解密成功！");
+	}
+	else
+	{
+		MessageBox("解密失败！");
+		return;
+	}
 
 	data_len = 4096;
 	sm9_proxylib_getSerializeObjectSize(plain, SM9_SERIALIZE_HEXASCII, &data_len);

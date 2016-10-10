@@ -61,6 +61,13 @@ void CSM9EncryptDlg::OnBnClicked2()
 	void *gParams = 0;
 	void *cipher = 0;
 
+	if(0 == g_mpk)
+	{
+		MessageBox("未设置主公钥！");
+		return;
+	}
+
+
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	data_len = 4096;
@@ -72,7 +79,17 @@ void CSM9EncryptDlg::OnBnClicked2()
 
 	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
 
-	sm9_proxylib_encrypt(gParams,g_mpk,g_id,g_id_len,data_value2,data_len2,&cipher,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW);
+
+	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,g_id,g_id_len,data_value2,data_len2,&cipher,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW))
+	{
+		MessageBox("加密成功！");
+	}
+	else
+	{
+		MessageBox("加密失败！");
+		return;
+	}
+
 
 	data_len = 4096;
 	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_HEXASCII, &data_len);

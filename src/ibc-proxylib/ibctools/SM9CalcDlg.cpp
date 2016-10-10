@@ -59,6 +59,12 @@ void CSM9CalcDlg::OnBnClicked3()
 	void *gParams = 0;
 	void *sk = 0;
 
+	if(0 == g_msk)
+	{
+		MessageBox("Œ¥…Ë÷√÷˜ÀΩ‘ø£°");
+		return;
+	}
+
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	data_len = 4096;
