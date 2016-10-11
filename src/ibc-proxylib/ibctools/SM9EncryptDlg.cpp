@@ -80,7 +80,7 @@ void CSM9EncryptDlg::OnBnClicked2()
 	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
 
 
-	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,g_id,g_id_len,data_value2,data_len2,&cipher,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW))
+	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,g_id,g_id_len,data_value2,data_len2,&cipher,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW))
 	{
 		MessageBox("º”√‹≥…π¶£°");
 	}

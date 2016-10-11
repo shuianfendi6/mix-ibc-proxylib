@@ -111,8 +111,8 @@
     <None Include="res\ibctools.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Base64Dlg.h" />
-    <ClInclude Include="CharDlg.h" />
+    <ClInclude Include="SM9GenMPKDlg.h" />
+    <ClInclude Include="SM9GenSKDlg.h" />
     <ClInclude Include="ibctools.h" />
     <ClInclude Include="ibctoolsDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -127,8 +127,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Base64Dlg.cpp" />
-    <ClCompile Include="CharDlg.cpp" />
+    <ClCompile Include="SM9GenMPKDlg.cpp" />
+    <ClCompile Include="SM9GenSKDlg.cpp" />
     <ClCompile Include="ibctools.cpp" />
     <ClCompile Include="ibctoolsDlg.cpp" />
     <ClCompile Include="SM9CalcDlg.cpp" />

@@ -47,9 +47,106 @@ END_MESSAGE_MAP()
 // CSM9DecryptDlg message handlers
 
 
+#ifndef GET_ULONG_BE
+#define GET_ULONG_BE(n,b,i)                             \
+	{                                                       \
+	(n) = ( (unsigned int) (b)[(i)    ] << 24 )        \
+	| ( (unsigned int) (b)[(i) + 1] << 16 )        \
+	| ( (unsigned int) (b)[(i) + 2] <<  8 )        \
+	| ( (unsigned int) (b)[(i) + 3]       );       \
+	}
+#endif
+
+#ifndef PUT_ULONG_BE
+#define PUT_ULONG_BE(n,b,i)                             \
+	{                                                       \
+	(b)[(i)    ] = (unsigned char) ( (n) >> 24 );       \
+	(b)[(i) + 1] = (unsigned char) ( (n) >> 16 );       \
+	(b)[(i) + 2] = (unsigned char) ( (n) >>  8 );       \
+	(b)[(i) + 3] = (unsigned char) ( (n)       );       \
+	}
+#endif
+
 void CSM9DecryptDlg::OnBnClicked3()
 {
-	// TODO: Add your control notification handler code here
+	char data_value[4096] = {0};
+	int data_len = 4096;
+
+	char data_value2[4096] = {0};
+	int data_len2 = 4096;
+
+	void *gParams = 0;
+	void *cipher = 0;
+
+
+	int pos = 0;
+
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	m_editIn.GetWindowText(data_value2,data_len2);
+	data_len2 = strlen(data_value2);
+
+	if(0 == g_mpk)
+	{
+		MessageBox("未设置主公钥！");
+		return;
+	}
+
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,0,0,data_value,data_len/2 - 3*32,&cipher,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW))
+	{
+		
+	}
+	else
+	{
+		MessageBox("加密失败！");
+		return;
+	}
+
+	data_len = 4096;
+	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_HEXASCII, &data_len);
+	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
+	sm9_proxylib_destroyObject(cipher);
+	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
+
+	// len
+	pos += 8;
+	// type
+	pos += 2;
+
+	if (data_len2 < 32 * 3 * 2)
+	{
+		MessageBox("输入格式不正确！");
+		return;
+	}
+	else
+	{
+		pos += 8;
+		memcpy(data_value+pos,data_value2,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value+pos,data_value2+64*1,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value+pos,data_value2+64*2,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value+pos,data_value2+64*3,data_len2 - 3 * 64);
+		pos += 64;
+
+	}
+
+	m_editOut.SetWindowText(data_value);
 }
 
 
@@ -83,7 +180,7 @@ void CSM9DecryptDlg::OnBnClicked2()
 
 	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
 
-	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,SM9_CIPHER_KDF_UNION,SM9_SCHEME_SW))
+	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW))
 	{
 		MessageBox("解密成功！");
 	}

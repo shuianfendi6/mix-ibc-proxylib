@@ -7,8 +7,8 @@
 #include "ibctoolsDlg.h"
 #include "afxdialogex.h"
 
-#include "Base64Dlg.h"
-#include "CharDlg.h"
+#include "SM9GenMPKDlg.h"
+#include "SM9GenSKDlg.h"
 #include "SM9CalcDlg.h"
 #include "SM9DecryptDlg.h"
 #include "SM9EncryptDlg.h"
@@ -111,11 +111,11 @@ BOOL CibctoolsDlg::OnInitDialog()
 
 	// TODO: 在此添加额外的初始化代码
 
-	m_tb.InsertItem(0, "字符转换");
-	m_tb.InsertItem(1, "Base64编码");
-	m_tb.InsertItem(2, "生成主密钥");
-	m_tb.InsertItem(3, "设置主密钥");
-	m_tb.InsertItem(4, "计算私钥");
+	m_tb.InsertItem(0, "生成主密钥");
+	m_tb.InsertItem(1, "主公钥组合");
+	m_tb.InsertItem(2, "设置主密钥");
+	m_tb.InsertItem(3, "计算私钥");
+	m_tb.InsertItem(4, "用户私钥组合");
 	m_tb.InsertItem(5, "加密");
 	m_tb.InsertItem(6, "解密");
 	m_tb.InsertItem(7, "签名");
@@ -138,51 +138,57 @@ BOOL CibctoolsDlg::OnInitDialog()
 	{
 		switch(i)
 		{
-			case 0:
-				
-			pDialog[i] = new CCharDlg(this);
 
-			pDialog[i]->Create(IDD_DIALOG_CHAR, &m_tb);
-			break;
-			case 1:
-			pDialog[i] = new CBase64Dlg(this);
-
-			pDialog[i]->Create(IDD_DIALOG_B64, &m_tb);
-			break;
-			case 2:
+		case 0:
 			pDialog[i] = new CSM9GenDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9GEN, &m_tb);
 			break;
-			case 3:
+
+		case 1:
+			pDialog[i] = new CSM9GenMPKDlg(this);
+
+			pDialog[i]->Create(IDD_DIALOG_SM9GEN_MPK, &m_tb);
+			break;
+
+		case 2:
 			pDialog[i] = new CSM9SetupDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9SETUP, &m_tb);
 			break;
-			case 4:
+
+		case 3:
 			pDialog[i] = new CSM9CalcDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9CALC, &m_tb);
 			break;
-			case 5:
+
+		case 4:
+
+			pDialog[i] = new CSM9GenSKDlg(this);
+
+			pDialog[i]->Create(IDD_DIALOG_SM9GEN_SK, &m_tb);
+			break;
+
+		case 5:
 			pDialog[i] = new CSM9EncryptDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9ENCRYPT, &m_tb);
 			break;
 
-			case 6:
+		case 6:
 			pDialog[i] = new CSM9DecryptDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9DECRYPT, &m_tb);
 			break;
 
-			case 7:
+		case 7:
 			pDialog[i] = new CSM9SignDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9SIGN, &m_tb);
 			break;
 
-			case 8:
+		case 8:
 			pDialog[i] = new CSM9VerifyDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9VERIFY, &m_tb);
