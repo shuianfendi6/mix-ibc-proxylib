@@ -15,6 +15,8 @@ extern void *g_sk;
 extern char g_id[1024];
 extern int g_id_len;
 
+extern SM9_CIPHER_TYPE g_cryptoMode;
+
 
 // CSM9DecryptDlg dialog
 
@@ -103,7 +105,7 @@ void CSM9DecryptDlg::OnBnClicked3()
 	m_editIn.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
 
-	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,0,0,data_value,data_len/2 - 3*32,&cipher,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW))
+	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,0,0,data_value,data_len/2 - 3*32,&cipher,g_cryptoMode,SM9_SCHEME_SW))
 	{
 		
 	}
@@ -180,7 +182,7 @@ void CSM9DecryptDlg::OnBnClicked2()
 
 	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
 
-	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,SM9_CIPHER_KDF_BASE,SM9_SCHEME_SW))
+	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,g_id,g_id_len,cipher,&plain,g_cryptoMode,SM9_SCHEME_SW))
 	{
 		MessageBox("Ω‚√‹≥…π¶£°");
 	}

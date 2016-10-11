@@ -4,6 +4,7 @@
 
 #pragma once
 #include "afxcmn.h"
+#include "afxwin.h"
 
 
 // CibctoolsDlg dialog
@@ -37,5 +38,8 @@ public:
 	int m_CurSelTab;
 	CDialog * pDialog[9];
 	int pos;
+	CComboBox m_comboCryptoMode;
+	afx_msg void OnCbnSelchangeCombo1();
+	afx_msg void OnCbnSelchangeCombo3();
 };
 #pragma once

@@ -17,6 +17,8 @@
 #include "SM9SignDlg.h"
 #include "SM9VerifyDlg.h"
 
+#include "sm9_proxylib_api.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -68,6 +70,7 @@ void CibctoolsDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB_ALL, m_tb);
+	DDX_Control(pDX, IDC_COMBO3, m_comboCryptoMode);
 }
 
 BEGIN_MESSAGE_MAP(CibctoolsDlg, CDialogEx)
@@ -75,6 +78,7 @@ BEGIN_MESSAGE_MAP(CibctoolsDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_ALL, &CibctoolsDlg::OnTcnSelchangeTabAll)
+	ON_CBN_SELCHANGE(IDC_COMBO3, &CibctoolsDlg::OnCbnSelchangeCombo3)
 END_MESSAGE_MAP()
 
 
@@ -210,6 +214,12 @@ BOOL CibctoolsDlg::OnInitDialog()
 
 	pos = -1;
 
+
+	pos = m_comboCryptoMode.InsertString(pos + 1,"基于KDF");
+	pos = m_comboCryptoMode.InsertString(pos + 1,"结合KDF");
+
+	m_comboCryptoMode.SetCurSel(0);
+
 	//显示初始页面
 	pDialog[0]->ShowWindow(SW_SHOW);
 
@@ -268,6 +278,10 @@ HCURSOR CibctoolsDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+SM9_CIPHER_TYPE g_cryptoMode;
+
+extern SM9_CIPHER_TYPE g_cryptoMode;
+
 
 void CibctoolsDlg::OnTcnSelchangeTabAll(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -279,4 +293,21 @@ void CibctoolsDlg::OnTcnSelchangeTabAll(NMHDR *pNMHDR, LRESULT *pResult)
 	//把新的页面显示出来
 	pDialog[m_CurSelTab]->ShowWindow(SW_SHOW);
 	*pResult = 0;
+}
+
+
+void CibctoolsDlg::OnCbnSelchangeCombo3()
+{
+	if (m_comboCryptoMode.GetCurSel() == 0)
+	{
+		g_cryptoMode = SM9_CIPHER_KDF_BASE;
+	}
+	else if (m_comboCryptoMode.GetCurSel() == 1)
+	{
+		g_cryptoMode = SM9_CIPHER_KDF_UNION;
+	}
+	else
+	{
+		g_cryptoMode = SM9_CIPHER_KDF_BASE;
+	}
 }
