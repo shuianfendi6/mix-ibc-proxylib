@@ -69,6 +69,9 @@ END_MESSAGE_MAP()
 	}
 #endif
 
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
+
 void CSM9DecryptDlg::OnBnClicked3()
 {
 	char data_value[4096] = {0};
@@ -80,17 +83,7 @@ void CSM9DecryptDlg::OnBnClicked3()
 	void *gParams = 0;
 	void *cipher = 0;
 
-
 	int pos = 0;
-
-
-	data_len = 4096;
-
-	m_editIn.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-	m_editIn.GetWindowText(data_value2,data_len2);
-	data_len2 = strlen(data_value2);
 
 	if(0 == g_mpk)
 	{
@@ -98,21 +91,23 @@ void CSM9DecryptDlg::OnBnClicked3()
 		return;
 	}
 
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-
 	data_len = 4096;
 
-	m_editIn.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
+	m_editIn.GetWindowText(data_value2,data_len2);
+	data_len2 = strlen(data_value2);
 
-	if( 0 == sm9_proxylib_encrypt(gParams,g_mpk,0,0,data_value,data_len/2 - 3*32,&cipher,g_cryptoMode,SM9_SCHEME_SW))
+	Hex2Bin(data_value2,data_len2,(unsigned char *)data_value,&data_len);
+
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+
+	if (data_len < 32 * 3)
 	{
-		
+		MessageBox("输入格式不正确！");
+		return;
 	}
 	else
 	{
-		MessageBox("加密失败！");
-		return;
+		sm9_proxylib_ObjectFromItemsValueCipher(&cipher,data_value,data_value+64,data_value+64+32,data_len-32-64);
 	}
 
 	data_len = 4096;
@@ -120,33 +115,6 @@ void CSM9DecryptDlg::OnBnClicked3()
 	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
 	sm9_proxylib_destroyObject(cipher);
 	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
-
-	// len
-	pos += 8;
-	// type
-	pos += 2;
-
-	if (data_len2 < 32 * 3 * 2)
-	{
-		MessageBox("输入格式不正确！");
-		return;
-	}
-	else
-	{
-		pos += 8;
-		memcpy(data_value+pos,data_value2,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value+pos,data_value2+64*1,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value+pos,data_value2+64*2,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value+pos,data_value2+64*3,data_len2 - 3 * 64);
-		pos += 64;
-
-	}
 
 	m_editOut.SetWindowText(data_value);
 }
