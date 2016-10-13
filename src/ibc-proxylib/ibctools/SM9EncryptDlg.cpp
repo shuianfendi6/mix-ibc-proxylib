@@ -112,40 +112,28 @@ void CSM9EncryptDlg::OnBnClicked3()
 	char data_value2[4096] = {0};
 	int data_len2 = 4096;
 
-	int pos = 0;
+	int C2_len = 4096;
+
+	void *cipher = NULL;
 
 	data_len = 4096;
 
 	m_editIn.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
 
-	// len
-	pos += 8;
-	// type
-	pos += 2;
+	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
 
-	if (data_len < 32 * 3 * 2)
+	if(!cipher)
 	{
-		MessageBox("输入格式不正确！");
+		MessageBox("输入不正确！");
 		return;
 	}
-	else
-	{
-		pos += 8;
-		memcpy(data_value2,data_value+pos,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value2+64*1,data_value+pos,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value2+64*2,data_value+pos,64);
-		pos += 64;
-		pos += 8;
-		memcpy(data_value2+64*3,data_value+pos,data_len-pos);
 
-		data_value2[64*3 + data_len-pos] = 0;
-		pos += data_len-pos;
-	}
+	sm9_proxylib_ObjectToItemsValueCipher(cipher,data_value,data_value+64,data_value+64+32,&C2_len);
+
+	data_len = 64+32+C2_len;
+
+	Bin2Hex((const unsigned char*)data_value,data_len,data_value2,&data_len2);
 
 	m_editOut.SetWindowText(data_value2);
 

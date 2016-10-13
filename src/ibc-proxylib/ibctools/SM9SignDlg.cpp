@@ -129,18 +129,22 @@ void CSM9SignDlg::OnBnClicked3()
 	char data_value2[4096] = {0};
 	int data_len2 = 4096;
 
-	void *sgn;
+	void *cipher = NULL;
 
 	data_len = 4096;
 
 	m_editIn.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
+	
+	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
 
-	data_len = 4096;
+	if(!cipher)
+	{
+		MessageBox("输入不正确！");
+		return;
+	}
 
-	sm9_proxylib_deserializeObject(data_value, data_len, &sgn,SM9_SERIALIZE_HEXASCII);
-
-	sm9_proxylib_ObjectToItemsValueSGN(sgn,data_value,data_value+32);
+	sm9_proxylib_ObjectToItemsValueSGN(cipher,data_value,data_value+32);
 
 	Bin2Hex((const unsigned char*)data_value,32*3,data_value2,&data_len2);
 
