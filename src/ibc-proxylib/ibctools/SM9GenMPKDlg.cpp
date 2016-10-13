@@ -90,23 +90,8 @@ void CSM9GenMPKDlg::OnBnClicked3()
 		return;
 	}
 
-	if (data_len_G1 && data_len_G2)
-	{
-		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,data_value_G1,data_value_G2);
-	}
-	else if(data_len_G1)
-	{
-		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,data_value_G1,NULL);
-	}
-	else if(data_len_G2)
-	{
-		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,NULL,data_value_G2);
-	}
-	else
-	{
-		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,NULL,NULL);
-	}
-
+	sm9_proxylib_ObjectFromItemsValueMPK(&mpk,data_len_G1==0? 0:data_value_G1,data_len_G2==0? 0:data_value_G2);
+	
 	data_len = 4096;
 
 	sm9_proxylib_serializeObject(mpk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);

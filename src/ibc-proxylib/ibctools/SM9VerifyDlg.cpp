@@ -12,8 +12,6 @@ extern void *g_gParams;
 extern void *g_msk;
 extern void *g_mpk;
 extern void *g_sk;
-extern char g_id[1024];
-extern int g_id_len;
 
 
 // CSM9VerifyDlg dialog
@@ -35,6 +33,7 @@ void CSM9VerifyDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT2, m_editIn);
 	DDX_Control(pDX, IDC_EDIT1, m_editOut);
+	DDX_Control(pDX, IDC_EDIT5, m_editID);
 }
 
 
@@ -57,6 +56,9 @@ void CSM9VerifyDlg::OnBnClicked2()
 	char data_value[4096] = {0};
 	int data_len = 4096;
 
+	char id[4096] = {0};
+	int id_len = 4096;
+
 	char data_value2[4096] = {0};
 	int data_len2 = 4096;
 
@@ -71,6 +73,13 @@ void CSM9VerifyDlg::OnBnClicked2()
 
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+
+	data_len = 4096;
+
+	m_editID.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	Hex2Bin(data_value,data_len,(unsigned char *)id,&id_len);
 
 	data_len = 4096;
 
@@ -96,7 +105,7 @@ void CSM9VerifyDlg::OnBnClicked2()
 
 	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
 
-	if(0 == sm9_proxylib_verify(gParams,g_mpk,g_id,g_id_len,data_value2,data_len2,sgn,SM9_SCHEME_SW))
+	if(0 == sm9_proxylib_verify(gParams,g_mpk,id,id_len,data_value2,data_len2,sgn,SM9_SCHEME_SW))
 	{
 		MessageBox("验证成功！");
 	}

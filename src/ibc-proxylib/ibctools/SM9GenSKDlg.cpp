@@ -12,7 +12,8 @@ extern void *g_gParams;
 extern void *g_msk;
 extern void *g_mpk;
 extern void *g_sk;
-
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
 
 // CSM9GenSKDlg dialog
 
@@ -64,143 +65,73 @@ void CSM9GenSKDlg::OnBnClicked3()
 	int data_len_hid03 = 256+1;
 
 	void *gParams = 0;
-	void *msk = 0;
-	void *mpk = 0;
-
-	if(0 == g_msk)
-	{
-		MessageBox("未设置主私钥！");
-		return;
-	}
-
-	if(0 == g_sk)
-	{
-		MessageBox("未设置用户私钥！");
-		return;
-	}
+	void *sk = 0;
 
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
+
 	data_len = 4096;
 
-	sm9_proxylib_getSerializeObjectSize(g_sk, SM9_SERIALIZE_HEXASCII, &data_len);
-	sm9_proxylib_serializeObject(g_sk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
-	sm9_proxylib_destroyObject(g_sk);
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_sk,SM9_SERIALIZE_HEXASCII);
+	m_edithid01.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
 
-	m_edithid01.GetWindowText(data_value_hid01,data_len_hid01);
-	data_len_hid01 = strlen(data_value_hid01);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_hid01,&data_len_hid01);
 
-	m_edithid02.GetWindowText(data_value_hid02,data_len_hid02);
-	data_len_hid02 = strlen(data_value_hid02);
+	data_len = 4096;
 
-	m_edithid03.GetWindowText(data_value_hid03,data_len_hid03);
-	data_len_hid03 = strlen(data_value_hid03);
+	m_edithid02.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
 
-	int pos = 0;
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_hid02,&data_len_hid02);
 
-	// len
-	pos += 8;
-	// type
-	pos += 2;
+	data_len = 4096;
 
-	if (0 != data_len_hid01 && data_len_hid01 != 128)
+	m_edithid03.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_hid03,&data_len_hid03);
+
+
+	if (0 != data_len_hid01 && data_len_hid01 != 64)
 	{
 		MessageBox("签名私钥格式不正确！");
 		return;
 	}
 	else
 	{
-		if(data_len_hid01 == 128)
-		{
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid01,data_len_hid01/2);
-			pos += data_len_hid01/2;
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid01+data_len_hid01/2,data_len_hid01/2);
-			pos += data_len_hid01/2;
-		}
-		else
-		{
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-		}
+
 	}
 
-
-	if (0 != data_len_hid02 && data_len_hid02 != 256)
+	if (0 != data_len_hid02 && data_len_hid02 != 128)
 	{
 		MessageBox("交换私钥格式不正确！");
 		return;
 	}
 	else
 	{
-		if(data_len_hid02 == 256)
-		{
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid02,data_len_hid02/4);
-			pos += data_len_hid02/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid02+data_len_hid02/4*1,data_len_hid02/4);
-			pos += data_len_hid02/4;
-
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid02+data_len_hid02/4*2,data_len_hid02/4);
-			pos += data_len_hid02/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid02+data_len_hid02/4*3,data_len_hid02/4);
-			pos += data_len_hid02/4;
-		}
-		else
-		{
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-		}
+		
 	}
 
-	if (0 != data_len_hid03 && data_len_hid03 != 256)
+	if (0 != data_len_hid03 && data_len_hid03 != 128)
 	{
 		MessageBox("加密私钥格式不正确！");
 		return;
 	}
 	else
 	{
-		if(data_len_hid03 == 256)
-		{
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid03,data_len_hid03/4);
-			pos += data_len_hid03/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid03+data_len_hid03/4*1,data_len_hid03/4);
-			pos += data_len_hid03/4;
-
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid03+data_len_hid03/4*2,data_len_hid03/4);
-			pos += data_len_hid03/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_hid03+data_len_hid03/4*3,data_len_hid03/4);
-			pos += data_len_hid03/4;
-		}
-		else
-		{
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-		}
+		
 	}
+
+	if (data_len_hid01 && data_len_hid02 && data_len_hid03)
+	{
+
+	}
+
+	sm9_proxylib_ObjectFromItemsValueSK(&sk,(data_len_hid01 == 0? 0:data_value_hid01),(data_len_hid02 == 0? 0:data_value_hid02),(data_len_hid03 == 0? 0:data_value_hid03));
+
+	data_len = 4096;
+
+	sm9_proxylib_serializeObject(sk,data_value, &data_len ,data_len , SM9_SERIALIZE_HEXASCII);
 
 	m_editSK.SetWindowText(data_value);
 }

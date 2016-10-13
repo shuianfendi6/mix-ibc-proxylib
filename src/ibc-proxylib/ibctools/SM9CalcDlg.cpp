@@ -12,8 +12,6 @@ extern void *g_gParams;
 extern void *g_msk;
 extern void *g_mpk;
 extern void *g_sk;
-extern char g_id[1024];
-extern int g_id_len;
 
 // CSM9CalcDlg dialog
 
@@ -127,17 +125,4 @@ void CSM9CalcDlg::OnBnClicked2()
 		MessageBox("用户私钥格式不正确，设置失败！");
 		return;
 	}
-
-	data_len = 4096;
-
-	m_editID.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-	data_len2 = data_len;
-
-	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
-
-	memcpy(g_id, data_value2,data_len2);
-
-	g_id_len = data_len2;
 }

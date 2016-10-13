@@ -12,8 +12,7 @@ extern void *g_gParams;
 extern void *g_msk;
 extern void *g_mpk;
 extern void *g_sk;
-extern char g_id[1024];
-extern int g_id_len;
+
 
 // CSM9SignDlg dialog
 

@@ -15,15 +15,11 @@ void *g_gParams = 0;
 void *g_msk = 0;
 void *g_mpk = 0;
 void *g_sk = 0;
-char g_id[1024] = {0};
-int g_id_len = 1024;
 
 extern void *g_gParams;
 extern void *g_msk;
 extern void *g_mpk;
 extern void *g_sk;
-extern char g_id[1024];
-extern int g_id_len; 
 
 // CibctoolsApp
 
