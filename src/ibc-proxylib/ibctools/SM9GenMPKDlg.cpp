@@ -13,6 +13,9 @@ extern void *g_msk;
 extern void *g_mpk;
 extern void *g_mpk;
 
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
+
 // CSM9GenMPKDlg dialog
 
 IMPLEMENT_DYNAMIC(CSM9GenMPKDlg, CDialogEx)
@@ -57,108 +60,56 @@ void CSM9GenMPKDlg::OnBnClicked3()
 	char data_value_G2[256+1] = {0};
 	int data_len_G2 = 256+1;
 
-	char data_value_hid03[256+1] = {0};
-	int data_len_hid03 = 256+1;
-
 	void *gParams = 0;
 	void *msk = 0;
 	void *mpk = 0;
 
-	if(0 == g_msk)
-	{
-		MessageBox("未设置主私钥！");
-		return;
-	}
-
-	if(0 == g_mpk)
-	{
-		MessageBox("未设置主公钥！");
-		return;
-	}
-
 	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	data_len = 4096;
+	m_editG1.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
 
-	sm9_proxylib_getSerializeObjectSize(g_mpk, SM9_SERIALIZE_HEXASCII, &data_len);
-	sm9_proxylib_serializeObject(g_mpk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
-	sm9_proxylib_destroyObject(g_mpk);
-	sm9_proxylib_deserializeObject(data_value, data_len, &g_mpk,SM9_SERIALIZE_HEXASCII);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_G1,&data_len_G1);
 
-	m_editG1.GetWindowText(data_value_G1,data_len_G1);
-	data_len_G1 = strlen(data_value_G1);
+	data_len = 4096;
+	m_editG2.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
 
-	m_editG2.GetWindowText(data_value_G2,data_len_G2);
-	data_len_G2 = strlen(data_value_G2);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_G2,&data_len_G2);
 
-	int pos = 0;
-
-	// len
-	pos += 8;
-	// type
-	pos += 2;
-
-	if (0 != data_len_G1 && data_len_G1 != 128)
+	if (0 != data_len_G1 && data_len_G1 != 64)
 	{
 		MessageBox("G1格式不正确！");
 		return;
 	}
-	else
-	{
-		if(data_len_G1 == 128)
-		{
-			pos += 8;
-			memcpy(data_value+pos,data_value_G1,data_len_G1/2);
-			pos += data_len_G1/2;
-			pos += 8;
-			memcpy(data_value+pos,data_value_G1+data_len_G1/2,data_len_G1/2);
-			pos += data_len_G1/2;
-		}
-		else
-		{
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-		}
-	}
 
-
-	if (0 != data_len_G2 && data_len_G2 != 256)
+	if (0 != data_len_G2 && data_len_G2 != 128)
 	{
 		MessageBox("G2格式不正确！");
 		return;
 	}
+
+	if (data_len_G1 && data_len_G2)
+	{
+		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,data_value_G1,data_value_G2);
+	}
+	else if(data_len_G1)
+	{
+		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,data_value_G1,NULL);
+	}
+	else if(data_len_G2)
+	{
+		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,NULL,data_value_G2);
+	}
 	else
 	{
-		if(data_len_G2 == 256)
-		{
-			pos += 8;
-			memcpy(data_value+pos,data_value_G2,data_len_G2/4);
-			pos += data_len_G2/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_G2+data_len_G2/4*1,data_len_G2/4);
-			pos += data_len_G2/4;
-
-			pos += 8;
-			memcpy(data_value+pos,data_value_G2+data_len_G2/4*2,data_len_G2/4);
-			pos += data_len_G2/4;
-			pos += 8;
-			memcpy(data_value+pos,data_value_G2+data_len_G2/4*3,data_len_G2/4);
-			pos += data_len_G2/4;
-		}
-		else
-		{
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-			pos += 8;
-			pos += 64;
-		}
+		sm9_proxylib_ObjectFromItemsValueMPK(&mpk,NULL,NULL);
 	}
+
+	data_len = 4096;
+
+	sm9_proxylib_serializeObject(mpk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
 
 	m_editMPK.SetWindowText(data_value);
 }
