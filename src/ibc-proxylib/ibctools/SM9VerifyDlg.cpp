@@ -119,20 +119,6 @@ void CSM9VerifyDlg::OnBnClicked3()
 	void *gParams = 0;
 	void *cipher = 0;
 
-	int pos = 0;
-
-	if(0 == g_mpk)
-	{
-		MessageBox("未设置主公钥！");
-		return;
-	}
-
-	if(0 == g_sk)
-	{
-		MessageBox("未设置用户私钥！");
-		return;
-	}
-
 	data_len = 4096;
 
 	m_editIn.GetWindowText(data_value2,data_len2);
