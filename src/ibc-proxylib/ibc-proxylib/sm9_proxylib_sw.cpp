@@ -2397,3 +2397,425 @@ BOOL SM9ProxyEXR_SW::deserialize(SM9_SERIALIZE_MODE mode, char *buffer, int bufS
 }
 
 
+// 参数转换
+int sm9_proxylib_ObjectToItemsValueCurveParams(void *object)
+{
+	return SM9_ERROR_OTHER;
+}
+
+int sm9_proxylib_ObjectFromItemsValueCurveParams(void **object)
+{
+	return SM9_ERROR_OTHER;
+}
+
+// 主公钥转换
+int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[64], char g2[128])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_MPK  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyMPK_SW *ppobject = (SM9ProxyMPK_SW *)object;
+
+	if (g1)
+	{
+		to_binaryECn(ppobject->Ppube,64,g1);
+	}
+
+	if (g2)
+	{
+		to_binaryECn2(ppobject->Ppubs,128,g2);
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[64], char g2[128])
+{
+	SM9ProxyMPK_SW *ppobject = new SM9ProxyMPK_SW();
+
+	if (g1)
+	{
+		from_binaryECn(ppobject->Ppube,g1);
+	}
+	
+	if (g2)
+	{
+		from_binaryECn2(ppobject->Ppubs, g2);
+	}
+
+	*object = (void *)ppobject;
+	
+	return SM9_ERROR_NONE;
+}
+
+// 主私钥转换
+int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[32])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_MSK  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyMSK_SW *ppobject = (SM9ProxyMSK_SW *)object;
+
+	if (msk)
+	{
+		to_binaryBig(ppobject->master,32,msk);
+	}
+
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char msk[32])
+{
+	SM9ProxyMSK_SW *ppobject = new SM9ProxyMSK_SW();
+
+	if (msk)
+	{
+		from_binaryBig(ppobject->master,msk);
+	}
+	
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 用户私钥转换
+int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[64], char hid02[128], char hid03[128])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_SK  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxySK_SW *ppobject = (SM9ProxySK_SW *)object;
+
+	if (hid01)
+	{
+		to_binaryECn(ppobject->ds_hid01,64,hid01);
+	}
+
+	if (hid02)
+	{
+		to_binaryECn2(ppobject->de_hid02,128,hid02);
+	}
+
+	if (hid03)
+	{
+		to_binaryECn2(ppobject->de_hid03,128,hid03);
+	}
+
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[64], char hid02[128], char hid03[128])
+{
+	SM9ProxySK_SW *ppobject = new SM9ProxySK_SW();
+
+	if (hid01)
+	{
+		from_binaryECn(ppobject->ds_hid01,hid01);
+	}
+
+	if (hid02)
+	{
+		from_binaryECn2(ppobject->de_hid02,hid02);
+	}
+
+	if (hid03)
+	{
+		from_binaryECn2(ppobject->de_hid03,hid03);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 签名值转换
+int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[32], char S[64])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_SGN  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxySGN_SW *ppobject = (SM9ProxySGN_SW *)object;
+
+	if (h)
+	{
+		to_binaryBig(ppobject->h,32,h);
+	}
+
+	if (S)
+	{
+		to_binaryECn(ppobject->S,64,S);
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[32], char S[64])
+{
+	SM9ProxySGN_SW *ppobject = new SM9ProxySGN_SW();
+
+	if (h)
+	{
+		from_binaryBig(ppobject->h,h);
+	}
+
+	if (S)
+	{
+		from_binaryECn(ppobject->S,S);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 封装值转换
+int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[64])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_WRAP  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyWRAP_SW *ppobject = (SM9ProxyWRAP_SW *)object;
+
+	if (C)
+	{
+		to_binaryECn(ppobject->C,64,C);
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[64])
+{
+	SM9ProxyWRAP_SW *ppobject = new SM9ProxyWRAP_SW();
+
+	if (C)
+	{
+		from_binaryECn(ppobject->C,C);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 数据转换
+int sm9_proxylib_ObjectToItemsValueDATA(void *object, char *data, int *data_len)
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_DATA  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyDATA_SW *ppobject = (SM9ProxyDATA_SW *)object;
+
+	if (data)
+	{
+		if(ppobject->data.GetSize() > *data_len)
+		{
+			*data_len = ppobject->data.GetSize();
+			return SM9_ERROR_BUFERR_LESS;
+		}
+		else
+		{
+			ppobject->data.GetValue(data,data_len);
+		}
+	}
+	else
+	{
+		if (NULL != data_len)
+		{
+			*data_len = ppobject->data.GetSize();
+		}
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueDATA(void **object, char *data, int data_len)
+{
+	SM9ProxyDATA_SW *ppobject = new SM9ProxyDATA_SW();
+
+	if (data)
+	{
+		ppobject->data.SetValue(data,data_len);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 密文转换
+int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32], char *C2, int *C2_len)
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_CIPHER  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyCipher_SW *ppobject = (SM9ProxyCipher_SW *)object;
+
+	if (C1)
+	{
+		to_binaryECn(ppobject->C1,64,C1);
+	}
+
+	if (C3)
+	{
+		to_binaryBig(ppobject->C3,32,C3);
+	}
+
+	if (C2)
+	{
+		if(ppobject->C2.GetSize() > *C2_len)
+		{
+			*C2_len = ppobject->C2.GetSize();
+			return SM9_ERROR_BUFERR_LESS;
+		}
+		else
+		{
+			ppobject->C2.GetValue(C2,C2_len);
+		}
+	}
+	else
+	{
+		if (NULL != C2_len)
+		{
+			*C2_len = ppobject->C2.GetSize();
+		}
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[64], char C3[32], char *C2, int C2_len)
+{
+	SM9ProxyCipher_SW *ppobject = new SM9ProxyCipher_SW();
+
+	if (C1)
+	{
+		from_binaryECn(ppobject->C1,C1);
+	}
+
+	if (C3)
+	{
+		from_binaryBig(ppobject->C3,C3);
+	}
+
+	if (C2)
+	{
+		ppobject->C2.SetValue(C2,C2_len);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}
+
+// 秘钥交换R值转换
+int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[64])
+{
+	SM9Object *pobject = (SM9Object *)object;
+	int pos = 0;
+
+	if (!pobject)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	if (SM9_OBJ_SW_EX_R  != pobject->objectType)
+	{
+		return SM9_ERROR_DATA_ERR;
+	}
+
+	SM9ProxyEXR_SW *ppobject = (SM9ProxyEXR_SW *)object;
+
+	if (R)
+	{
+		to_binaryECn(ppobject->R,64,R);
+	}
+
+	return SM9_ERROR_NONE;
+}
+
+int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[64])
+{
+	SM9ProxyEXR_SW *ppobject = new SM9ProxyEXR_SW();
+
+	if (R)
+	{
+		from_binaryECn(ppobject->R,R);
+	}
+
+	*object = (void *)ppobject;
+
+	return SM9_ERROR_NONE;
+}

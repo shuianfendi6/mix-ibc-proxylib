@@ -130,6 +130,42 @@ extern "C" {
 		void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA, SM9_KEY_EX_OPTION option,
 		SM9_SCHEME_TYPE schemeID);
 
+	// 参数转换
+	int sm9_proxylib_ObjectToItemsValueCurveParams(void *object);
+	int sm9_proxylib_ObjectFromItemsValueCurveParams(void **object);
+
+	// 主公钥转换
+	int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[64], char g2[128]);
+	int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[64], char g2[128]);
+
+	// 主私钥转换
+	int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[32]);
+	int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char sk[32]);
+
+	// 用户私钥转换
+	int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[64], char hid02[128], char hid03[128]);
+	int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[64], char hid02[128], char hid03[128]);
+
+	// 签名值转换
+	int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[32], char S[64]);
+	int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[32], char S[64]);
+
+	// 封装值转换
+	int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[64]);
+	int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[64]);
+
+	// 数据转换
+	int sm9_proxylib_ObjectToItemsValueDATA(void *object, char *data, int *data_len);
+	int sm9_proxylib_ObjectFromItemsValueDATA(void **object, char *data, int data_len);
+
+	// 密文转换
+	int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32], char *C2, int *C2_len);
+	int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[64], char C3[32], char *C2, int C2_len);
+
+	// 秘钥交换R值转换
+	int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[64]);
+	int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[64]);
+
 
 #ifdef __cplusplus
 }

@@ -40,6 +40,7 @@ void CSM9SignDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSM9SignDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_EDIT2, &CSM9SignDlg::OnEnChangeEdit2)
 	ON_BN_CLICKED(2, &CSM9SignDlg::OnBnClicked2)
+	ON_BN_CLICKED(3, &CSM9SignDlg::OnBnClicked3)
 END_MESSAGE_MAP()
 
 
@@ -117,3 +118,47 @@ void CSM9SignDlg::OnBnClicked2()
 	m_editOut.SetWindowText(data_value);
 }
 
+
+
+void CSM9SignDlg::OnBnClicked3()
+{
+	// TODO: Add your control notification handler code here
+	char data_value[4096] = {0};
+	int data_len = 4096;
+
+	char data_value2[4096] = {0};
+	int data_len2 = 4096;
+
+	int pos = 0;
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	// len
+	pos += 8;
+	// type
+	pos += 2;
+
+	if (data_len < 32 * 3 * 2)
+	{
+		MessageBox("输入格式不正确！");
+		return;
+	}
+	else
+	{
+		pos += 8;
+		memcpy(data_value2,data_value+pos,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value2+64*1,data_value+pos,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value2+64*2,data_value+pos,64);
+		pos += 64;
+	}
+
+	m_editOut.SetWindowText(data_value2);
+
+}

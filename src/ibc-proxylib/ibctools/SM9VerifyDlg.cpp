@@ -40,6 +40,7 @@ void CSM9VerifyDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CSM9VerifyDlg, CDialogEx)
 	ON_BN_CLICKED(2, &CSM9VerifyDlg::OnBnClicked2)
+	ON_BN_CLICKED(3, &CSM9VerifyDlg::OnBnClicked3)
 END_MESSAGE_MAP()
 
 
@@ -105,3 +106,86 @@ void CSM9VerifyDlg::OnBnClicked2()
 	}
 }
 
+
+
+void CSM9VerifyDlg::OnBnClicked3()
+{
+	char data_value[4096] = {0};
+	int data_len = 4096;
+
+	char data_value2[4096] = {0};
+	int data_len2 = 4096;
+
+	void *gParams = 0;
+	void *cipher = 0;
+
+	int pos = 0;
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	m_editIn.GetWindowText(data_value2,data_len2);
+	data_len2 = strlen(data_value2);
+
+	if(0 == g_mpk)
+	{
+		MessageBox("未设置主公钥！");
+		return;
+	}
+
+	if(0 == g_sk)
+	{
+		MessageBox("未设置用户私钥！");
+		return;
+	}
+
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	if( 0 == sm9_proxylib_sign(gParams,g_mpk,g_sk,0,0,&cipher,SM9_SCHEME_SW))
+	{
+
+	}
+	else
+	{
+		MessageBox("签名失败！");
+		return;
+	}
+
+	data_len = 4096;
+	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_HEXASCII, &data_len);
+	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
+	sm9_proxylib_destroyObject(cipher);
+	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
+
+	// len
+	pos += 8;
+	// type
+	pos += 2;
+
+	if (data_len2 < 32 * 3 * 2)
+	{
+		MessageBox("输入格式不正确！");
+		return;
+	}
+	else
+	{
+		pos += 8;
+		memcpy(data_value+pos,data_value2,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value+pos,data_value2+64*1,64);
+		pos += 64;
+		pos += 8;
+		memcpy(data_value+pos,data_value2+64*2,64);
+		pos += 64;
+	}
+
+	m_editOut.SetWindowText(data_value);
+}

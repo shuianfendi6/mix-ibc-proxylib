@@ -127,7 +127,9 @@ ZZn2 charsToZZn2 (char *c, int *totLen)
 	b=from_binary(length,c+*totLen);
 	*totLen+=length;
 
-	z.set(a,b);
+	//z.set(a,b);
+	// swap a and b to equal sm9 sample
+	z.set(b,a);
 
 	return z;
 }
@@ -188,13 +190,14 @@ int ZZn2Tochars(ZZn2 &z, char *c, int s)
 	Big a,b;
 	z.get (a, b);
 
+	// swap a and b to equal sm9 sample
 	buffer.m_iPos += 4;
-	length = to_binary(a,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
+	length = to_binary(b,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
 	buffer.m_iPos += 4;
-	length = to_binary(b,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
+	length = to_binary(a,buffer.m_iMaxLen-buffer.m_iPos,buffer.m_pValue+buffer.m_iPos,FALSE);
 	PUT_ULONG_BE(length,buffer.m_pValue,buffer.m_iPos-4);
 	buffer.m_iPos += length;
 
@@ -378,6 +381,105 @@ int to_binaryZZn2(const ZZn2 &w, int max, char output[64])
 	}
 
 	return pos_tmp;
+}
+
+int to_binaryECn2(const ECn2 &w, int max, char output[128])
+{
+	ZZn2 w1,w2;
+
+	memset(output, 0, 64);
+
+	w.get(w1,w2);
+
+	int pos_tmp = 0;
+	{
+		char w_item[64] = {0};
+
+		pos_tmp = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 64;
+		w_item_len = to_binaryZZn2(w1,w_item_len,w_item);
+		pos_tmp += 64 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 64;
+		w_item_len = to_binaryZZn2(w2,w_item_len,w_item);
+		pos_tmp += 64 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+	}
+
+	return pos_tmp;
+}
+
+int to_binaryECn(const ECn &w, int max, char output[64])
+{
+	Big w1,w2;
+
+	memset(output, 0, 64);
+
+	w.get(w1,w2);
+
+	int pos_tmp = 0;
+	{
+		char w_item[32] = {0};
+
+		pos_tmp = 0;
+
+		int w_item_len = 0;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w1,w_item_len,w_item,FALSE);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+
+		w_item_len = 32;
+		w_item_len = to_binary(w2,w_item_len,w_item,FALSE);
+		pos_tmp += 32 - w_item_len;
+		memcpy(output + pos_tmp, w_item, w_item_len);
+		pos_tmp += w_item_len;
+	}
+
+	return pos_tmp;
+}
+
+void from_binaryZZn2(ZZn2 &w, char input[64])
+{
+	Big a,b;
+
+	a = from_binary(32,input);
+	b = from_binary(32,input+32);
+
+	w.set(b,a);
+}
+
+void from_binaryBig(Big &w, char input[32])
+{
+	w = from_binary(32,input);
+}
+
+void from_binaryECn2(ECn2 &w, char input[128])
+{
+	ZZn2 a,b;
+
+	from_binaryZZn2(a,input);
+	from_binaryZZn2(b,input+64);
+
+	w.set(a,b);
+}
+
+void from_binaryECn(ECn &w, char input[64])
+{
+	Big a,b;
+
+	a = from_binary(32,input);
+	b = from_binary(32,input+32);
+
+	w.set(a,b);
 }
 
 int SM9_HV(unsigned int n,unsigned char * src, unsigned char digest[32])

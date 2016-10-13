@@ -195,6 +195,18 @@ int to_binaryZZn12(const ZZn12 &w, int max, char output[384]);
 int to_binaryBig(const Big &w, int max, char output[32]);
 int to_binaryChar(const char &w, int max, char output[1]);
 
+
+int to_binaryECn2(const ECn2 &w, int max, char output[128]);
+int to_binaryECn(const ECn &w, int max, char output[64]);
+
+void from_binaryZZn2(ZZn2 &w, char input[64]);
+void from_binaryBig(Big &w, char input[32]);
+
+void from_binaryECn2(ECn2 &w, char input[128]);
+void from_binaryECn(ECn &w, char input[64]);
+
+
+
 #define PROJECTIVE
 
 #endif // __SM9__PROXYLIB_H__
