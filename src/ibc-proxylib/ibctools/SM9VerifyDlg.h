@@ -25,4 +25,5 @@ public:
 	afx_msg void OnBnClicked2();
 	afx_msg void OnBnClicked3();
 	CEdit m_editID;
+	afx_msg void OnBnClicked4();
 };

@@ -42,6 +42,7 @@ void CSM9DecryptDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CSM9DecryptDlg, CDialogEx)
 	ON_BN_CLICKED(3, &CSM9DecryptDlg::OnBnClicked3)
 	ON_BN_CLICKED(2, &CSM9DecryptDlg::OnBnClicked2)
+	ON_BN_CLICKED(4, &CSM9DecryptDlg::OnBnClicked4)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +100,12 @@ void CSM9DecryptDlg::OnBnClicked3()
 	else
 	{
 		sm9_proxylib_ObjectFromItemsValueCipher(&cipher,data_value,data_value+64,data_value+64+32,data_len-32-64);
+	}
+
+	if (!cipher)
+	{
+		MessageBox("输入格式不正确！");
+		return;
 	}
 
 	data_len = 4096;
@@ -167,4 +174,86 @@ void CSM9DecryptDlg::OnBnClicked2()
 	sm9_proxylib_deserializeObject(data_value, data_len, &plain,SM9_SERIALIZE_HEXASCII);
 
 	m_editOut.SetWindowText(data_value+18);
+}
+
+
+void CSM9DecryptDlg::OnBnClicked4()
+{
+	char data_value[4096] = {0};
+	int data_len = 4096;
+
+	char data_value2[4096] = {0};
+	int data_len2 = 4096;
+
+	char id[4096] = {0};
+	int id_len = 4096;
+
+	void *gParams = 0;
+	void *cipher = 0;
+	void *plain = 0;
+
+	data_len = 4096;
+
+	m_editIn.GetWindowText(data_value2,data_len2);
+	data_len2 = strlen(data_value2);
+
+	Hex2Bin(data_value2,data_len2,(unsigned char *)data_value,&data_len);
+
+	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
+
+	if (data_len < 32 * 3)
+	{
+		MessageBox("输入格式不正确！");
+		return;
+	}
+	else
+	{
+		sm9_proxylib_ObjectFromItemsValueCipher(&cipher,data_value,data_value+64,data_value+64+32,data_len-32-64);
+	}
+
+	if (!cipher)
+	{
+		MessageBox("输入格式不正确！");
+		return;
+	}
+
+	if(0 == g_mpk)
+	{
+		MessageBox("未设置主公钥！");
+		return;
+	}
+
+	if(0 == g_sk)
+	{
+		MessageBox("未设置用户私钥！");
+		return;
+	}
+
+	data_len = 4096;
+
+	m_editID.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	Hex2Bin(data_value,data_len,(unsigned char *)id,&id_len);
+	
+
+	if(0 == sm9_proxylib_decrypt(gParams,g_mpk,g_sk,id,id_len,cipher,&plain,g_cryptoMode,SM9_SCHEME_SW))
+	{
+		MessageBox("解密成功！");
+	}
+	else
+	{
+		MessageBox("解密失败！");
+		return;
+	}
+
+	data_len = 4096;
+
+	sm9_proxylib_ObjectToItemsValueDATA(plain,data_value,&data_len);
+
+	data_len2 = 4096;
+
+	Bin2Hex((const unsigned char*)data_value,data_len,data_value2,&data_len2);
+
+	m_editOut.SetWindowText(data_value2);
 }

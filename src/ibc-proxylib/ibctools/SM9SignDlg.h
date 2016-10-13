@@ -25,4 +25,5 @@ public:
 	CEdit m_editOut;
 	afx_msg void OnBnClicked2();
 	afx_msg void OnBnClicked3();
+	afx_msg void OnBnClicked4();
 };
