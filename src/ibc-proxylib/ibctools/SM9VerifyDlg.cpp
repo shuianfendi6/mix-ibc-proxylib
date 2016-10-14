@@ -8,11 +8,8 @@
 
 #include "sm9_proxylib_api.h"
 
-extern void *g_gParams;
-extern void *g_msk;
-extern void *g_mpk;
-extern void *g_sk;
-
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
 
 // CSM9VerifyDlg dialog
 
@@ -34,12 +31,11 @@ void CSM9VerifyDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT2, m_editIn);
 	DDX_Control(pDX, IDC_EDIT1, m_editOut);
 	DDX_Control(pDX, IDC_EDIT5, m_editID);
+	DDX_Control(pDX, IDC_EDIT4, m_editG2);
 }
 
 
 BEGIN_MESSAGE_MAP(CSM9VerifyDlg, CDialogEx)
-	ON_BN_CLICKED(2, &CSM9VerifyDlg::OnBnClicked2)
-	ON_BN_CLICKED(3, &CSM9VerifyDlg::OnBnClicked3)
 	ON_BN_CLICKED(4, &CSM9VerifyDlg::OnBnClicked4)
 END_MESSAGE_MAP()
 
@@ -48,172 +44,57 @@ END_MESSAGE_MAP()
 
 
 
-extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
-extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
-
-
-void CSM9VerifyDlg::OnBnClicked2()
-{
-	char data_value[4096] = {0};
-	int data_len = 4096;
-
-	char id[4096] = {0};
-	int id_len = 4096;
-
-	char data_value2[4096] = {0};
-	int data_len2 = 4096;
-
-	void *gParams = 0;
-	void *cipher = 0;
-
-	if(0 == g_mpk)
-	{
-		MessageBox("未设置主公钥！");
-		return;
-	}
-
-
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-
-	data_len = 4096;
-
-	m_editID.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-	Hex2Bin(data_value,data_len,(unsigned char *)id,&id_len);
-
-	data_len = 4096;
-
-	m_editOut.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-	if(0 == sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII))
-	{
-
-	}
-	else
-	{
-		MessageBox("签名值格式不正确！");
-		return;
-	}
-
-	data_len = 4096;
-
-	m_editIn.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-	data_len2 = data_len;
-
-	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
-
-	if(0 == sm9_proxylib_verify(gParams,g_mpk,id,id_len,data_value2,data_len2,cipher,SM9_SCHEME_SW))
-	{
-		MessageBox("验证成功！");
-	}
-	else
-	{
-		MessageBox("验证失败！");
-	}
-}
-
-
-
-void CSM9VerifyDlg::OnBnClicked3()
-{
-	char data_value[4096] = {0};
-	int data_len = 4096;
-
-	char data_value2[4096] = {0};
-	int data_len2 = 4096;
-
-	void *gParams = 0;
-	void *cipher = 0;
-
-	data_len = 4096;
-
-	m_editIn.GetWindowText(data_value2,data_len2);
-	data_len2 = strlen(data_value2);
-
-	Hex2Bin(data_value2,data_len2,(unsigned char *)data_value,&data_len);
-
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-
-	if (data_len < 32 * 3)
-	{
-		MessageBox("输入格式不正确！");
-		return;
-	}
-	else
-	{
-		sm9_proxylib_ObjectFromItemsValueSGN(&cipher,data_value,data_value+32);
-	}
-
-	data_len = 4096;
-	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_HEXASCII, &data_len);
-	sm9_proxylib_serializeObject(cipher,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
-	sm9_proxylib_destroyObject(cipher);
-	sm9_proxylib_deserializeObject(data_value, data_len, &cipher,SM9_SERIALIZE_HEXASCII);
-
-	m_editOut.SetWindowText(data_value);
-}
-
 
 void CSM9VerifyDlg::OnBnClicked4()
 {
 	char data_value[4096] = {0};
 	int data_len = 4096;
 
-	char data_value2[4096] = {0};
-	int data_len2 = 4096;
-
-	void *gParams = 0;
-	void *cipher = 0;
-
 	char id[4096] = {0};
 	int id_len = 4096;
 
+	char data_value_cipher[4096] = {0};
+	int data_len_cipher = 4096;
+
+	char data_value_plain[4096] = {0};
+	int data_len_plain = 4096;
+
+	char data_value_G2[SM9_BYTES_LEN_G2] = {0};
+	int data_len_G2 = SM9_BYTES_LEN_G2;
+
 	data_len = 4096;
+	m_editG2.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_G2,&data_len_G2);
 
-	m_editOut.GetWindowText(data_value2,data_len2);
-	data_len2 = strlen(data_value2);
-
-	Hex2Bin(data_value2,data_len2,(unsigned char *)data_value,&data_len);
-
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-
-	if (data_len < 32 * 3)
-	{
-		MessageBox("输入格式不正确！");
-		return;
-	}
-	else
-	{
-		sm9_proxylib_ObjectFromItemsValueSGN(&cipher,data_value,data_value+32);
-	}
-
-	if(0 == g_mpk)
+	if(0 == data_len_G2)
 	{
 		MessageBox("未设置主公钥！");
 		return;
 	}
 
 	data_len = 4096;
-
 	m_editID.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
-
 	Hex2Bin(data_value,data_len,(unsigned char *)id,&id_len);
 
 	data_len = 4096;
-
 	m_editIn.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_plain,&data_len_plain);
 
-	data_len2 = data_len;
+	data_len = 4096;
+	m_editOut.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_cipher,&data_len_cipher);
 
-	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
+	if(0 == data_len_cipher)
+	{
+		MessageBox("未设置签名值！");
+		return;
+	}
 
-	if(0 == sm9_proxylib_verify(gParams,g_mpk,id,id_len,data_value2,data_len2,cipher,SM9_SCHEME_SW))
+	if(0 == sm9_verify(data_value_G2,data_len_G2,id,id_len,data_value_plain,data_len_plain,data_value_cipher,data_len_cipher))
 	{
 		MessageBox("验证成功！");
 	}
@@ -221,5 +102,4 @@ void CSM9VerifyDlg::OnBnClicked4()
 	{
 		MessageBox("验证失败！");
 	}
-
 }

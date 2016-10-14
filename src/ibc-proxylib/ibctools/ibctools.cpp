@@ -10,17 +10,6 @@
 #define new DEBUG_NEW
 #endif
 
-
-void *g_gParams = 0;
-void *g_msk = 0;
-void *g_mpk = 0;
-void *g_sk = 0;
-
-extern void *g_gParams;
-extern void *g_msk;
-extern void *g_mpk;
-extern void *g_sk;
-
 // CibctoolsApp
 
 BEGIN_MESSAGE_MAP(CibctoolsApp, CWinApp)
