@@ -12,6 +12,8 @@
 #include "SM9GenDlg.h"
 #include "SM9SignDlg.h"
 #include "SM9VerifyDlg.h"
+#include "SM9WrapDlg.h"
+#include "SM9UnwrapDlg.h"
 
 #include "sm9_proxylib_api.h"
 
@@ -117,6 +119,9 @@ BOOL CibctoolsDlg::OnInitDialog()
 	m_tb.InsertItem(3, "解密");
 	m_tb.InsertItem(4, "签名");
 	m_tb.InsertItem(5, "验证");
+	m_tb.InsertItem(6, "封装");
+	m_tb.InsertItem(7, "解封");
+
 
 	//创建两个对话框
 	//m_page1.Create(IDD_DIALOG, &m_tb);
@@ -169,14 +174,24 @@ BOOL CibctoolsDlg::OnInitDialog()
 
 			pDialog[i]->Create(IDD_DIALOG_SM9VERIFY, &m_tb);
 			break;
+		case 6:
+			pDialog[i] = new CSM9WrapDlg(this);
 
+			pDialog[i]->Create(IDD_DIALOG_SM9WRAP, &m_tb);
+			break;
+
+		case 7:
+			pDialog[i] = new CSM9UnwrapDlg(this);
+
+			pDialog[i]->Create(IDD_DIALOG_SM9UNWRAP, &m_tb);
+			break;
 		default:
 			pDialog[i] = new CDialog();
 
 			break;
 		}
 
-		if (i < 6)
+		if (i < 8)
 		{
 			pDialog[i]->MoveWindow(&rc);
 			pDialog[i]->ShowWindow(SW_HIDE);

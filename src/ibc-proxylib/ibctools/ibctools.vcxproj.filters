@@ -57,6 +57,12 @@
     <ClInclude Include="SM9VerifyDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SM9WrapDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SM9UnwrapDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ibctools.cpp">
@@ -84,6 +90,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SM9VerifyDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SM9WrapDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SM9UnwrapDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

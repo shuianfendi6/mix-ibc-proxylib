@@ -78,10 +78,10 @@ extern "C" {
 		char *pCipher, int iCipherLen, 
 		char *pMessage, int *piMessageLen,  SM9_CIPHER_TYPE cipherType
 		);
-	int sm9_wrap(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, 
+	int sm9_wrap(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen, char * pUserID, int iUserIDLen, 
 		char *pKey, int *piKeyLen, char *pWrapKey, int *piWrapKeyLen
 		);
-	int sm9_unwrap(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen, 
+	int sm9_unwrap(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen, char pSk[SM9_BYTES_LEN_G2], int iSkLen, char * pUserID, int iUserIDLen, 
 		char *pWrapKey, int iWrapKeyLen, char *pKey, int *piKeyLen
 		);
 
