@@ -22,7 +22,7 @@ protected:
 public:
 	afx_msg void OnBnClickedOk();
 	
-	CEdit m_editPrv;
+	CEdit m_editmsk;
 	CEdit m_editG2;
 	CEdit m_editG1;
 };

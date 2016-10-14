@@ -8,10 +8,8 @@
 
 #include "sm9_proxylib_api.h"
 
-extern void *g_gParams;
-extern void *g_msk;
-extern void *g_mpk;
-extern void *g_sk;
+extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
+extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
 
 // CSM9CalcDlg dialog
 
@@ -31,50 +29,63 @@ void CSM9CalcDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT2, m_editID);
-	DDX_Control(pDX, IDC_EDIT1, m_editPrv);
+	DDX_Control(pDX, IDC_EDIT1, m_edithid01);
+	DDX_Control(pDX, IDC_EDIT3, m_editmsk);
+	DDX_Control(pDX, IDC_EDIT4, m_edithid02);
+	DDX_Control(pDX, IDC_EDIT6, m_edithid03);
 }
 
 
 BEGIN_MESSAGE_MAP(CSM9CalcDlg, CDialogEx)
 	ON_BN_CLICKED(3, &CSM9CalcDlg::OnBnClicked3)
-	ON_BN_CLICKED(2, &CSM9CalcDlg::OnBnClicked2)
 END_MESSAGE_MAP()
 
 
 // CSM9CalcDlg message handlers
 
-extern "C" unsigned long Hex2Bin(const char *pbIN,int ulINLen,unsigned char *pbOUT,int * pulOUTLen);
-extern "C" unsigned long Bin2Hex(const unsigned char *pbIN,int ulINLen,char *pbOUT,int * pulOUTLen);
+
 
 void CSM9CalcDlg::OnBnClicked3()
 {
 	char data_value[4096] = {0};
 	int data_len = 4096;
 
-	char data_value2[4096] = {0};
-	int data_len2 = 4096;
+	char data_value_id[4096] = {0};
+	int data_len_id = 4096;
 
-	void *gParams = 0;
-	void *sk = 0;
+	char data_value_msk[SM9_BYTES_LEN_BIG] = {0};
+	int data_len_msk = SM9_BYTES_LEN_BIG;
 
-	if(0 == g_msk)
+	char data_value_hid01[SM9_BYTES_LEN_G1] = {0};
+	int data_len_hid01 = SM9_BYTES_LEN_G1;
+
+	char data_value_hid02[SM9_BYTES_LEN_G2] = {0};
+	int data_len_hid02 = SM9_BYTES_LEN_G2;
+
+	char data_value_hid03[SM9_BYTES_LEN_G2] = {0};
+	int data_len_hid03 = SM9_BYTES_LEN_G2;
+
+	data_len = 4096;
+
+	m_editmsk.GetWindowText(data_value,data_len);
+	data_len = strlen(data_value);
+
+	Hex2Bin(data_value,data_len,(unsigned char*)data_value_msk,&data_len_msk);
+
+	if(0 == data_len_msk)
 	{
 		MessageBox("未设置主私钥！");
 		return;
 	}
-
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
 
 	data_len = 4096;
 
 	m_editID.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
 
-	data_len2 = data_len;
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_id,&data_len_id);
 
-	Hex2Bin(data_value,data_len,(unsigned char *)data_value2,&data_len2);
-
-	if(0 == sm9_proxylib_calculateUserKeys(gParams,g_msk,data_value2,data_len2,&sk,SM9_SCHEME_SW))
+	if(0 == sm9_calculateUserKeys(data_value_msk,SM9_BYTES_LEN_BIG,data_value_id,data_len_id,data_value_hid01,&data_len_hid01,data_value_hid02,&data_len_hid02,data_value_hid03,&data_len_hid03))
 	{
 		MessageBox("计算成功！");
 	}
@@ -85,44 +96,15 @@ void CSM9CalcDlg::OnBnClicked3()
 	}
 
 	data_len = 4096;
-	sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_HEXASCII, &data_len);
-	sm9_proxylib_serializeObject(sk,data_value, &data_len, data_len, SM9_SERIALIZE_HEXASCII);
-	sm9_proxylib_destroyObject(sk);
-	sm9_proxylib_deserializeObject(data_value, data_len, &sk,SM9_SERIALIZE_HEXASCII);
+	Bin2Hex((unsigned char*)data_value_hid01,data_len_hid01,data_value,&data_len);
+	m_edithid01.SetWindowText(data_value);
 
-	m_editPrv.SetWindowText(data_value);
-}
+	data_len = 4096;
+	Bin2Hex((unsigned char*)data_value_hid02,data_len_hid02,data_value,&data_len);
+	m_edithid02.SetWindowText(data_value);
 
+	data_len = 4096;
+	Bin2Hex((unsigned char*)data_value_hid03,data_len_hid03,data_value,&data_len);
+	m_edithid03.SetWindowText(data_value);
 
-void CSM9CalcDlg::OnBnClicked2()
-{
-	char data_value[4096] = {0};
-	int data_len = 4096;
-
-	char data_value2[4096] = {0};
-	int data_len2 = 4096;
-
-	void *gParams = 0;
-
-	sm9_proxylib_generateParams(&gParams,SM9_SCHEME_SW);
-
-	m_editPrv.GetWindowText(data_value,data_len);
-	data_len = strlen(data_value);
-
-
-	if (g_sk)
-	{
-		sm9_proxylib_destroyObject(g_sk);
-		g_sk = 0;
-	}
-
-	if( 0 == sm9_proxylib_deserializeObject(data_value, data_len, &g_sk,SM9_SERIALIZE_HEXASCII))
-	{
-		MessageBox("设置用户私钥成功！");
-	}
-	else
-	{
-		MessageBox("用户私钥格式不正确，设置失败！");
-		return;
-	}
 }

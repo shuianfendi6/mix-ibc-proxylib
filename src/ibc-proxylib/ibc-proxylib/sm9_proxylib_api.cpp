@@ -644,7 +644,7 @@ int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA,
 }
 
 
-int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen)
+int sm9_generateMasterKeys(char *pMsk, int *piMskLen, char *pMpkG1, int *piMpkG1Len, char *pMpkG2, int *piMpkG2Len)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -652,8 +652,9 @@ int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen)
 	void *msk = 0;
 	void *mpk = 0;
 
-	int mpkLen = 0;
-	int mskLen = 0;
+	int mpkG1Len = SM9_BYTES_LEN_G1;
+	int mpkG2Len = SM9_BYTES_LEN_G2;
+	int mskLen = SM9_BYTES_LEN_BIG;
 
 	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
 	if (error)
@@ -667,23 +668,40 @@ int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen)
 		goto err;
 	}
 
-	sm9_proxylib_getSerializeObjectSize(mpk, SM9_SERIALIZE_BINARY, &mpkLen);
-	sm9_proxylib_getSerializeObjectSize(msk, SM9_SERIALIZE_BINARY, &mskLen);
-
-	if (mskLen>*piMskLen || mpkLen>*piMpkLen)
+	if (mskLen>*piMskLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
 		*piMskLen = mskLen;
-		*piMpkLen = mpkLen;
+		goto err;
 	}
 	else
 	{
 		*piMskLen = mskLen;
-		*piMpkLen = mpkLen;
-		sm9_proxylib_serializeObject(mpk,pMpk, piMpkLen, *piMpkLen, SM9_SERIALIZE_BINARY);
-		sm9_proxylib_serializeObject(msk,pMsk, piMskLen, *piMskLen, SM9_SERIALIZE_BINARY);
-		error = SM9_ERROR_NONE;
+		sm9_proxylib_ObjectToItemsValueMSK(msk,pMsk);
 	}
+
+	if(mpkG1Len>*piMpkG1Len)
+	{
+		*piMpkG1Len = mpkG1Len;
+	}
+	else
+	{
+		*piMpkG1Len = mpkG1Len;
+		sm9_proxylib_ObjectToItemsValueMPK(mpk,pMpkG1,NULL);
+	}
+
+	if(mpkG2Len>*piMpkG2Len)
+	{
+		*piMpkG2Len = mpkG2Len;
+	}
+	else
+	{
+		*piMpkG2Len = mpkG2Len;
+		sm9_proxylib_ObjectToItemsValueMPK(mpk,NULL,pMpkG2);
+	}
+
+	error = SM9_ERROR_NONE;
+
 err:
 	if (gParams)
 	{
@@ -701,25 +719,33 @@ err:
 	return error;
 }
 
-int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLen, char *pSk, int *piSkLen)
+int sm9_calculateUserKeys(char *pMsk, int iMskLen,
+	char * pUserID, int iUserIDLen,
+	char *pSkhid01, int *piSkhid01Len,
+	char *pSkhid02, int *piSkhid02Len,
+	char *pSkhid03, int *piSkhid03Len)
 {
 	int error = SM9_ERROR_OTHER;
 
 	void *gParams = 0;
 	void *msk = 0;
 	void *sk = 0;
-	int skLen = 0;
 
-	error = sm9_proxylib_deserializeObject(pMsk, iMskLen, &msk, SM9_SERIALIZE_BINARY);
-	if (error)
-	{
-		error = SM9_ERROR_DATA_ERR;
-		goto err;
-	}
+	int skhid01Len = SM9_BYTES_LEN_G1;
+	int skhid02Len = SM9_BYTES_LEN_G2;
+	int skhid03Len = SM9_BYTES_LEN_G2;
+
 
 	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
 	if (error)
 	{
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueMSK(&msk,pMsk);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
 		goto err;
 	}
 
@@ -729,18 +755,37 @@ int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLe
 		goto err;
 	}
 
-	sm9_proxylib_getSerializeObjectSize(sk, SM9_SERIALIZE_BINARY, &skLen);
-	if (skLen>*piSkLen)
+	if (skhid01Len>*piSkhid01Len)
 	{
-		error = SM9_ERROR_BUFERR_LESS;
-		*piSkLen = skLen;
+		*piSkhid01Len = skhid01Len;
 	}
 	else
 	{
-		*piSkLen = skLen;
-		sm9_proxylib_serializeObject(sk,pSk, piSkLen, *piSkLen, SM9_SERIALIZE_BINARY);
-		error = SM9_ERROR_NONE;
+		*piSkhid01Len = skhid01Len;
+		sm9_proxylib_ObjectToItemsValueSK(sk,pSkhid01,NULL,NULL);
 	}
+
+	if (skhid02Len>*piSkhid02Len)
+	{
+		*piSkhid02Len = skhid02Len;
+	}
+	else
+	{
+		*piSkhid02Len = skhid02Len;
+		sm9_proxylib_ObjectToItemsValueSK(sk,NULL,pSkhid02,NULL);
+	}
+
+	if (skhid03Len>*piSkhid03Len)
+	{
+		*piSkhid03Len = skhid03Len;
+	}
+	else
+	{
+		*piSkhid03Len = skhid03Len;
+		sm9_proxylib_ObjectToItemsValueSK(sk,NULL,NULL,pSkhid03);
+	}
+
+	error = SM9_ERROR_NONE;
 
 err:
 	if (gParams)

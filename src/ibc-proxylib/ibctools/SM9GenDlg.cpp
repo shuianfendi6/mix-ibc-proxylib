@@ -28,7 +28,7 @@ void CSM9GenDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT1, m_editG1);
-	DDX_Control(pDX, IDC_EDIT2, m_editPrv);
+	DDX_Control(pDX, IDC_EDIT2, m_editmsk);
 	DDX_Control(pDX, IDC_EDIT5, m_editG2);
 }
 
@@ -75,5 +75,5 @@ void CSM9GenDlg::OnBnClickedOk()
 
 	data_len = 4096;
 	Bin2Hex((unsigned char*)data_value_msk,data_len_msk,data_value,&data_len);
-	m_editPrv.SetWindowText(data_value);
+	m_editmsk.SetWindowText(data_value);
 }

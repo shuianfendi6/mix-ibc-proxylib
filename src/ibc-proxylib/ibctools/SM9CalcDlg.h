@@ -21,7 +21,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CEdit m_editID;
-	CEdit m_editPrv;
+	CEdit m_edithid01;
 	afx_msg void OnBnClicked3();
-	afx_msg void OnBnClicked2();
+	CEdit m_editmsk;
+	CEdit m_edithid02;
+	CEdit m_edithid03;
 };

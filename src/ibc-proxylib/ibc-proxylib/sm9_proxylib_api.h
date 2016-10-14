@@ -1,6 +1,10 @@
 #ifndef __SM9__PROXYLIB_API_H__
 #define __SM9__PROXYLIB_API_H__
 
+#define SM9_BYTES_LEN_BIG  32
+#define SM9_BYTES_LEN_G1   64
+#define SM9_BYTES_LEN_G2  128
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -53,10 +57,16 @@ extern "C" {
 
 	}SM9_OBJ_TYPE;
 
+
+
 	// user functions(soft ware implement)
 
-	int sm9_generateMasterKeys(char *pMpk, int *piMpkLen, char *pMsk, int *piMskLen);
-	int sm9_calculateUserKeys(char *pMsk, int iMskLen, char * pUserID, int iUserIDLen, char *pSk, int *piSkLen);
+	int sm9_generateMasterKeys(char *pMsk, int *piMskLen, char *pMpkG1, int *piMpkG1Len, char *pMpkG2, int *piMpkG2Len);
+	int sm9_calculateUserKeys(char *pMsk, int iMskLen,
+		char * pUserID, int iUserIDLen,
+		char *pSkhid01, int *piSkhid01Len,
+		char *pSkhid02, int *piSkhid02Len,
+		char *pSkhid03, int *piSkhid03Len);
 	int sm9_sign(char *pMpk, int iMpkLen, char *pSk, int iSkLen, char *pMessage, int iMessageLen, 
 		char *pSgn, int *piSgnLen);
 	int sm9_verify(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
