@@ -51,19 +51,10 @@
     <ClInclude Include="SM9GenDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SM9SetupDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SM9SignDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SM9VerifyDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SM9GenSKDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SM9GenMPKDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -89,19 +80,10 @@
     <ClCompile Include="SM9GenDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SM9SetupDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SM9SignDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SM9VerifyDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SM9GenSKDlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SM9GenMPKDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

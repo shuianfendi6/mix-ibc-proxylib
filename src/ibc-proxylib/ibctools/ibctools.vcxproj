@@ -111,8 +111,6 @@
     <None Include="res\ibctools.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SM9GenMPKDlg.h" />
-    <ClInclude Include="SM9GenSKDlg.h" />
     <ClInclude Include="ibctools.h" />
     <ClInclude Include="ibctoolsDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -120,22 +118,18 @@
     <ClInclude Include="SM9DecryptDlg.h" />
     <ClInclude Include="SM9EncryptDlg.h" />
     <ClInclude Include="SM9GenDlg.h" />
-    <ClInclude Include="SM9SetupDlg.h" />
     <ClInclude Include="SM9SignDlg.h" />
     <ClInclude Include="SM9VerifyDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SM9GenMPKDlg.cpp" />
-    <ClCompile Include="SM9GenSKDlg.cpp" />
     <ClCompile Include="ibctools.cpp" />
     <ClCompile Include="ibctoolsDlg.cpp" />
     <ClCompile Include="SM9CalcDlg.cpp" />
     <ClCompile Include="SM9DecryptDlg.cpp" />
     <ClCompile Include="SM9EncryptDlg.cpp" />
     <ClCompile Include="SM9GenDlg.cpp" />
-    <ClCompile Include="SM9SetupDlg.cpp" />
     <ClCompile Include="SM9SignDlg.cpp" />
     <ClCompile Include="SM9VerifyDlg.cpp" />
     <ClCompile Include="stdafx.cpp">

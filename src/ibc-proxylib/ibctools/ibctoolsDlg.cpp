@@ -6,14 +6,10 @@
 #include "ibctools.h"
 #include "ibctoolsDlg.h"
 #include "afxdialogex.h"
-
-#include "SM9GenMPKDlg.h"
-#include "SM9GenSKDlg.h"
 #include "SM9CalcDlg.h"
 #include "SM9DecryptDlg.h"
 #include "SM9EncryptDlg.h"
 #include "SM9GenDlg.h"
-#include "SM9SetupDlg.h"
 #include "SM9SignDlg.h"
 #include "SM9VerifyDlg.h"
 
@@ -116,14 +112,11 @@ BOOL CibctoolsDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 
 	m_tb.InsertItem(0, "生成主密钥");
-	m_tb.InsertItem(1, "主公钥组合");
-	m_tb.InsertItem(2, "设置主密钥");
-	m_tb.InsertItem(3, "计算私钥");
-	m_tb.InsertItem(4, "用户私钥组合");
-	m_tb.InsertItem(5, "加密");
-	m_tb.InsertItem(6, "解密");
-	m_tb.InsertItem(7, "签名");
-	m_tb.InsertItem(8, "验证");
+	m_tb.InsertItem(1, "计算私钥");
+	m_tb.InsertItem(2, "加密");
+	m_tb.InsertItem(3, "解密");
+	m_tb.InsertItem(4, "签名");
+	m_tb.InsertItem(5, "验证");
 
 	//创建两个对话框
 	//m_page1.Create(IDD_DIALOG, &m_tb);
@@ -148,51 +141,30 @@ BOOL CibctoolsDlg::OnInitDialog()
 
 			pDialog[i]->Create(IDD_DIALOG_SM9GEN, &m_tb);
 			break;
-
 		case 1:
-			pDialog[i] = new CSM9GenMPKDlg(this);
-
-			pDialog[i]->Create(IDD_DIALOG_SM9GEN_MPK, &m_tb);
-			break;
-
-		case 2:
-			pDialog[i] = new CSM9SetupDlg(this);
-
-			pDialog[i]->Create(IDD_DIALOG_SM9SETUP, &m_tb);
-			break;
-
-		case 3:
 			pDialog[i] = new CSM9CalcDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9CALC, &m_tb);
 			break;
-
-		case 4:
-
-			pDialog[i] = new CSM9GenSKDlg(this);
-
-			pDialog[i]->Create(IDD_DIALOG_SM9GEN_SK, &m_tb);
-			break;
-
-		case 5:
+		case 2:
 			pDialog[i] = new CSM9EncryptDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9ENCRYPT, &m_tb);
 			break;
 
-		case 6:
+		case 3:
 			pDialog[i] = new CSM9DecryptDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9DECRYPT, &m_tb);
 			break;
 
-		case 7:
+		case 4:
 			pDialog[i] = new CSM9SignDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9SIGN, &m_tb);
 			break;
 
-		case 8:
+		case 5:
 			pDialog[i] = new CSM9VerifyDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9VERIFY, &m_tb);
@@ -204,7 +176,7 @@ BOOL CibctoolsDlg::OnInitDialog()
 			break;
 		}
 
-		if (i < 9)
+		if (i < 6)
 		{
 			pDialog[i]->MoveWindow(&rc);
 			pDialog[i]->ShowWindow(SW_HIDE);
