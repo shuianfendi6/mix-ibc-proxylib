@@ -145,36 +145,36 @@ extern "C" {
 	int sm9_proxylib_ObjectFromItemsValueCurveParams(void **object);
 
 	// 主公钥转换
-	int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[64], char g2[128]);
-	int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[64], char g2[128]);
+	int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[SM9_BYTES_LEN_G1], char g2[SM9_BYTES_LEN_G2]);
+	int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[SM9_BYTES_LEN_G1], char g2[SM9_BYTES_LEN_G2]);
 
 	// 主私钥转换
-	int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[32]);
-	int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char sk[32]);
+	int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[SM9_BYTES_LEN_BIG]);
+	int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char sk[SM9_BYTES_LEN_BIG]);
 
 	// 用户私钥转换
-	int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[64], char hid02[128], char hid03[128]);
-	int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[64], char hid02[128], char hid03[128]);
+	int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[SM9_BYTES_LEN_G1], char hid02[SM9_BYTES_LEN_G2], char hid03[SM9_BYTES_LEN_G2]);
+	int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[SM9_BYTES_LEN_G1], char hid02[SM9_BYTES_LEN_G2], char hid03[SM9_BYTES_LEN_G2]);
 
 	// 签名值转换
-	int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[32], char S[64]);
-	int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[32], char S[64]);
+	int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[SM9_BYTES_LEN_BIG], char S[SM9_BYTES_LEN_G1]);
+	int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[SM9_BYTES_LEN_BIG], char S[SM9_BYTES_LEN_G1]);
 
 	// 封装值转换
-	int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[64]);
-	int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[64]);
+	int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[SM9_BYTES_LEN_G1]);
+	int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[SM9_BYTES_LEN_G1]);
 
 	// 数据转换
 	int sm9_proxylib_ObjectToItemsValueDATA(void *object, char *data, int *data_len);
 	int sm9_proxylib_ObjectFromItemsValueDATA(void **object, char *data, int data_len);
 
 	// 密文转换
-	int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32], char *C2, int *C2_len);
-	int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[64], char C3[32], char *C2, int C2_len);
+	int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[SM9_BYTES_LEN_G1], char C3[SM9_BYTES_LEN_BIG], char *C2, int *C2_len);
+	int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[SM9_BYTES_LEN_G1], char C3[SM9_BYTES_LEN_BIG], char *C2, int C2_len);
 
 	// 秘钥交换R值转换
-	int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[64]);
-	int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[64]);
+	int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[SM9_BYTES_LEN_G1]);
+	int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[SM9_BYTES_LEN_G1]);
 
 
 #ifdef __cplusplus

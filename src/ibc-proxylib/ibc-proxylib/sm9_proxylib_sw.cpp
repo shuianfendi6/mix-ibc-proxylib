@@ -2409,7 +2409,7 @@ int sm9_proxylib_ObjectFromItemsValueCurveParams(void **object)
 }
 
 // 主公钥转换
-int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[64], char g2[128])
+int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[SM9_BYTES_LEN_G1], char g2[SM9_BYTES_LEN_G2])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2428,18 +2428,18 @@ int sm9_proxylib_ObjectToItemsValueMPK(void *object, char g1[64], char g2[128])
 
 	if (g1)
 	{
-		to_binaryECn(ppobject->Ppube,64,g1);
+		to_binaryECn(ppobject->Ppube,SM9_BYTES_LEN_G1,g1);
 	}
 
 	if (g2)
 	{
-		to_binaryECn2(ppobject->Ppubs,128,g2);
+		to_binaryECn2(ppobject->Ppubs,SM9_BYTES_LEN_G2,g2);
 	}
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[64], char g2[128])
+int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[SM9_BYTES_LEN_G1], char g2[SM9_BYTES_LEN_G2])
 {
 	SM9ProxyMPK_SW *ppobject = new SM9ProxyMPK_SW();
 
@@ -2459,7 +2459,7 @@ int sm9_proxylib_ObjectFromItemsValueMPK(void **object, char g1[64], char g2[128
 }
 
 // 主私钥转换
-int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[32])
+int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[SM9_BYTES_LEN_BIG])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2478,14 +2478,14 @@ int sm9_proxylib_ObjectToItemsValueMSK(void *object, char msk[32])
 
 	if (msk)
 	{
-		to_binaryBig(ppobject->master,32,msk);
+		to_binaryBig(ppobject->master,SM9_BYTES_LEN_BIG,msk);
 	}
 
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char msk[32])
+int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char msk[SM9_BYTES_LEN_BIG])
 {
 	SM9ProxyMSK_SW *ppobject = new SM9ProxyMSK_SW();
 
@@ -2500,7 +2500,7 @@ int sm9_proxylib_ObjectFromItemsValueMSK(void **object, char msk[32])
 }
 
 // 用户私钥转换
-int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[64], char hid02[128], char hid03[128])
+int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[SM9_BYTES_LEN_G1], char hid02[SM9_BYTES_LEN_G2], char hid03[SM9_BYTES_LEN_G2])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2519,24 +2519,24 @@ int sm9_proxylib_ObjectToItemsValueSK(void *object, char hid01[64], char hid02[1
 
 	if (hid01)
 	{
-		to_binaryECn(ppobject->ds_hid01,64,hid01);
+		to_binaryECn(ppobject->ds_hid01,SM9_BYTES_LEN_G1,hid01);
 	}
 
 	if (hid02)
 	{
-		to_binaryECn2(ppobject->de_hid02,128,hid02);
+		to_binaryECn2(ppobject->de_hid02,SM9_BYTES_LEN_G2,hid02);
 	}
 
 	if (hid03)
 	{
-		to_binaryECn2(ppobject->de_hid03,128,hid03);
+		to_binaryECn2(ppobject->de_hid03,SM9_BYTES_LEN_G2,hid03);
 	}
 
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[64], char hid02[128], char hid03[128])
+int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[SM9_BYTES_LEN_G1], char hid02[SM9_BYTES_LEN_G2], char hid03[SM9_BYTES_LEN_G2])
 {
 	SM9ProxySK_SW *ppobject = new SM9ProxySK_SW();
 
@@ -2561,7 +2561,7 @@ int sm9_proxylib_ObjectFromItemsValueSK(void **object, char hid01[64], char hid0
 }
 
 // 签名值转换
-int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[32], char S[64])
+int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[SM9_BYTES_LEN_BIG], char S[SM9_BYTES_LEN_G1])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2580,18 +2580,18 @@ int sm9_proxylib_ObjectToItemsValueSGN(void *object, char h[32], char S[64])
 
 	if (h)
 	{
-		to_binaryBig(ppobject->h,32,h);
+		to_binaryBig(ppobject->h,SM9_BYTES_LEN_BIG,h);
 	}
 
 	if (S)
 	{
-		to_binaryECn(ppobject->S,64,S);
+		to_binaryECn(ppobject->S,SM9_BYTES_LEN_G1,S);
 	}
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[32], char S[64])
+int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[SM9_BYTES_LEN_BIG], char S[SM9_BYTES_LEN_G1])
 {
 	SM9ProxySGN_SW *ppobject = new SM9ProxySGN_SW();
 
@@ -2611,7 +2611,7 @@ int sm9_proxylib_ObjectFromItemsValueSGN(void **object, char h[32], char S[64])
 }
 
 // 封装值转换
-int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[64])
+int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[SM9_BYTES_LEN_G1])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2630,13 +2630,13 @@ int sm9_proxylib_ObjectToItemsValueWRAP(void *object, char C[64])
 
 	if (C)
 	{
-		to_binaryECn(ppobject->C,64,C);
+		to_binaryECn(ppobject->C,SM9_BYTES_LEN_G1,C);
 	}
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[64])
+int sm9_proxylib_ObjectFromItemsValueWRAP(void **object, char C[SM9_BYTES_LEN_G1])
 {
 	SM9ProxyWRAP_SW *ppobject = new SM9ProxyWRAP_SW();
 
@@ -2706,7 +2706,7 @@ int sm9_proxylib_ObjectFromItemsValueDATA(void **object, char *data, int data_le
 }
 
 // 密文转换
-int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32], char *C2, int *C2_len)
+int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[SM9_BYTES_LEN_G1], char C3[SM9_BYTES_LEN_BIG], char *C2, int *C2_len)
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2725,12 +2725,12 @@ int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32]
 
 	if (C1)
 	{
-		to_binaryECn(ppobject->C1,64,C1);
+		to_binaryECn(ppobject->C1,SM9_BYTES_LEN_G1,C1);
 	}
 
 	if (C3)
 	{
-		to_binaryBig(ppobject->C3,32,C3);
+		to_binaryBig(ppobject->C3,SM9_BYTES_LEN_BIG,C3);
 	}
 
 	if (C2)
@@ -2756,7 +2756,7 @@ int sm9_proxylib_ObjectToItemsValueCipher(void *object, char C1[64], char C3[32]
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[64], char C3[32], char *C2, int C2_len)
+int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[SM9_BYTES_LEN_G1], char C3[SM9_BYTES_LEN_BIG], char *C2, int C2_len)
 {
 	SM9ProxyCipher_SW *ppobject = new SM9ProxyCipher_SW();
 
@@ -2781,7 +2781,7 @@ int sm9_proxylib_ObjectFromItemsValueCipher(void **object, char C1[64], char C3[
 }
 
 // 秘钥交换R值转换
-int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[64])
+int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[SM9_BYTES_LEN_G1])
 {
 	SM9Object *pobject = (SM9Object *)object;
 	int pos = 0;
@@ -2800,13 +2800,13 @@ int sm9_proxylib_ObjectToItemsValueEXR(void *object, char R[64])
 
 	if (R)
 	{
-		to_binaryECn(ppobject->R,64,R);
+		to_binaryECn(ppobject->R,SM9_BYTES_LEN_G1,R);
 	}
 
 	return SM9_ERROR_NONE;
 }
 
-int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[64])
+int sm9_proxylib_ObjectFromItemsValueEXR(void **object, char R[SM9_BYTES_LEN_G1])
 {
 	SM9ProxyEXR_SW *ppobject = new SM9ProxyEXR_SW();
 
