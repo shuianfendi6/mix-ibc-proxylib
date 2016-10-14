@@ -20,10 +20,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClicked3();
-	afx_msg void OnBnClicked2();
 	CEdit m_editIn;
 	CEdit m_editOut;
 	CEdit m_editID;
 	afx_msg void OnBnClicked4();
+	CEdit m_editG1;
+	CEdit m_edithid03;
 };

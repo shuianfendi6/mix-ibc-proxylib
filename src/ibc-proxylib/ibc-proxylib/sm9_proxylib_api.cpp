@@ -938,17 +938,28 @@ int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *p
 	void *mpk = 0;
 	void *cipher = 0;
 	int cipherLen = 0;
+	int C2Len = 0;
 
-	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
-	if (error)
+	if (SM9_CIPHER_KDF_UNION == cipherType)
 	{
-		error = SM9_ERROR_DATA_ERR;
-		goto err;
+		C2Len = (iMessageLen+16)/16*16;
 	}
+	else
+	{
+		C2Len = iMessageLen;
+	}
+	cipherLen = SM9_BYTES_LEN_G1+SM9_BYTES_LEN_BIG+C2Len;
 
 	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
 	if (error)
 	{
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueMPK(&mpk,pMpk,NULL);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
 		goto err;
 	}
 
@@ -958,7 +969,6 @@ int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *p
 		goto err;
 	}
 
-	sm9_proxylib_getSerializeObjectSize(cipher, SM9_SERIALIZE_BINARY, &cipherLen);
 	if (cipherLen>*piCipherLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
@@ -967,9 +977,10 @@ int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *p
 	else
 	{
 		*piCipherLen = cipherLen;
-		sm9_proxylib_serializeObject(cipher,pCipher, piCipherLen, *piCipherLen, SM9_SERIALIZE_BINARY);
-		error = SM9_ERROR_NONE;
+		sm9_proxylib_ObjectToItemsValueCipher(cipher,pCipher,pCipher+SM9_BYTES_LEN_G1,pCipher+SM9_BYTES_LEN_G1+SM9_BYTES_LEN_BIG,&C2Len);
 	}
+
+	error = SM9_ERROR_NONE;
 
 err:
 	if (gParams)
@@ -1002,30 +1013,30 @@ int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID,
 	void *plain = 0;
 	int plainLen = 0;
 
-	error = sm9_proxylib_deserializeObject(pMpk, iMpkLen, &mpk, SM9_SERIALIZE_BINARY);
-	if (error)
-	{
-		error = SM9_ERROR_DATA_ERR;
-		goto err;
-	}
-
-	error = sm9_proxylib_deserializeObject(pCipher, iCipherLen, &cipher, SM9_SERIALIZE_BINARY);
-	if (error)
-	{
-		error = SM9_ERROR_DATA_ERR;
-		goto err;
-	}
-
-	error = sm9_proxylib_deserializeObject(pSk, iSkLen, &sk, SM9_SERIALIZE_BINARY);
-	if (error)
-	{
-		error = SM9_ERROR_DATA_ERR;
-		goto err;
-	}
-
 	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
 	if (error)
 	{
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueMPK(&mpk,pMpk,NULL);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueCipher(&cipher, pCipher, pCipher+SM9_BYTES_LEN_G1,pCipher+SM9_BYTES_LEN_G1+SM9_BYTES_LEN_BIG,iCipherLen-SM9_BYTES_LEN_G1-SM9_BYTES_LEN_BIG);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueSK(&sk,NULL,NULL,pSk);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
 		goto err;
 	}
 
@@ -1035,26 +1046,20 @@ int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID,
 		goto err;
 	}
 
-	int header_len = (4+1+4);
+	sm9_proxylib_ObjectToItemsValueDATA(plain,NULL,&plainLen);
 
-	sm9_proxylib_getSerializeObjectSize(plain, SM9_SERIALIZE_BINARY, &plainLen);
-	if (plainLen-header_len> *piMessageLen)
+	if (plainLen > *piMessageLen)
 	{
 		error = SM9_ERROR_BUFERR_LESS;
-		*piMessageLen = plainLen-header_len;
+		*piMessageLen = plainLen;
 	}
 	else
 	{
-		*piMessageLen = plainLen-header_len;
-
-		SM9AARData buffer(plainLen);
-
-		sm9_proxylib_serializeObject(plain,buffer.m_pValue, &buffer.m_iPos, buffer.m_iMaxLen, SM9_SERIALIZE_BINARY);
-
-		memcpy(pMessage, buffer.m_pValue+header_len, buffer.m_iPos-header_len);
-
-		error = SM9_ERROR_NONE;
+		*piMessageLen = plainLen;
+		sm9_proxylib_ObjectToItemsValueDATA(plain,pMessage,piMessageLen);
 	}
+
+	error = SM9_ERROR_NONE;
 
 err:
 	if (gParams)
