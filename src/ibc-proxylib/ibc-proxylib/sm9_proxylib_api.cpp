@@ -644,7 +644,7 @@ int sm9_proxylib_keyExchangeA3(void *params, void *mpk,void *sk, char * userIDA,
 }
 
 
-int sm9_generateMasterKeys(char *pMsk, int *piMskLen, char *pMpkG1, int *piMpkG1Len, char *pMpkG2, int *piMpkG2Len)
+int sm9_generateMasterKeys(char pMsk[SM9_BYTES_LEN_BIG], int *piMskLen, char pMpkG1[SM9_BYTES_LEN_G1], int *piMpkG1Len, char pMpkG2[SM9_BYTES_LEN_G2], int *piMpkG2Len)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -719,11 +719,11 @@ err:
 	return error;
 }
 
-int sm9_calculateUserKeys(char *pMsk, int iMskLen,
+int sm9_calculateUserKeys(char pMsk[SM9_BYTES_LEN_BIG], int iMskLen,
 	char * pUserID, int iUserIDLen,
-	char *pSkhid01, int *piSkhid01Len,
-	char *pSkhid02, int *piSkhid02Len,
-	char *pSkhid03, int *piSkhid03Len)
+	char pSkhid01[SM9_BYTES_LEN_G1], int *piSkhid01Len,
+	char pSkhid02[SM9_BYTES_LEN_G2], int *piSkhid02Len,
+	char pSkhid03[SM9_BYTES_LEN_G2], int *piSkhid03Len)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -804,8 +804,8 @@ err:
 	return error;
 }
 
-int sm9_sign(char *pMpk, int iMpkLen, char *pSk, int iSkLen, char *pMessage, int iMessageLen, 
-	char *pSgn, int *piSgnLen)
+int sm9_sign(char pMpk[SM9_BYTES_LEN_G2], int iMpkLen, char pSk[SM9_BYTES_LEN_G1], int iSkLen, char *pMessage, int iMessageLen, 
+	char pSgn[SM9_BYTES_LEN_BIG+SM9_BYTES_LEN_G1], int *piSgnLen)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -873,8 +873,8 @@ err:
 	return error;
 }
 
-int sm9_verify(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
-	char *pSgn, int iSgnLen)
+int sm9_verify(char pMpk[SM9_BYTES_LEN_G2], int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+	char pSgn[SM9_BYTES_LEN_BIG+SM9_BYTES_LEN_G1], int iSgnLen)
 {
 	int error = SM9_ERROR_OTHER;
 
@@ -930,7 +930,7 @@ err:
 	return error;
 }
 
-int sm9_encrypt(char *pMpk, int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
+int sm9_encrypt(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen, char * pUserID, int iUserIDLen, char *pMessage, int iMessageLen, 
 	char *pCipher, int *piCipherLen, SM9_CIPHER_TYPE cipherType
 	)
 {
@@ -1002,7 +1002,7 @@ err:
 	return error;
 }
 
-int sm9_decrypt(char *pMpk, int iMpkLen, char * pSk, int iSkLen, char * pUserID, int iUserIDLen,  
+int sm9_decrypt(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen, char pSk[SM9_BYTES_LEN_G2], int iSkLen, char * pUserID, int iUserIDLen,  
 	char *pCipher, int iCipherLen, 
 	char *pMessage, int *piMessageLen,  SM9_CIPHER_TYPE cipherType
 	)
