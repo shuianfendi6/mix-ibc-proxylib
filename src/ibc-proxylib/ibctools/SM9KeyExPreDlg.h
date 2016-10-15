@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CSM9KeyExPreDlg ¶Ô»°¿ò
@@ -20,4 +21,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClicked4();
+	CEdit m_editG1;
+	CEdit m_editID;
+	CEdit m_editr;
+	CEdit m_editR;
 };
