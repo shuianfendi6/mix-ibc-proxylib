@@ -535,7 +535,7 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDB, int user
 	return error;
 }
 
-int sm9_proxylib_keyExchangeCalcRr(void *params, void *mpk, char * userIDOther, int userIDOtherLen,
+int sm9_proxylib_keyExchange_pre(void *params, void *mpk, char * userIDOther, int userIDOtherLen,
 	void **RSelf,void **rSelf,
 	SM9_SCHEME_TYPE schemeID)
 {

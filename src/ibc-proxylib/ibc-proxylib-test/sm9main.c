@@ -174,7 +174,7 @@ int main()
 	{
 		// new function test
 
-		sm9_proxylib_keyExchangeCalcRr(gParams,mpk,"Bob",strlen("Bob"),&RA,&rA,SM9_SCHEME_SW);
+		sm9_proxylib_keyExchange_pre(gParams,mpk,"Bob",strlen("Bob"),&RA,&rA,SM9_SCHEME_SW);
 		data_len = 2048;
 		sm9_proxylib_getSerializeObjectSize(RA, SM9_SERIALIZE_BINARY, &data_len);
 		sm9_proxylib_serializeObject(RA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);
@@ -187,7 +187,7 @@ int main()
 		sm9_proxylib_deserializeObject(data_value, data_len, &rA,SM9_SERIALIZE_BINARY);
 
 
-		sm9_proxylib_keyExchangeCalcRr(gParams,mpk,"Alice",strlen("Alice"),&RB,&rB,SM9_SCHEME_SW);
+		sm9_proxylib_keyExchange_pre(gParams,mpk,"Alice",strlen("Alice"),&RB,&rB,SM9_SCHEME_SW);
 		data_len = 2048;
 		sm9_proxylib_getSerializeObjectSize(RA, SM9_SERIALIZE_BINARY, &data_len);
 		sm9_proxylib_serializeObject(RA,data_value, &data_len, data_len, SM9_SERIALIZE_BINARY);

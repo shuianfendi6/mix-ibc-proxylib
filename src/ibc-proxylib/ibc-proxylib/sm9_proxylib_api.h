@@ -140,7 +140,7 @@ extern "C" {
 		void *RA, void *RB, void *SB, void **SKA, void **SA, void *rA, SM9_KEY_EX_OPTION option,
 		SM9_SCHEME_TYPE schemeID);
 
-	int sm9_proxylib_keyExchangeCalcRr(void *params, void *mpk, char * userIDOther, int userIDOtherLen,
+	int sm9_proxylib_keyExchange_pre(void *params, void *mpk, char * userIDOther, int userIDOtherLen,
 		void **RSelf,void **rSelf,
 		SM9_SCHEME_TYPE schemeID);
 	int sm9_proxylib_keyExchange(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,

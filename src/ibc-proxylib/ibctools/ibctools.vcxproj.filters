@@ -63,6 +63,9 @@
     <ClInclude Include="SM9UnwrapDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SM9KeyExPreDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ibctools.cpp">
@@ -96,6 +99,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SM9UnwrapDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SM9KeyExPreDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
