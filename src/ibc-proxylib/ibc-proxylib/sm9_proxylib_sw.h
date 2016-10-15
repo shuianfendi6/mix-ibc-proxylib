@@ -134,8 +134,6 @@ public:
 };
 
 
-
-
 BOOL sm9_sw_generate_params(SM9CurveParams_SW &params);
 BOOL sm9_sw_generate_masterkey(SM9CurveParams_SW &params,SM9ProxyMPK_SW &mpk,SM9ProxyMSK_SW &msk);
 BOOL sm9_sw_calculate_privatekey(SM9CurveParams_SW &params, SM9ProxyMSK_SW &msk, char * userID, int userIDLen, SM9ProxySK_SW &sk);
@@ -156,5 +154,11 @@ BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9P
 BOOL sm9_sw_keyexchangeA3(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, 
 	char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len, 
 	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SB, SM9ProxyDATA_SW &SKA, SM9ProxyDATA_SW &SA, SM9ProxyDATA_SW &rA, SM9_KEY_EX_OPTION option);
+
+
+BOOL sm9_sw_keyexchangeCalcRr(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userIDOther, int userIDOtherLen, SM9ProxyEXR_SW &RSelf, SM9ProxyDATA_SW &rRSelf);
+BOOL sm9_sw_keyexchange(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
+	SM9ProxyDATA_SW &rSelf, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKBorSKA, SM9ProxyDATA_SW &SBorS1,  SM9ProxyDATA_SW &S2orSA, BOOL isB,SM9_KEY_EX_OPTION option);
+
 
 #endif // __PROXYLIB_PRE_SW_H__

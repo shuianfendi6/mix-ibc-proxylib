@@ -970,6 +970,270 @@ BOOL sm9_sw_keyexchangeA1(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char 
 	return TRUE;
 }
 
+
+BOOL sm9_sw_keyexchangeCalcRr(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk,  char * userIDOther, int userIDOtherLen, SM9ProxyEXR_SW &RSelf, SM9ProxyDATA_SW &rSelf)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	char hid = 0x02;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	SM9AARData buffer(userIDOtherLen + 1>32?userIDOtherLen+1:32);
+
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDOther,userIDOtherLen);
+	buffer.m_iPos += userIDOtherLen;
+	buffer.m_iPos += to_binaryChar(hid,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
+
+	n_data.m_iPos = to_binaryBig(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
+
+	SM9_H1_V2(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
+
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
+
+	ECn Q = h1*params.P1;
+
+	Q += mpk.Ppube;
+
+	cout <<"Q:"<<Q<<endl;
+
+	Big r;
+
+#if defined(MIX_BUILD_FOR_SYSTEM_MASTER_KEY_EX) 
+	r = "5879DD1D51E175946F23B1B41E93BA31C584AE59A426EC1046A4D03B06C8";
+#else
+	while(0 == (r=rand(params.N)))
+	{
+
+	};
+#endif
+
+	ECn R = r*Q;
+
+	RSelf.R = R;
+
+	//rA.data = r;
+	{
+		buffer.m_iPos = 0;
+		buffer.m_iPos += to_binaryBig(r,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue);
+
+		rSelf.data.SetValue(buffer.m_pValue,buffer.m_iPos);
+	}
+
+	cout <<"R:"<<R<<endl;
+
+	return TRUE;
+}
+
+
+BOOL sm9_sw_keyexchange(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
+	SM9ProxyDATA_SW &rSelf, SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKBorSKA, SM9ProxyDATA_SW &SBorS1,  SM9ProxyDATA_SW &S2orSA, BOOL isB,SM9_KEY_EX_OPTION option)
+{
+	miracl *mip=&precisionBits;
+
+	mip->IOBASE = 16;
+	mip->TWIST=MR_SEXTIC_M;
+
+	char hid = 0x02;
+	ZZn2 X;
+
+#ifdef AFFINE
+	ecurve(params.a,params.b,params.q,MR_AFFINE);
+#endif
+#ifdef PROJECTIVE
+	ecurve(params.a,params.b,params.q,MR_PROJECTIVE);
+#endif
+
+	set_frobenius_constant(X);
+
+	SM9AARData buffer(32 * 2 * 2 + 12 * 32 * 3 + userIDALen + userIDBLen);
+
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
+	buffer.m_iPos += to_binaryChar(hid,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue+buffer.m_iPos);
+
+	SM9AARData h1_data(32);
+	SM9AARData n_data(32);
+
+	n_data.m_iPos = to_binaryBig(params.N,n_data.m_iMaxLen - n_data.m_iPos, n_data.m_pValue);
+
+	SM9_H1_V2(buffer.m_pValue, buffer.m_iPos, n_data.m_pValue,n_data.m_iPos, h1_data.m_pValue, &h1_data.m_iPos);
+
+	Big h1 = from_binary(h1_data.m_iPos, h1_data.m_pValue);
+
+	ECn Q = h1*params.P1;
+
+	Q += mpk.Ppube;
+
+	cout <<"Q:"<<Q<<endl;
+
+	Big r;
+
+	int iLen = rSelf.data.GetLength();
+
+	rSelf.data.GetValue(buffer.m_pValue, &iLen);
+
+	r = from_binary(iLen, buffer.m_pValue);
+
+	ZZn12 g1,g2,g3;
+
+	//ECn R = r*Q;
+
+	//RB.R = R;
+
+	//cout <<"R:"<<R<<endl;
+
+	cout <<"RA.R:"<<RA.R<<endl;
+	cout <<"RB.R:"<<RB.R<<endl;
+
+	if(isB)
+	{
+		ecap(sk.de_hid02,RA.R,params.t,X,g1);
+
+		ecap(params.P2, mpk.Ppube,params.t,X,g2);
+
+		g2 = pow(g2,r);
+
+		g3 = pow(g1,r);
+	}
+	else
+	{
+		ecap(params.P2,mpk.Ppube,params.t,X,g1);
+
+		g1 = pow(g1,r);
+
+		ecap(sk.de_hid02,RB.R,params.t,X,g2);
+
+		//g3 = pow(g2,rA.data);
+		g3 = pow(g2,r);
+	}
+
+	buffer.m_iPos = 0;
+
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+	buffer.m_iPos += userIDALen;
+
+	memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+	buffer.m_iPos += userIDBLen;
+
+	Big cx,cy;
+	RA.R.get(cx,cy);
+
+	buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+	RB.R.get(cx,cy);
+
+	buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+	buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+	buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+	SM9AARData key_str(key_len);
+	key_str.m_iPos = key_str.m_iMaxLen;
+	tcm_kdf((unsigned char *)key_str.m_pValue, key_str.m_iPos,(unsigned char *)buffer.m_pValue,buffer.m_iPos);
+
+	//SKB.data = from_binary(key_len,key_str);
+	SKBorSKA.data.SetValue(key_str.m_pValue,key_str.m_iPos);
+
+	if (option == SM9_KEY_EX_OPTION_YES)
+	{
+		char digest[32] = {0};
+
+		buffer.m_iPos = 0;
+
+		buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+		buffer.m_iPos += userIDALen;
+
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+		buffer.m_iPos += userIDBLen;
+
+		RA.R.get(cx,cy);
+
+		buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		RB.R.get(cx,cy);
+
+		buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
+
+		buffer.m_iPos = 0;
+
+		buffer.m_iPos += to_binaryChar(0x82,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+		memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+		buffer.m_iPos += 32;
+
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
+
+		//SB.data = from_binary(32,digest);
+		SBorS1.data.SetValue(digest,32);
+
+		//cout <<"SB:"<<SB.data<<endl;
+
+		buffer.m_iPos = 0;
+
+		buffer.m_iPos += to_binaryZZn12(g2,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		buffer.m_iPos += to_binaryZZn12(g3,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDA,userIDALen);
+		buffer.m_iPos += userIDALen;
+
+		memcpy(buffer.m_pValue + buffer.m_iPos,userIDB,userIDBLen);
+		buffer.m_iPos += userIDBLen;
+
+		RA.R.get(cx,cy);
+
+		buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		RB.R.get(cx,cy);
+
+		buffer.m_iPos += to_binaryBig(cx,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryBig(cy,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
+
+		buffer.m_iPos = 0;
+
+		buffer.m_iPos += to_binaryChar(0x83,buffer.m_iMaxLen - buffer.m_iPos,buffer.m_pValue + buffer.m_iPos);
+		buffer.m_iPos += to_binaryZZn12(g1,buffer.m_iMaxLen - buffer.m_iPos, buffer.m_pValue + buffer.m_iPos);
+		memcpy(buffer.m_pValue + buffer.m_iPos, digest, 32);
+		buffer.m_iPos += 32;
+
+		SM9_HV(buffer.m_iPos,(unsigned char*)buffer.m_pValue,(unsigned char *)digest);
+
+		//S2.data = from_binary(32,digest);
+		S2orSA.data.SetValue(digest,32);
+		//cout <<"S2:"<<S2.data<<endl;
+	}
+
+	return TRUE;
+}
+
+
+
 BOOL sm9_sw_keyexchangeB2B4(SM9CurveParams_SW &params, SM9ProxyMPK_SW &mpk, SM9ProxySK_SW &sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen,int key_len,
 	SM9ProxyEXR_SW &RA, SM9ProxyEXR_SW &RB, SM9ProxyDATA_SW &SKB, SM9ProxyDATA_SW &SB,  SM9ProxyDATA_SW &S2, SM9_KEY_EX_OPTION option)
 {

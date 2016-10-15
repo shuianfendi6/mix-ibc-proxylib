@@ -535,6 +535,99 @@ int sm9_proxylib_keyExchangeA1(void *params, void *mpk, char * userIDB, int user
 	return error;
 }
 
+int sm9_proxylib_keyExchangeCalcRr(void *params, void *mpk, char * userIDOther, int userIDOtherLen,
+	void **RSelf,void **rSelf,
+	SM9_SCHEME_TYPE schemeID)
+{
+	int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyEXR_SW *pRSelf = new SM9ProxyEXR_SW;
+			SM9ProxyDATA_SW *prSelf = new SM9ProxyDATA_SW;
+
+			if (sm9_sw_keyexchangeA1(*pparams, *pmpk, userIDOther, userIDOtherLen, *pRSelf, *prSelf) == TRUE) {
+				*RSelf = (void*) pRSelf;
+				*rSelf = (void*) prSelf;
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pRSelf;
+				delete prSelf;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+int sm9_proxylib_keyExchange(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
+		void*rSelf, void *RA, void *RB, void **SKBorSKA, void **SBorS1, void **S2orSA, int isB, SM9_KEY_EX_OPTION option,
+		SM9_SCHEME_TYPE schemeID)
+{
+		int error = SM9_ERROR_OTHER;
+
+	switch (schemeID) {
+	case SM9_SCHEME_SW:
+		{
+			SM9CurveParams_SW *pparams = (SM9CurveParams_SW *)params;
+			SM9ProxyMPK_SW *pmpk = (SM9ProxyMPK_SW*)mpk;
+			SM9ProxyEXR_SW *pRA = (SM9ProxyEXR_SW*)RA;
+			SM9ProxyEXR_SW *pRB = (SM9ProxyEXR_SW*)RB;
+			SM9ProxySK_SW *psk = (SM9ProxySK_SW*)sk;
+			SM9ProxyDATA_SW *prSelf = (SM9ProxyDATA_SW*)rSelf;
+
+			SM9ProxyDATA_SW *pSKBorSKA = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pSBorS1 = new SM9ProxyDATA_SW;
+			SM9ProxyDATA_SW *pS2orSA = new SM9ProxyDATA_SW;
+
+			if (sm9_sw_keyexchange(*pparams, *pmpk, *psk, userIDA, userIDALen, userIDB, userIDBLen,key_len,*prSelf,*pRA, *pRB, *pSKBorSKA, *pSBorS1, *pS2orSA, isB, option) == TRUE) {
+				*SKBorSKA = (void*) pSKBorSKA;
+				if (option == SM9_KEY_EX_OPTION_YES)
+				{
+					*SBorS1 = (void*) pSBorS1;
+					*S2orSA = (void*) pS2orSA;
+				}
+				else
+				{
+					delete pSBorS1;
+					delete pS2orSA;
+				}
+
+				error = SM9_ERROR_NONE;
+			}
+			else
+			{
+				delete pSKBorSKA;
+				delete pSBorS1;
+				delete pS2orSA;
+			}
+
+			return error;
+		}
+		break;
+	case SM9_SCHEME_HW:
+		{
+			return error;
+		}
+		break;
+	}
+
+	return error;
+}
+
+
 int sm9_proxylib_keyExchangeB2(void *params, void *mpk, void *sk, char * userIDA, int userIDALen, char * userIDB, int userIDBLen, int key_len,
 	void *RA, void **RB, void **SKB, void **SB, void **S2, SM9_KEY_EX_OPTION option,
 	SM9_SCHEME_TYPE schemeID)
