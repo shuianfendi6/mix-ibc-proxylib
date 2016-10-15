@@ -85,6 +85,25 @@ extern "C" {
 		char *pWrapKey, int iWrapKeyLen, char *pKey, int *piKeyLen
 		);
 
+	int sm9_keyExchange_pre(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen,
+		char * pUserIDOther, int iUserIDOtherLen,
+		char *prSelf, int *pirSelfLen, 
+		char *pRSelf, int *piRSelfLen);
+
+	int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], 
+		char pSk[SM9_BYTES_LEN_G2], int iSkLen,
+		char * iUserIDA, int iUserIDALen, 
+		char * iUserIDB, int iUserIDBLen, 
+		int key_len,
+		char *prSelf, int irSelfLen, 
+		char *pRA, int iRALen, 
+		char *pRB, int iRBLen,  
+		char *pSKBorSKA, int *piSKBorSKALen,
+		char *pSBorS1, int *piSBorS1Len,
+		char *pS2orSA, int *piS2orSALen,
+		int isB, SM9_KEY_EX_OPTION option
+		);
+
 
 	// inner functions (soft and hard ware implement)
 

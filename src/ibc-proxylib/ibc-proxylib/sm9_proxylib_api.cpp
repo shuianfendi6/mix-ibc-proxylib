@@ -1341,3 +1341,92 @@ err:
 
 	return error;
 }
+
+int sm9_keyExchange_pre(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen,
+		char * pUserIDOther, int iUserIDOtherLen,
+		char *prSelf, int *pirSelfLen, 
+		char *pRSelf, int *piRSelfLen)
+{
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *mpk = 0;
+	void *rSelf = 0;
+	void *RSelf = 0;
+
+	int rSelfLen = 0;
+	int RSelfLen = SM9_BYTES_LEN_G1;
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueMPK(&mpk,pMpk,NULL);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_keyExchange_pre(gParams,mpk,pUserIDOther,iUserIDOtherLen,&RSelf,&rSelf,SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_ObjectToItemsValueDATA(rSelf,NULL,&rSelfLen);
+
+	if (rSelfLen>*pirSelfLen || RSelfLen>*piRSelfLen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*pirSelfLen = rSelfLen;
+		*piRSelfLen = rSelfLen;
+	}
+	else
+	{
+		*pirSelfLen = rSelfLen;
+		*piRSelfLen = rSelfLen;
+		sm9_proxylib_ObjectToItemsValueDATA(rSelf,prSelf,&rSelfLen);
+		sm9_proxylib_ObjectToItemsValueEXR(RSelf,pRSelf);
+		error = SM9_ERROR_NONE;
+	}
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (rSelf)
+	{
+		sm9_proxylib_destroyObject(rSelf);
+	}
+	if (RSelf)
+	{
+		sm9_proxylib_destroyObject(RSelf);
+	}
+
+	return error;
+}
+
+int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], 
+	char pSk[SM9_BYTES_LEN_G2], int iSkLen,
+	char * iUserIDA, int iUserIDALen, 
+	char * iUserIDB, int iUserIDBLen, 
+	int key_len,
+	char *prSelf, int irSelfLen, 
+	char *pRA, int iRALen, 
+	char *pRB, int iRBLen,  
+	char *pSKBorSKA, int *piSKBorSKALen,
+	char *pSBorS1, int *piSBorS1Len,
+	char *pS2orSA, int *piS2orSALen,
+	int isB, SM9_KEY_EX_OPTION option
+	)
+{
+	return 0;
+}
