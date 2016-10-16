@@ -92,8 +92,8 @@ extern "C" {
 
 	int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], 
 		char pSk[SM9_BYTES_LEN_G2], int iSkLen,
-		char * iUserIDA, int iUserIDALen, 
-		char * iUserIDB, int iUserIDBLen, 
+		char *pUserIDA, int iUserIDALen, 
+		char *pUserIDB, int iUserIDBLen, 
 		int key_len,
 		char *prSelf, int irSelfLen, 
 		char *pRA, int iRALen, 

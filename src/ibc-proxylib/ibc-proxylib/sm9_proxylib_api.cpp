@@ -962,6 +962,11 @@ err:
 	{
 		sm9_proxylib_destroyObject(sk);
 	}
+	if (sgn)
+	{
+		sm9_proxylib_destroyObject(sgn);
+	}
+	
 
 	return error;
 }
@@ -1416,8 +1421,8 @@ err:
 
 int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], 
 	char pSk[SM9_BYTES_LEN_G2], int iSkLen,
-	char * iUserIDA, int iUserIDALen, 
-	char * iUserIDB, int iUserIDBLen, 
+	char *pUserIDA, int iUserIDALen, 
+	char *pUserIDB, int iUserIDBLen, 
 	int key_len,
 	char *prSelf, int irSelfLen, 
 	char *pRA, int iRALen, 
@@ -1428,5 +1433,147 @@ int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1],
 	int isB, SM9_KEY_EX_OPTION option
 	)
 {
-	return 0;
+	int error = SM9_ERROR_OTHER;
+
+	void *gParams = 0;
+	void *sk = 0;
+	void *mpk = 0;
+	void *rSelf = 0;
+	void *RA = 0;
+	void *RB = 0;
+	void *SKBorSKA = 0;
+	void *SBorS1 = 0;
+	void *S2orSA = 0;
+
+	int SKBorSKALen = 0;
+	int SBorS1Len = 0;
+	int S2orSALen = 0;
+
+	error = sm9_proxylib_generateParams(&gParams, SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueMPK(&mpk,pMpk,NULL);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueSK(&sk,NULL,pSk, NULL);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueEXR(&RA,pRA);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueEXR(&RB,pRB);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_ObjectFromItemsValueDATA(&rSelf,prSelf,irSelfLen);
+	if (error)
+	{
+		error = SM9_ERROR_DATA_ERR;
+		goto err;
+	}
+
+	error = sm9_proxylib_keyExchange(gParams,mpk,sk,
+		pUserIDA,iUserIDALen,
+		pUserIDB,iUserIDBLen,
+		key_len,
+		rSelf,
+		RA,
+		RB,
+		&SKBorSKA,
+		&SBorS1,
+		&S2orSA,
+		isB,
+		option,
+		SM9_SCHEME_SW);
+	if (error)
+	{
+		goto err;
+	}
+
+	sm9_proxylib_ObjectToItemsValueDATA(SKBorSKA,NULL,&SKBorSKALen);
+	sm9_proxylib_ObjectToItemsValueDATA(SBorS1,NULL,&SBorS1Len);
+	sm9_proxylib_ObjectToItemsValueDATA(S2orSA,NULL,&S2orSALen);
+
+	if (SKBorSKALen>*piSKBorSKALen || SBorS1Len>*piSBorS1Len || S2orSALen > *piS2orSALen)
+	{
+		error = SM9_ERROR_BUFERR_LESS;
+		*piSKBorSKALen = SKBorSKALen;
+		*piSBorS1Len = SBorS1Len;
+		*piS2orSALen = S2orSALen;
+		goto err;
+	}
+	else
+	{
+		*piSKBorSKALen = SKBorSKALen;
+		*piSBorS1Len = SBorS1Len;
+		*piS2orSALen = S2orSALen;
+		sm9_proxylib_ObjectToItemsValueDATA(SKBorSKA,pSKBorSKA,&SKBorSKALen);
+		sm9_proxylib_ObjectToItemsValueDATA(SBorS1,pSBorS1,&SBorS1Len);
+		sm9_proxylib_ObjectToItemsValueDATA(S2orSA,pS2orSA,&S2orSALen);
+	}
+
+	error = SM9_ERROR_NONE;
+
+err:
+	if (gParams)
+	{
+		sm9_proxylib_destroyObject(gParams);
+	}
+	if (mpk)
+	{
+		sm9_proxylib_destroyObject(mpk);
+	}
+	if (rSelf)
+	{
+		sm9_proxylib_destroyObject(rSelf);
+	}
+	if (RA)
+	{
+		sm9_proxylib_destroyObject(RA);
+	}
+	if (RB)
+	{
+		sm9_proxylib_destroyObject(RB);
+	}
+
+	if (sk)
+	{
+		sm9_proxylib_destroyObject(sk);
+	}
+
+	if (SKBorSKA)
+	{
+		sm9_proxylib_destroyObject(SKBorSKA);
+	}
+
+	if (SBorS1)
+	{
+		sm9_proxylib_destroyObject(SBorS1);
+	}
+
+	if (S2orSA)
+	{
+		sm9_proxylib_destroyObject(S2orSA);
+	}
+
+
+	return error;
 }
