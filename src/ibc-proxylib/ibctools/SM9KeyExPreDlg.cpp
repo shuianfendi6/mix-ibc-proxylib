@@ -46,14 +46,14 @@ END_MESSAGE_MAP()
 
 void CSM9KeyExPreDlg::OnBnClicked4()
 {
-		char data_value[4096] = {0};
+	char data_value[4096] = {0};
 	int data_len = 4096;
 
-	char data_value_plain[4096] = {0};
-	int data_len_plain = 4096;
+	char data_value_r[4096] = {0};
+	int data_len_r = 4096;
 
-	char data_value_cipher[4096] = {0};
-	int data_len_cipher = 4096;
+	char data_value_R[SM9_BYTES_LEN_G1] = {0};
+	int data_len_R = SM9_BYTES_LEN_G1;
 
 	char id[4096] = {0};
 	int id_len = 4096;
@@ -79,8 +79,8 @@ void CSM9KeyExPreDlg::OnBnClicked4()
 	data_len = strlen(data_value);
 	Hex2Bin(data_value,data_len,(unsigned char *)id,&id_len);
 
-	data_len_cipher = 4096;
-	if( 0 == sm9_encrypt(data_value_G1,data_len_G1,id,id_len,data_value_plain,data_len_plain,data_value_cipher,&data_len_cipher,g_cryptoMode))
+	data_len_r = 4096;
+	if( 0 == sm9_keyExchange_pre(data_value_G1,data_len_G1,id,id_len,data_value_r,&data_len_r,data_value_R,&data_len_R))
 	{
 		MessageBox("º”√‹≥…π¶£°");
 	}
@@ -91,6 +91,10 @@ void CSM9KeyExPreDlg::OnBnClicked4()
 	}
 
 	data_len = 4096;
-	Bin2Hex((unsigned char*)data_value_cipher,data_len_cipher,data_value,&data_len);
-	m_editOut.SetWindowText(data_value);
+	Bin2Hex((unsigned char*)data_value_r,data_len_r,data_value,&data_len);
+	m_editr.SetWindowText(data_value);
+
+	data_len = 4096;
+	Bin2Hex((unsigned char*)data_value_R,data_len_R,data_value,&data_len);
+	m_editR.SetWindowText(data_value);
 }

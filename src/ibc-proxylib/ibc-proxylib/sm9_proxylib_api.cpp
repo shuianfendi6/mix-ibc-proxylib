@@ -1382,12 +1382,12 @@ int sm9_keyExchange_pre(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen,
 	{
 		error = SM9_ERROR_BUFERR_LESS;
 		*pirSelfLen = rSelfLen;
-		*piRSelfLen = rSelfLen;
+		*piRSelfLen = RSelfLen;
 	}
 	else
 	{
 		*pirSelfLen = rSelfLen;
-		*piRSelfLen = rSelfLen;
+		*piRSelfLen = RSelfLen;
 		sm9_proxylib_ObjectToItemsValueDATA(rSelf,prSelf,&rSelfLen);
 		sm9_proxylib_ObjectToItemsValueEXR(RSelf,pRSelf);
 		error = SM9_ERROR_NONE;
