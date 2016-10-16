@@ -150,7 +150,7 @@ void CSM9KeyExDlg::OnBnClicked4()
 	data_len = 4096;
 	m_editRB.GetWindowText(data_value,data_len);
 	data_len = strlen(data_value);
-	Hex2Bin(data_value,data_len,(unsigned char *)data_value_RA,&data_len_RB);
+	Hex2Bin(data_value,data_len,(unsigned char *)data_value_RB,&data_len_RB);
 
 	if(0 == data_len_RB)
 	{
