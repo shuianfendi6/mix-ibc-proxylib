@@ -1419,7 +1419,7 @@ err:
 	return error;
 }
 
-int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], 
+int sm9_keyExchange(char pMpk[SM9_BYTES_LEN_G1], int iMpkLen,
 	char pSk[SM9_BYTES_LEN_G2], int iSkLen,
 	char *pUserIDA, int iUserIDALen, 
 	char *pUserIDB, int iUserIDBLen, 

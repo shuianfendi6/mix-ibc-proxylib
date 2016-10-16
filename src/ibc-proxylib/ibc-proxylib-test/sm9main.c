@@ -214,6 +214,7 @@ int main()
 		sm9_proxylib_destroyObject(SKB);
 		sm9_proxylib_deserializeObject(data_value, data_len, &SKB,SM9_SERIALIZE_BINARY);
 		
+		res = sm9_proxylib_cmpObject(sk,skb);
 		// must equal
 		res = sm9_proxylib_cmpObject(SKA,SKB);
 	

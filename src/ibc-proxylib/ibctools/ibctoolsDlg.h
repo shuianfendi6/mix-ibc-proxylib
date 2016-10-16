@@ -41,5 +41,7 @@ public:
 	CComboBox m_comboCryptoMode;
 	afx_msg void OnCbnSelchangeCombo1();
 	afx_msg void OnCbnSelchangeCombo3();
+	afx_msg void OnCbnSelchangeCombo4();
+	CComboBox m_comboKeyEX;
 };
 #pragma once

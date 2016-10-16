@@ -118,6 +118,7 @@
     <ClInclude Include="SM9DecryptDlg.h" />
     <ClInclude Include="SM9EncryptDlg.h" />
     <ClInclude Include="SM9GenDlg.h" />
+    <ClInclude Include="SM9KeyExDlg.h" />
     <ClInclude Include="SM9KeyExPreDlg.h" />
     <ClInclude Include="SM9SignDlg.h" />
     <ClInclude Include="SM9VerifyDlg.h" />
@@ -131,6 +132,7 @@
     <ClCompile Include="SM9DecryptDlg.cpp" />
     <ClCompile Include="SM9EncryptDlg.cpp" />
     <ClCompile Include="SM9GenDlg.cpp" />
+    <ClCompile Include="SM9KeyExDlg.cpp" />
     <ClCompile Include="SM9KeyExPreDlg.cpp" />
     <ClCompile Include="SM9SignDlg.cpp" />
     <ClCompile Include="SM9VerifyDlg.cpp" />

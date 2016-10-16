@@ -1,4 +1,4 @@
-
+Ôªø
 // ibctoolsDlg.cpp : implementation file
 //
 
@@ -16,7 +16,7 @@
 //#include "SM9UnwrapDlg.h"
 
 #include "SM9KeyExPreDlg.h"
-
+#include "SM9KeyExDlg.h"
 #include "sm9_proxylib_api.h"
 
 #ifdef _DEBUG
@@ -71,6 +71,7 @@ void CibctoolsDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB_ALL, m_tb);
 	DDX_Control(pDX, IDC_COMBO3, m_comboCryptoMode);
+	DDX_Control(pDX, IDC_COMBO4, m_comboKeyEX);
 }
 
 BEGIN_MESSAGE_MAP(CibctoolsDlg, CDialogEx)
@@ -79,6 +80,7 @@ BEGIN_MESSAGE_MAP(CibctoolsDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_ALL, &CibctoolsDlg::OnTcnSelchangeTabAll)
 	ON_CBN_SELCHANGE(IDC_COMBO3, &CibctoolsDlg::OnCbnSelchangeCombo3)
+	ON_CBN_SELCHANGE(IDC_COMBO4, &CibctoolsDlg::OnCbnSelchangeCombo4)
 END_MESSAGE_MAP()
 
 
@@ -88,9 +90,9 @@ BOOL CibctoolsDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// Ω´°∞πÿ”⁄...°±≤Àµ•œÓÃÌº”µΩœµÕ≥≤Àµ•÷–°£
+	// Â∞Ü‚ÄúÂÖ≥‰∫é...‚ÄùËèúÂçïÈ°πÊ∑ªÂä†Âà∞Á≥ªÁªüËèúÂçï‰∏≠„ÄÇ
 
-	// IDM_ABOUTBOX ±ÿ–Î‘⁄œµÕ≥√¸¡Ó∑∂Œßƒ⁄°£
+	// IDM_ABOUTBOX ÂøÖÈ°ªÂú®Á≥ªÁªüÂëΩ‰ª§ËåÉÂõ¥ÂÜÖ„ÄÇ
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -108,32 +110,32 @@ BOOL CibctoolsDlg::OnInitDialog()
 		}
 	}
 
-	// …Ë÷√¥À∂‘ª∞øÚµƒÕº±Í°£µ±”¶”√≥Ã–Ú÷˜¥∞ø⁄≤ª «∂‘ª∞øÚ ±£¨øÚº‹Ω´◊‘∂Ø
-	//  ÷¥––¥À≤Ÿ◊˜
-	SetIcon(m_hIcon, TRUE);			// …Ë÷√¥ÛÕº±Í
-	SetIcon(m_hIcon, FALSE);		// …Ë÷√–°Õº±Í
+	// ËÆæÁΩÆÊ≠§ÂØπËØùÊ°ÜÁöÑÂõæÊ†á„ÄÇÂΩìÂ∫îÁî®Á®ãÂ∫è‰∏ªÁ™óÂè£‰∏çÊòØÂØπËØùÊ°ÜÊó∂ÔºåÊ°ÜÊû∂Â∞ÜËá™Âä®
+	//  ÊâßË°åÊ≠§Êìç‰Ωú
+	SetIcon(m_hIcon, TRUE);			// ËÆæÁΩÆÂ§ßÂõæÊ†á
+	SetIcon(m_hIcon, FALSE);		// ËÆæÁΩÆÂ∞èÂõæÊ†á
 
-	// TODO: ‘⁄¥ÀÃÌº”∂ÓÕ‚µƒ≥ı ºªØ¥˙¬Î
+	// TODO: Âú®Ê≠§Ê∑ªÂä†È¢ùÂ§ñÁöÑÂàùÂßãÂåñ‰ª£Á†Å
 
-	m_tb.InsertItem(0, "…˙≥…÷˜√‹‘ø");
-	m_tb.InsertItem(1, "º∆À„ÀΩ‘ø");
-	m_tb.InsertItem(2, "º”√‹");
-	m_tb.InsertItem(3, "Ω‚√‹");
-	m_tb.InsertItem(4, "«©√˚");
-	m_tb.InsertItem(5, "—È÷§");
-	//m_tb.InsertItem(6, "∑‚◊∞");
-	//m_tb.InsertItem(7, "Ω‚∑‚");
+	m_tb.InsertItem(0, "ÁîüÊàê‰∏ªÂØÜÈí•");
+	m_tb.InsertItem(1, "ËÆ°ÁÆóÁßÅÈí•");
+	m_tb.InsertItem(2, "Âä†ÂØÜ");
+	m_tb.InsertItem(3, "Ëß£ÂØÜ");
+	m_tb.InsertItem(4, "Á≠æÂêç");
+	m_tb.InsertItem(5, "È™åËØÅ");
+	//m_tb.InsertItem(6, "Â∞ÅË£Ö");
+	//m_tb.InsertItem(7, "Ëß£Â∞Å");
 
-	m_tb.InsertItem(6, "√‹‘øΩªªª‘§¥¶¿Ì");
-	m_tb.InsertItem(7, "√‹‘øΩªªª");
+	m_tb.InsertItem(6, "ÂØÜÈí•‰∫§Êç¢È¢ÑÂ§ÑÁêÜ");
+	m_tb.InsertItem(7, "ÂØÜÈí•‰∫§Êç¢");
 
 
-	//¥¥Ω®¡Ω∏ˆ∂‘ª∞øÚ
+	//ÂàõÂª∫‰∏§‰∏™ÂØπËØùÊ°Ü
 	//m_page1.Create(IDD_DIALOG, &m_tb);
 	//m_page2.Create(IDD_DIALOG_CERTUI_PROP_DETAIL, &m_tb);
 	//m_page3.Create(IDD_DIALOG_CERTUI_PROP_PATH, &m_tb);
 
-	//…Ë∂®‘⁄Tabƒ⁄œ‘ æµƒ∑∂Œß
+	//ËÆæÂÆöÂú®TabÂÜÖÊòæÁ§∫ÁöÑËåÉÂõ¥
 	CRect rc;
 	m_tb.GetClientRect(rc);
 	rc.top += 20;
@@ -197,9 +199,9 @@ BOOL CibctoolsDlg::OnInitDialog()
 			pDialog[i]->Create(IDD_DIALOG_SM9KEY_EX_PRE, &m_tb);
 			break;
 		case 7:
-			pDialog[i] = new CSM9KeyExPreDlg(this);
+			pDialog[i] = new CSM9KeyExDlg(this);
 
-			pDialog[i]->Create(IDD_DIALOG_SM9KEY_EX_PRE, &m_tb);
+			pDialog[i]->Create(IDD_DIALOG_SM9KEY_EX, &m_tb);
 			break;	
 
 
@@ -220,18 +222,26 @@ BOOL CibctoolsDlg::OnInitDialog()
 	pos = -1;
 
 
-	pos = m_comboCryptoMode.InsertString(pos + 1,"ª˘”⁄KDF");
-	pos = m_comboCryptoMode.InsertString(pos + 1,"Ω·∫œKDF");
+	pos = m_comboCryptoMode.InsertString(pos + 1,"Âü∫‰∫éKDF");
+	pos = m_comboCryptoMode.InsertString(pos + 1,"ÁªìÂêàKDF");
 
 	m_comboCryptoMode.SetCurSel(0);
 
-	//œ‘ æ≥ı º“≥√Ê
+	pos = -1;
+
+
+	pos = m_comboKeyEX.InsertString(pos + 1,"ÂèëËµ∑Êñπ");
+	pos = m_comboKeyEX.InsertString(pos + 1,"ÂìçÂ∫îÊñπ");
+
+	m_comboKeyEX.SetCurSel(0);
+
+	//ÊòæÁ§∫ÂàùÂßãÈ°µÈù¢
 	pDialog[0]->ShowWindow(SW_SHOW);
 
-	//±£¥Êµ±«∞—°‘Ò
+	//‰øùÂ≠òÂΩìÂâçÈÄâÊã©
 	m_CurSelTab = 0;
 
-	return TRUE;  // ≥˝∑«Ω´Ωπµ„…Ë÷√µΩøÿº˛£¨∑Ò‘Ú∑µªÿ TRUE
+	return TRUE;  // Èô§ÈùûÂ∞ÜÁÑ¶ÁÇπËÆæÁΩÆÂà∞Êéß‰ª∂ÔºåÂê¶ÂàôËøîÂõû TRUE
 }
 
 void CibctoolsDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -287,15 +297,19 @@ SM9_CIPHER_TYPE g_cryptoMode;
 
 extern SM9_CIPHER_TYPE g_cryptoMode;
 
+int g_key_ex = 0;
+
+extern int g_key_ex;
+
 
 void CibctoolsDlg::OnTcnSelchangeTabAll(NMHDR *pNMHDR, LRESULT *pResult)
 {
-	// TODO: ‘⁄¥ÀÃÌº”øÿº˛Õ®÷™¥¶¿Ì≥Ã–Ú¥˙¬Î
-	//∞—µ±«∞µƒ“≥√Ê“˛≤ÿ∆¿¥
+	// TODO: Âú®Ê≠§Ê∑ªÂä†Êéß‰ª∂ÈÄöÁü•Â§ÑÁêÜÁ®ãÂ∫è‰ª£Á†Å
+	//ÊääÂΩìÂâçÁöÑÈ°µÈù¢ÈöêËóèËµ∑Êù•
 	pDialog[m_CurSelTab]->ShowWindow(SW_HIDE);
-	//µ√µΩ–¬µƒ“≥√ÊÀ˜“˝
+	//ÂæóÂà∞Êñ∞ÁöÑÈ°µÈù¢Á¥¢Âºï
 	m_CurSelTab = m_tb.GetCurSel();
-	//∞—–¬µƒ“≥√Êœ‘ æ≥ˆ¿¥
+	//ÊääÊñ∞ÁöÑÈ°µÈù¢ÊòæÁ§∫Âá∫Êù•
 	pDialog[m_CurSelTab]->ShowWindow(SW_SHOW);
 	*pResult = 0;
 }
@@ -314,5 +328,22 @@ void CibctoolsDlg::OnCbnSelchangeCombo3()
 	else
 	{
 		g_cryptoMode = SM9_CIPHER_KDF_BASE;
+	}
+}
+
+
+void CibctoolsDlg::OnCbnSelchangeCombo4()
+{
+	if (m_comboKeyEX.GetCurSel() == 0)
+	{
+		g_key_ex = 0;
+	}
+	else if (m_comboKeyEX.GetCurSel() == 1)
+	{
+		g_key_ex = 1;
+	}
+	else
+	{
+		g_key_ex = 1;
 	}
 }
