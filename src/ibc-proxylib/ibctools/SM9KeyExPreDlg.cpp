@@ -82,11 +82,11 @@ void CSM9KeyExPreDlg::OnBnClicked4()
 	data_len_r = 4096;
 	if( 0 == sm9_keyExchange_pre(data_value_G1,data_len_G1,id,id_len,data_value_r,&data_len_r,data_value_R,&data_len_R))
 	{
-		MessageBox("加密成功！");
+		MessageBox("执行成功！");
 	}
 	else
 	{
-		MessageBox("加密失败！");
+		MessageBox("执行失败！");
 		return;
 	}
 
