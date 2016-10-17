@@ -12,8 +12,8 @@
 #include "SM9GenDlg.h"
 #include "SM9SignDlg.h"
 #include "SM9VerifyDlg.h"
-//#include "SM9WrapDlg.h"
-//#include "SM9UnwrapDlg.h"
+#include "SM9WrapDlg.h"
+#include "SM9UnwrapDlg.h"
 
 #include "SM9KeyExPreDlg.h"
 #include "SM9KeyExDlg.h"
@@ -123,11 +123,10 @@ BOOL CibctoolsDlg::OnInitDialog()
 	m_tb.InsertItem(3, "解密");
 	m_tb.InsertItem(4, "签名");
 	m_tb.InsertItem(5, "验证");
-	//m_tb.InsertItem(6, "封装");
-	//m_tb.InsertItem(7, "解封");
-
-	m_tb.InsertItem(6, "密钥交换预处理");
-	m_tb.InsertItem(7, "密钥交换");
+	m_tb.InsertItem(6, "封装");
+	m_tb.InsertItem(7, "解封");
+	m_tb.InsertItem(8, "密钥交换预处理");
+	m_tb.InsertItem(9, "密钥交换");
 
 
 	//创建两个对话框
@@ -181,7 +180,7 @@ BOOL CibctoolsDlg::OnInitDialog()
 
 			pDialog[i]->Create(IDD_DIALOG_SM9VERIFY, &m_tb);
 			break;
-		/*case 6:
+		case 6:
 			pDialog[i] = new CSM9WrapDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9WRAP, &m_tb);
@@ -191,14 +190,14 @@ BOOL CibctoolsDlg::OnInitDialog()
 			pDialog[i] = new CSM9UnwrapDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9UNWRAP, &m_tb);
-			break;*/
+			break;
 
-		case 6:
+		case 8:
 			pDialog[i] = new CSM9KeyExPreDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9KEY_EX_PRE, &m_tb);
 			break;
-		case 7:
+		case 9:
 			pDialog[i] = new CSM9KeyExDlg(this);
 
 			pDialog[i]->Create(IDD_DIALOG_SM9KEY_EX, &m_tb);
@@ -211,7 +210,7 @@ BOOL CibctoolsDlg::OnInitDialog()
 			break;
 		}
 
-		if (i < 8)
+		if (i < 10)
 		{
 			pDialog[i]->MoveWindow(&rc);
 			pDialog[i]->ShowWindow(SW_HIDE);

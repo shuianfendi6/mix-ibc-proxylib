@@ -36,7 +36,7 @@ public:
 	CTabCtrl m_tb;
 
 	int m_CurSelTab;
-	CDialog * pDialog[8];
+	CDialog * pDialog[10];
 	int pos;
 	CComboBox m_comboCryptoMode;
 	afx_msg void OnCbnSelchangeCombo1();
